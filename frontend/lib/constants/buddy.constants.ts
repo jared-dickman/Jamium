@@ -206,8 +206,7 @@ export const STRUCTURED_DATA_TYPES = {
 
 /** Navigation routes for Buddy's mini nav bar - DRY via pageRoutes */
 export const BUDDY_NAV_ROUTES = [
-  { path: pageRoutes.repertoire, label: 'Repertoire', icon: 'turntable' }, // Classic vinyl turntable
-  { path: pageRoutes.jam, label: 'Jam', icon: 'waveform' },                // Live audio waves - creative flow
-  { path: pageRoutes.studio, label: 'Studio', icon: 'headphones' },        // Mixing/listening
-  { path: pageRoutes.composer, label: 'Compose', icon: 'feather' },        // Creative writing
+  { path: pageRoutes.repertoire, label: 'Repertoire', icon: 'turntable' },
+  { path: pageRoutes.jam, label: 'Jam', icon: 'waveform' },
+  { path: pageRoutes.composer, label: 'Compose', icon: 'feather' },
 ] as const;

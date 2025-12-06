@@ -151,10 +151,6 @@ Theory time. Help with chord subs, voicings, and why progressions work.`,
 YOU'RE IN: Theory Section 📚
 Explain concepts with real song examples. Make it click.`,
 
-    studio: `
-YOU'RE IN: Practice Studio 🎯
-Focused practice session. Help with technique, tempo work, and skill building.`,
-
     metronome: `
 YOU'RE IN: Metronome 🥁
 Timing and rhythm focus. Keep advice tempo and groove related.`,

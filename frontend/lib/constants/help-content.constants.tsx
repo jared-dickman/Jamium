@@ -181,12 +181,6 @@ export const JAM_HELP = {
  * Quick tips for first-time users
  */
 export const QUICK_TIPS = {
-  songwriter: [
-    'Start by chatting with the AI about your song idea',
-    'Click suggestions from the AI to insert them into your lyrics',
-    'Drag panel dividers to customize your workspace',
-    'Your work auto-saves - no need to manually save drafts',
-  ],
   jam: [
     'Click "Add Chord" to build your first progression',
     'Start with a slower BPM (60-80) when learning',
