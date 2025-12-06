@@ -44,7 +44,11 @@ function LayoutInner({ children, headerLogoRef }: { children: React.ReactNode; h
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Unified header - logo, breadcrumbs, buddy toggle in single row */}
-        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        {/* Hidden on mobile landing page for cinematic Buddy-first experience */}
+        <header className={cn(
+          'sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+          isLandingPage && 'hidden md:block'
+        )}>
           <div className={cn('flex items-center justify-between h-14 w-full', LAYOUT_PADDING)}>
             {/* Logo + Breadcrumbs inline */}
             <div className="flex items-center min-w-0">
