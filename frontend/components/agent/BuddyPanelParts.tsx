@@ -121,7 +121,7 @@ function DockToggle({ dockMode, dockEdge, onToggleDock, onSelectEdge }: DockTogg
       <PopoverContent
         side="bottom"
         align="center"
-        className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10"
+        className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10 z-[100]"
       >
         <div className="text-[10px] text-white/50 text-center mb-2 uppercase tracking-wider">Pick edge</div>
         <EdgePicker
