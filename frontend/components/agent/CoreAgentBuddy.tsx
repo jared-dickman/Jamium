@@ -373,11 +373,9 @@ function DesktopPanel({
 
   const panelStyle = useMemo<React.CSSProperties>(() => {
     if (isStatic) {
-      return {
-        touchAction: 'none',
-        left: `calc(50% - ${BUDDY_PANEL_WIDTH / 2}px)`,
-        top: `calc(50% - ${BUDDY_PANEL_HEIGHT / 2}px)`,
-      };
+      // Mobile: full viewport handled by classes (inset-0)
+      // Desktop: centered with fixed dimensions
+      return { touchAction: 'none' };
     }
     if (isDocked) {
       return { touchAction: 'none', ...getDockedStyle(dockEdge) };
@@ -401,7 +399,12 @@ function DesktopPanel({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={cn('fixed z-[60] isolate', isStatic ? 'block' : 'hidden md:block')}
+      className={cn(
+        'fixed z-[60] isolate',
+        isStatic
+          ? 'inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:h-[640px]'
+          : 'hidden md:block'
+      )}
       style={panelStyle}
       layout
       transition={BUDDY_DOCK_SPRING}
@@ -412,9 +415,11 @@ function DesktopPanel({
         variants={isDocked ? undefined : BUDDY_MINIMIZED_VARIANTS}
         animate={isMinimized ? 'minimized' : 'open'}
         className={cn(
-          'overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95',
-          'backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50',
-          isDocked ? 'rounded-none h-full w-full flex flex-col' : 'rounded-2xl',
+          'overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50',
+          // Full-screen modes (static landing or docked)
+          (isDocked || isStatic) && 'h-full w-full flex flex-col',
+          // Rounded corners: none on mobile landing/docked, rounded on desktop
+          isStatic ? 'rounded-none md:rounded-2xl' : isDocked ? 'rounded-none' : 'rounded-2xl',
           isMinimized && 'cursor-pointer',
           isFirstLoad && 'ring-2 ring-blue-500/50 ring-offset-2 ring-offset-transparent'
         )}
@@ -440,9 +445,9 @@ function DesktopPanel({
           {!isMinimized && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: isDocked ? 'auto' : 560 }}
+              animate={{ opacity: 1, height: (isDocked || isStatic) ? 'auto' : 560 }}
               exit={{ opacity: 0, height: 0 }}
-              className={cn('flex flex-col', isDocked && 'flex-1')}
+              className={cn('flex flex-col', (isDocked || isStatic) && 'flex-1')}
             >
               {!isOnboarding && <BuddyNavBar onNavigate={onClose} />}
 

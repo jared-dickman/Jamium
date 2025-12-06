@@ -79,7 +79,8 @@ export function LandingPage() {
           headerLogoRef={headerLogoRef ?? undefined}
         />
       )}
-      <div className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center">
+      {/* Full viewport on mobile (no header), subtract header height on desktop */}
+      <div className="relative min-h-screen md:min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center overflow-hidden">
         <NebulaBackground reducedMotion={reducedMotion} />
         <div className="relative z-10">
           <BuddyErrorBoundary>
