@@ -323,46 +323,52 @@ function DesktopPanel({
 }: DesktopPanelProps) {
   const isDocked = dockMode === 'docked';
   const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef<{ mouseX: number; mouseY: number; posX: number; posY: number } | null>(null);
+  const dragRef = useRef<{ offsetX: number; offsetY: number } | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
+  /** Start drag - capture mouse offset from panel corner */
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (isStatic || isDocked) return;
-    const target = e.target as HTMLElement;
-    if (target.closest('button, input, a, [role="button"]')) return;
+    if ((e.target as HTMLElement).closest('button, input, a, [role="button"]')) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const relativeY = e.clientY - rect.top;
-    if (relativeY > BUDDY_HEADER_HEIGHT) return;
+    if (e.clientY - rect.top > BUDDY_HEADER_HEIGHT) return;
 
     e.currentTarget.setPointerCapture(e.pointerId);
+    e.preventDefault();
     setIsDragging(true);
-    dragStartRef.current = {
-      mouseX: e.clientX,
-      mouseY: e.clientY,
-      posX: position.x,
-      posY: position.y,
+    dragRef.current = {
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
     };
-  }, [isStatic, isDocked, position.x, position.y]);
+  }, [isStatic, isDocked]);
 
+  /** Move drag - direct DOM update for zero-lag tracking */
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging || !dragStartRef.current) return;
+    if (!dragRef.current || !panelRef.current) return;
+    const pos = clampPosition(
+      e.clientX - dragRef.current.offsetX,
+      e.clientY - dragRef.current.offsetY
+    );
+    // Direct DOM update bypasses React for instant response
+    panelRef.current.style.left = `${pos.x}px`;
+    panelRef.current.style.top = `${pos.y}px`;
+  }, []);
 
-    const deltaX = e.clientX - dragStartRef.current.mouseX;
-    const deltaY = e.clientY - dragStartRef.current.mouseY;
-
-    onPositionChange(clampPosition(
-      dragStartRef.current.posX + deltaX,
-      dragStartRef.current.posY + deltaY
-    ));
-  }, [isDragging, onPositionChange]);
-
+  /** End drag - sync final position to React state */
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (!dragRef.current || !panelRef.current) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
+    // Sync final position to state for persistence
+    const pos = clampPosition(
+      e.clientX - dragRef.current.offsetX,
+      e.clientY - dragRef.current.offsetY
+    );
+    onPositionChange(pos);
     setIsDragging(false);
-    dragStartRef.current = null;
+    dragRef.current = null;
     onDragEnd();
-  }, [isDragging, onDragEnd]);
+  }, [onPositionChange, onDragEnd]);
 
   const panelVariants = isStatic
     ? BUDDY_LANDING_VARIANTS
