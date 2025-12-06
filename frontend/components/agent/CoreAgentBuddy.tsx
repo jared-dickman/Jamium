@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, type FormEvent } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Send } from 'lucide-react';
+import type { DockEdge, DockMode } from '@/lib/types/buddy.types';
 import { useIntervalEffect } from '@/lib/hooks/useIntervalEffect';
 import { useBuddyChat } from '@/lib/hooks/useBuddyChat';
+import { useBuddyPanelState, clampPosition, getDockedStyle } from '@/lib/hooks/useBuddyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RandomLoader } from '@/components/ui/loaders/RandomLoader';
@@ -28,23 +30,20 @@ import {
   BUDDY_PANEL_VARIANTS,
   BUDDY_GLOW_VARIANTS,
   BUDDY_MINIMIZED_VARIANTS,
-  BUDDY_POSITION_STORAGE_KEY,
-  BUDDY_MINIMIZED_STORAGE_KEY,
-  BUDDY_STATE_DEBOUNCE_MS,
-  BUDDY_DEFAULT_POSITION,
   BUDDY_AUTOFOCUS_DELAY_MS,
   BUDDY_ENTRANCE_DELAY_MS,
   BUDDY_FIRST_LOAD_DELAY_MS,
   BUDDY_DEFAULT_PLACEHOLDER,
   BUDDY_PANEL_WIDTH,
   BUDDY_PANEL_HEIGHT,
-  BUDDY_EDGE_PADDING,
   BUDDY_HEADER_HEIGHT,
   BUDDY_INPUT_PLACEHOLDER,
   BUDDY_ICON_GLOW_ANIMATION,
   BUDDY_ICON_GLOW_TRANSITION,
   BUDDY_SCROLL_CONTAINER_CLASS,
   BUDDY_GRADIENT_ICON_BOX,
+  BUDDY_DOCK_SPRING,
+  BUDDY_DOCKED_HEIGHT,
 } from '@/lib/constants/buddy.constants';
 
 interface CoreAgentBuddyProps {
@@ -54,43 +53,6 @@ interface CoreAgentBuddyProps {
   onboarding?: OnboardingState;
 }
 
-function clampPosition(x: number, y: number): { x: number; y: number } {
-  if (typeof window === 'undefined') return { x, y };
-  return {
-    x: Math.max(BUDDY_EDGE_PADDING, Math.min(x, window.innerWidth - BUDDY_PANEL_WIDTH - BUDDY_EDGE_PADDING)),
-    y: Math.max(BUDDY_EDGE_PADDING, Math.min(y, window.innerHeight - BUDDY_PANEL_HEIGHT - BUDDY_EDGE_PADDING)),
-  };
-}
-
-function getCenteredPosition(): { x: number; y: number } {
-  if (typeof window === 'undefined') return { x: 100, y: 100 };
-  return clampPosition(
-    Math.round((window.innerWidth - BUDDY_PANEL_WIDTH) / 2),
-    Math.round((window.innerHeight - BUDDY_PANEL_HEIGHT) / 2)
-  );
-}
-
-function loadSavedPosition(): { x: number; y: number } {
-  if (typeof window === 'undefined') return getCenteredPosition();
-  try {
-    const saved = localStorage.getItem(BUDDY_POSITION_STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved) as { x: number; y: number };
-      return clampPosition(parsed.x, parsed.y);
-    }
-  } catch { /* Invalid JSON */ }
-  return getCenteredPosition();
-}
-
-function loadSavedMinimized(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    return localStorage.getItem(BUDDY_MINIMIZED_STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
 export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, onboarding }: CoreAgentBuddyProps) {
   const { context, isOpen, setIsOpen, expandSignal } = useBuddy();
   const isOnboarding = !!onboarding;
@@ -98,24 +60,18 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
 
   const chat = useBuddyChat({ context, onSave });
   const inputRef = useRef<HTMLInputElement>(null);
-  const minimizedSaveTimeoutRef = useRef<NodeJS.Timeout>(undefined);
 
-  const [isMinimized, setIsMinimizedInternal] = useState(false);
+  // Consolidated panel state (position, dock, minimize) with localStorage persistence
+  const {
+    position, setPosition, isMinimized, setIsMinimized,
+    dockMode, dockEdge, setDockEdge, handleToggleDock, handleDragEnd, isDocked
+  } = useBuddyPanelState(isStatic);
+
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isReady, setIsReady] = useState(false);
-  const [position, setPosition] = useState(BUDDY_DEFAULT_POSITION);
   const [currentPlaceholder, setCurrentPlaceholder] = useState(() =>
     selectRandomWithFallback(placeholders, BUDDY_DEFAULT_PLACEHOLDER)
   );
-
-  // Debounced minimized state setter
-  const setIsMinimized = useCallback((minimized: boolean) => {
-    setIsMinimizedInternal(minimized);
-    if (minimizedSaveTimeoutRef.current) clearTimeout(minimizedSaveTimeoutRef.current);
-    minimizedSaveTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(BUDDY_MINIMIZED_STORAGE_KEY, String(minimized));
-    }, BUDDY_STATE_DEBOUNCE_MS);
-  }, []);
 
   const displayMessages = isOnboarding ? (onboarding?.messages as BuddyMessage[]) : chat.messages;
   const displayLoading = isOnboarding ? onboarding?.isLoading : chat.isLoading;
@@ -129,26 +85,12 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    setPosition(loadSavedPosition());
-    // Static/onboarding mode: always start expanded
-    setIsMinimizedInternal(isStatic ? false : loadSavedMinimized());
-  }, [isStatic]);
-
   // Expand when explicitly summoned (button/shortcut)
   useEffect(() => {
     if (expandSignal > 0) {
       setIsMinimized(false);
     }
   }, [expandSignal, setIsMinimized]);
-
-  const positionSaveTimeoutRef = useRef<NodeJS.Timeout>(undefined);
-  const handleDragEnd = useCallback(() => {
-    if (positionSaveTimeoutRef.current) clearTimeout(positionSaveTimeoutRef.current);
-    positionSaveTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(BUDDY_POSITION_STORAGE_KEY, JSON.stringify(position));
-    }, BUDDY_STATE_DEBOUNCE_MS);
-  }, [position]);
 
   const handleAnimationComplete = useCallback(() => {
     if (isFirstLoad) {
@@ -219,6 +161,8 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
             isMinimized={isMinimized}
             isFirstLoad={isFirstLoad}
             position={position}
+            dockMode={dockMode}
+            dockEdge={dockEdge}
             displayMessages={displayMessages}
             displayLoading={displayLoading}
             displayThinking={displayThinking}
@@ -235,6 +179,8 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
             onDragEnd={handleDragEnd}
             onMinimize={() => setIsMinimized(!isMinimized)}
             onClose={() => setIsOpen(false)}
+            onToggleDock={handleToggleDock}
+            onSelectEdge={setDockEdge}
             onSkip={onboarding?.skip}
             onAnimationComplete={handleAnimationComplete}
             onSelectSuggestion={chat.selectSuggestion}
@@ -344,6 +290,8 @@ interface DesktopPanelProps {
   isMinimized: boolean;
   isFirstLoad: boolean;
   position: { x: number; y: number };
+  dockMode: DockMode;
+  dockEdge: DockEdge;
   displayMessages: BuddyMessage[];
   displayLoading?: boolean;
   displayThinking?: boolean;
@@ -360,6 +308,8 @@ interface DesktopPanelProps {
   onDragEnd: () => void;
   onMinimize: () => void;
   onClose: () => void;
+  onToggleDock: () => void;
+  onSelectEdge: (edge: DockEdge) => void;
   onSkip?: () => void;
   onAnimationComplete: () => void;
   onSelectSuggestion: (suggestion: { artist: string; title: string }) => void;
@@ -367,22 +317,20 @@ interface DesktopPanelProps {
 }
 
 function DesktopPanel({
-  context, isStatic, isOnboarding, isMinimized, isFirstLoad, position,
+  context, isStatic, isOnboarding, isMinimized, isFirstLoad, position, dockMode, dockEdge,
   displayMessages, displayLoading, displayThinking, displayInput, input, isLoading, isSaving,
   thinkingPun, placeholder, inputRef, onInputChange, onSubmit, onPositionChange, onDragEnd,
-  onMinimize, onClose, onSkip, onAnimationComplete, onSelectSuggestion, onSelectResult
+  onMinimize, onClose, onToggleDock, onSelectEdge, onSkip, onAnimationComplete, onSelectSuggestion, onSelectResult
 }: DesktopPanelProps) {
-  // Manual drag state - no Framer Motion drag (which fights with position state)
+  const isDocked = dockMode === 'docked';
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ mouseX: number; mouseY: number; posX: number; posY: number } | null>(null);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (isStatic) return;
-    // Don't drag if clicking on interactive elements (buttons, inputs, etc.)
+    if (isStatic || isDocked) return;
     const target = e.target as HTMLElement;
     if (target.closest('button, input, a, [role="button"]')) return;
 
-    // Only drag from header area
     const rect = e.currentTarget.getBoundingClientRect();
     const relativeY = e.clientY - rect.top;
     if (relativeY > BUDDY_HEADER_HEIGHT) return;
@@ -395,7 +343,7 @@ function DesktopPanel({
       posX: position.x,
       posY: position.y,
     };
-  }, [isStatic, position.x, position.y]);
+  }, [isStatic, isDocked, position.x, position.y]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!isDragging || !dragStartRef.current) return;
@@ -417,14 +365,30 @@ function DesktopPanel({
     onDragEnd();
   }, [isDragging, onDragEnd]);
 
-  // Landing page: elegant rise animation after cinematic intro
-  // First load (from button): dramatic emerge from top-right
-  // Regular: standard panel animation
   const panelVariants = isStatic
     ? BUDDY_LANDING_VARIANTS
     : isFirstLoad
       ? BUDDY_FIRST_LOAD_VARIANTS
       : BUDDY_PANEL_VARIANTS;
+
+  const panelStyle = useMemo<React.CSSProperties>(() => {
+    if (isStatic) {
+      return {
+        touchAction: 'none',
+        left: `calc(50% - ${BUDDY_PANEL_WIDTH / 2}px)`,
+        top: `calc(50% - ${BUDDY_PANEL_HEIGHT / 2}px)`,
+      };
+    }
+    if (isDocked) {
+      return { touchAction: 'none', ...getDockedStyle(dockEdge) };
+    }
+    return {
+      touchAction: 'none',
+      left: position.x,
+      top: position.y,
+      cursor: isDragging ? 'grabbing' : undefined,
+    };
+  }, [isStatic, isDocked, dockEdge, position.x, position.y, isDragging]);
 
   return (
     <motion.div
@@ -438,35 +402,37 @@ function DesktopPanel({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       className={cn('fixed z-[60] isolate', isStatic ? 'block' : 'hidden md:block')}
-      style={{
-        touchAction: 'none',
-        left: isStatic ? `calc(50% - ${BUDDY_PANEL_WIDTH / 2}px)` : position.x,
-        top: isStatic ? `calc(50% - ${BUDDY_PANEL_HEIGHT / 2}px)` : position.y,
-        cursor: isDragging ? 'grabbing' : undefined,
-      }}
+      style={panelStyle}
+      layout
+      transition={BUDDY_DOCK_SPRING}
     >
       <GlowEffects isFirstLoad={isFirstLoad} />
 
       <motion.div
-        variants={BUDDY_MINIMIZED_VARIANTS}
+        variants={isDocked ? undefined : BUDDY_MINIMIZED_VARIANTS}
         animate={isMinimized ? 'minimized' : 'open'}
         className={cn(
-          'rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95',
+          'overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95',
           'backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50',
+          isDocked ? 'rounded-none h-full w-full flex flex-col' : 'rounded-2xl',
           isMinimized && 'cursor-pointer',
           isFirstLoad && 'ring-2 ring-blue-500/50 ring-offset-2 ring-offset-transparent'
         )}
         onClick={isMinimized ? () => onMinimize() : undefined}
       >
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 opacity-50 blur-sm -z-10" />
+        {!isDocked && <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 opacity-50 blur-sm -z-10" />}
 
         <BuddyHeader
           context={context}
           isStatic={isStatic}
           isOnboarding={isOnboarding}
           isMinimized={isMinimized}
+          dockMode={dockMode}
+          dockEdge={dockEdge}
           onMinimize={onMinimize}
           onClose={onClose}
+          onToggleDock={onToggleDock}
+          onSelectEdge={onSelectEdge}
           onSkip={onSkip}
         />
 
@@ -474,11 +440,11 @@ function DesktopPanel({
           {!isMinimized && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 560 }}
+              animate={{ opacity: 1, height: isDocked ? 'auto' : 560 }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex flex-col"
+              className={cn('flex flex-col', isDocked && 'flex-1')}
             >
-              {!isOnboarding && !isStatic && <BuddyNavBar onNavigate={onClose} />}
+              {!isOnboarding && <BuddyNavBar onNavigate={onClose} />}
 
               <div className={BUDDY_SCROLL_CONTAINER_CLASS}>
                 <BuddyMessageList

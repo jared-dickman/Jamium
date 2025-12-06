@@ -5,13 +5,10 @@
 export const pageRoutes = {
   home: '/',
   repertoire: '/repertoire',
-  songwriter: '/songwriter',
   jam: '/jam',
-  studio: '/studio',
   metronome: '/metronome',
   musicTheory: '/music-theory',
   composer: '/composer',
-  pedalboard: '/pedalboard',
 } as const;
 
 /** Routes Buddy can navigate to with descriptions */

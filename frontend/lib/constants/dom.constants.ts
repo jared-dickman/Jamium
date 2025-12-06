@@ -4,7 +4,6 @@ export const TAB_SELECTOR = {
 } as const;
 
 export const LOCAL_STORAGE_KEYS = {
-  PANEL_LAYOUT: 'songwriterPanelLayout',
   THEME: 'theme',
   USER_PREFERENCES: 'userPreferences',
 } as const;

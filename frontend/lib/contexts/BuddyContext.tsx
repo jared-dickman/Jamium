@@ -12,10 +12,7 @@ type PageContext =
   | 'jam'
   | 'composer'
   | 'theory'
-  | 'metronome'
-  | 'songwriter'
-  | 'studio'
-  | 'pedalboard';
+  | 'metronome';
 
 interface BuddyContextState {
   page: PageContext;
@@ -51,9 +48,6 @@ function derivePageFromPathname(pathname: string): PageContext {
   if (pathname === '/composer') return 'composer';
   if (pathname === '/music-theory') return 'theory';
   if (pathname === '/metronome') return 'metronome';
-  if (pathname === '/songwriter') return 'songwriter';
-  if (pathname === '/studio') return 'studio';
-  if (pathname === '/pedalboard') return 'pedalboard';
   return 'library';
 }
 
