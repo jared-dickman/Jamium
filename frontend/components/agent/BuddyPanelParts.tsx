@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, type FormEvent, type RefObject } from 'react';
+import { useState, useRef, useEffect, memo, useCallback, type FormEvent, type RefObject } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Minimize2, Maximize2, GripHorizontal, PanelRight, Maximize, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
@@ -85,55 +85,64 @@ function EdgePicker({ currentEdge, onSelectEdge, onClose }: EdgePickerProps) {
   );
 }
 
-interface DockToggleProps {
+const HEADER_BUTTON_CLASS = 'h-7 w-7 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors';
+
+/** Collapse/expand floating panel */
+function MinimizeButton({ isMinimized, onMinimize }: { isMinimized: boolean; onMinimize: () => void }) {
+  const Icon = isMinimized ? Maximize2 : Minimize2;
+  const title = isMinimized ? 'Expand' : 'Collapse';
+  return (
+    <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onMinimize(); }} title={title}>
+      <Icon className="h-3.5 w-3.5" />
+    </Button>
+  );
+}
+
+/** Dock to edge or float freely */
+const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, onSelectEdge }: {
   dockMode: DockMode;
   dockEdge: DockEdge;
   onToggleDock: () => void;
   onSelectEdge: (edge: DockEdge) => void;
-}
-
-function DockToggle({ dockMode, dockEdge, onToggleDock, onSelectEdge }: DockToggleProps) {
+}) {
   const [showPicker, setShowPicker] = useState(false);
   const isDocked = dockMode === 'docked';
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isDocked) {
-      onToggleDock();
-    } else {
-      setShowPicker(true);
-    }
-  };
+    isDocked ? onToggleDock() : setShowPicker(true);
+  }, [isDocked, onToggleDock]);
+
+  const handleSelectEdge = useCallback((edge: DockEdge) => {
+    onSelectEdge(edge);
+    if (!isDocked) onToggleDock();
+    setShowPicker(false);
+  }, [isDocked, onSelectEdge, onToggleDock]);
+
+  const Icon = isDocked ? Maximize : PanelRight;
+  const title = isDocked ? 'Float freely' : 'Dock to edge';
 
   return (
     <Popover open={showPicker} onOpenChange={setShowPicker}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={HEADER_BUTTON_CLASS}
-          onClick={handleClick}
-          title={isDocked ? 'Float freely' : 'Dock to edge'}
-        >
-          {isDocked ? <Maximize className="h-3.5 w-3.5" /> : <PanelRight className="h-3.5 w-3.5" />}
+        <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={handleClick} title={title}>
+          <Icon className="h-3.5 w-3.5" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        side="bottom"
-        align="center"
-        className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10 z-[100]"
-      >
+      <PopoverContent side="bottom" align="center" className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10 z-[100]">
         <div className="text-[10px] text-white/50 text-center mb-2 uppercase tracking-wider">Pick edge</div>
-        <EdgePicker
-          currentEdge={dockEdge}
-          onSelectEdge={(edge) => {
-            onSelectEdge(edge);
-            if (!isDocked) onToggleDock();
-          }}
-          onClose={() => setShowPicker(false)}
-        />
+        <EdgePicker currentEdge={dockEdge} onSelectEdge={handleSelectEdge} onClose={() => setShowPicker(false)} />
       </PopoverContent>
     </Popover>
+  );
+});
+
+/** Close panel */
+function CloseButton({ onClose }: { onClose: () => void }) {
+  return (
+    <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onClose(); }} title="Close">
+      <X className="h-3.5 w-3.5" />
+    </Button>
   );
 }
 
@@ -151,7 +160,6 @@ interface BuddyHeaderProps {
   onSelectEdge: (edge: DockEdge) => void;
 }
 
-const HEADER_BUTTON_CLASS = 'h-7 w-7 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors';
 const RESULT_LABEL_CLASS = 'text-[9px] uppercase tracking-widest text-white/40 mb-1';
 
 function ResultSection({ label, results, type, onSelect, disabled }: {
@@ -180,28 +188,16 @@ function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, dockMode, do
       </Button>
     );
   }
-
   if (isStatic) return null;
 
   const isDocked = dockMode === 'docked';
 
   return (
     <div className="flex items-center gap-0.5">
-      <DockToggle
-        dockMode={dockMode}
-        dockEdge={dockEdge}
-        onToggleDock={onToggleDock}
-        onSelectEdge={onSelectEdge}
-      />
-      <div className="w-px h-4 bg-white/10 mx-1" />
-      {!isDocked && (
-        <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onMinimize(); }}>
-          {isMinimized ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
-        </Button>
-      )}
-      <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onClose(); }}>
-        <X className="h-3.5 w-3.5" />
-      </Button>
+      <div className="w-px h-4 bg-white/10 mr-1" />
+      {!isMinimized && <DockButton dockMode={dockMode} dockEdge={dockEdge} onToggleDock={onToggleDock} onSelectEdge={onSelectEdge} />}
+      {!isDocked && <MinimizeButton isMinimized={isMinimized} onMinimize={onMinimize} />}
+      <CloseButton onClose={onClose} />
     </div>
   );
 }
@@ -243,7 +239,7 @@ export function BuddyNavBar({ onNavigate }: BuddyNavBarProps) {
   };
 
   return (
-    <nav className="relative border-b border-white/5 bg-white/[0.02]">
+    <nav className="relative shrink-0 border-b border-white/5 bg-white/[0.02]">
       <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-slate-900/95 to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-slate-900/95 to-transparent z-10 pointer-events-none" />
       <div className="flex items-center justify-center gap-0.5 px-4 py-2 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -383,7 +379,7 @@ interface BuddyInputProps {
 
 export function BuddyInput({ input, isLoading, isSaving, isOnboarding, typingText, inputRef, onInputChange, onSubmit }: BuddyInputProps) {
   return (
-    <form onSubmit={onSubmit} data-buddy-form className="px-4 py-3 border-t border-white/5">
+    <form onSubmit={onSubmit} data-buddy-form className="shrink-0 px-4 py-3 border-t border-white/5">
       <div className="flex gap-2">
         {isOnboarding ? (
           <div className="flex-1 h-9 bg-white/5 border border-white/10 rounded-lg px-3 flex items-center text-xs text-white/80">

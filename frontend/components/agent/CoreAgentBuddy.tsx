@@ -62,10 +62,9 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Consolidated panel state (position, dock, minimize) with localStorage persistence
-  const {
-    position, setPosition, isMinimized, setIsMinimized,
-    dockMode, dockEdge, setDockEdge, handleToggleDock, handleDragEnd, isDocked
-  } = useBuddyPanelState(isStatic);
+  const { state: panelState, actions: panelActions } = useBuddyPanelState(isStatic);
+  const { position, isMinimized, dockMode, dockEdge, isDocked } = panelState;
+  const { setPosition, setIsMinimized, setDockEdge, handleToggleDock, handleDragEnd } = panelActions;
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isReady, setIsReady] = useState(false);
@@ -388,8 +387,12 @@ function DesktopPanel({
     };
   }, [isStatic, isDocked, dockEdge, position.x, position.y, isDragging]);
 
+  // Key forces remount when dock edge changes → instant correct dimensions
+  const panelKey = isDocked ? `docked-${dockEdge}` : 'floating';
+
   return (
     <motion.div
+      key={panelKey}
       variants={panelVariants}
       initial="closed"
       animate="open"
@@ -406,7 +409,7 @@ function DesktopPanel({
           : 'hidden md:block'
       )}
       style={panelStyle}
-      layout
+      layout={!isDocked}
       transition={BUDDY_DOCK_SPRING}
     >
       <GlowEffects isFirstLoad={isFirstLoad} />
@@ -447,11 +450,11 @@ function DesktopPanel({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: (isDocked || isStatic) ? 'auto' : 560 }}
               exit={{ opacity: 0, height: 0 }}
-              className={cn('flex flex-col', (isDocked || isStatic) && 'flex-1')}
+              className={cn('flex flex-col min-h-0 overflow-hidden', (isDocked || isStatic) && 'flex-1')}
             >
               {!isOnboarding && <BuddyNavBar onNavigate={onClose} />}
 
-              <div className={BUDDY_SCROLL_CONTAINER_CLASS}>
+              <div className={cn(BUDDY_SCROLL_CONTAINER_CLASS, 'min-h-0')}>
                 <BuddyMessageList
                   messages={displayMessages}
                   isLoading={displayLoading ?? false}
