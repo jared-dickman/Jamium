@@ -51,7 +51,7 @@ export function getDockedStyle(edge: DockEdge): React.CSSProperties {
   return {
     [edge]: 0,
     ...(isHorizontal
-      ? { left: 0, width: '100vw', height: '28vh', maxHeight: 320 }
+      ? { left: 0, width: '100vw', height: '35vh', maxHeight: 400 }
       : { top: 0, height: '100vh', width: BUDDY_PANEL_WIDTH }),
   };
 }
@@ -87,61 +87,78 @@ export interface BuddyPanelActions {
   handleDragEnd: () => void;
 }
 
+/** Get initial state - called once per mount */
+function getInitialState(isStatic: boolean) {
+  const saved = loadSavedState();
+  return {
+    position: saved.position,
+    cachedFloatPosition: saved.position,
+    isMinimized: isStatic ? false : saved.minimized,
+    dockMode: isStatic ? 'floating' as DockMode : saved.dockMode,
+    dockEdge: saved.dockEdge,
+  };
+}
+
 /** Hook for all buddy panel state with persistence */
 export function useBuddyPanelState(isStatic: boolean): { state: BuddyPanelState; actions: BuddyPanelActions } {
-  const [position, setPositionInternal] = useState(BUDDY_DEFAULT_POSITION);
-  const [cachedFloatPosition, setCachedFloatPosition] = useState(BUDDY_DEFAULT_POSITION);
-  const [isMinimized, setIsMinimizedInternal] = useState(false);
-  const [dockMode, setDockModeInternal] = useState<DockMode>(BUDDY_DEFAULT_DOCK_MODE);
-  const [dockEdge, setDockEdgeInternal] = useState<DockEdge>(BUDDY_DEFAULT_DOCK_EDGE);
+  // Single lazy load from localStorage
+  const initRef = useRef<ReturnType<typeof getInitialState> | null>(null);
+  if (!initRef.current) initRef.current = getInitialState(isStatic);
+  const init = initRef.current;
+
+  const [position, setPositionInternal] = useState(init.position);
+  const [cachedFloatPosition, setCachedFloatPosition] = useState(init.cachedFloatPosition);
+  const [isMinimized, setIsMinimizedInternal] = useState(init.isMinimized);
+  const [dockMode, setDockModeInternal] = useState<DockMode>(init.dockMode);
+  const [dockEdge, setDockEdgeInternal] = useState<DockEdge>(init.dockEdge);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout>(undefined);
 
-  // Load saved state on mount
-  useEffect(() => {
-    const saved = loadSavedState();
-    setPositionInternal(saved.position);
-    setCachedFloatPosition(saved.position);
-    setIsMinimizedInternal(isStatic ? false : saved.minimized);
-    setDockModeInternal(isStatic ? 'floating' : saved.dockMode);
-    setDockEdgeInternal(saved.dockEdge);
-  }, [isStatic]);
+  // Refs for stable access in callbacks
+  const positionRef = useRef(position);
+  const cachedFloatRef = useRef(cachedFloatPosition);
+  useEffect(() => { positionRef.current = position; }, [position]);
+  useEffect(() => { cachedFloatRef.current = cachedFloatPosition; }, [cachedFloatPosition]);
 
-  // Debounced persist helper
-  const persistDebounced = useCallback((key: string, value: unknown) => {
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
-    }, BUDDY_STATE_DEBOUNCE_MS);
+  /** Persist immediately (for user actions like dock/minimize) */
+  const persistNow = useCallback((key: string, value: unknown) => {
+    localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
   }, []);
 
-  // Stable actions object - memoized to prevent consumer re-renders
+  /** Persist debounced (for frequent updates like drag) */
+  const persistDebounced = useCallback((key: string, value: unknown) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => persistNow(key, value), BUDDY_STATE_DEBOUNCE_MS);
+  }, [persistNow]);
+
+  // Stable actions object
   const actions = useMemo<BuddyPanelActions>(() => ({
     setPosition: (pos: { x: number; y: number }) => setPositionInternal(pos),
     setIsMinimized: (minimized: boolean) => {
       setIsMinimizedInternal(minimized);
-      persistDebounced(BUDDY_MINIMIZED_STORAGE_KEY, minimized);
+      persistNow(BUDDY_MINIMIZED_STORAGE_KEY, minimized);
     },
     setDockEdge: (edge: DockEdge) => {
       setDockEdgeInternal(edge);
-      persistDebounced(BUDDY_DOCK_EDGE_STORAGE_KEY, edge);
+      persistNow(BUDDY_DOCK_EDGE_STORAGE_KEY, edge);
     },
     handleToggleDock: () => {
       setDockModeInternal(prev => {
         if (prev === 'floating') {
-          setCachedFloatPosition(position);
+          setCachedFloatPosition(positionRef.current);
+          persistNow(BUDDY_POSITION_STORAGE_KEY, positionRef.current);
           setIsMinimizedInternal(false);
-          persistDebounced(BUDDY_DOCK_MODE_STORAGE_KEY, 'docked');
+          persistNow(BUDDY_DOCK_MODE_STORAGE_KEY, 'docked');
           return 'docked';
         } else {
-          setPositionInternal(cachedFloatPosition);
-          persistDebounced(BUDDY_DOCK_MODE_STORAGE_KEY, 'floating');
+          setPositionInternal(cachedFloatRef.current);
+          persistNow(BUDDY_DOCK_MODE_STORAGE_KEY, 'floating');
           return 'floating';
         }
       });
     },
-    handleDragEnd: () => persistDebounced(BUDDY_POSITION_STORAGE_KEY, position),
-  }), [persistDebounced, position, cachedFloatPosition]);
+    handleDragEnd: () => persistDebounced(BUDDY_POSITION_STORAGE_KEY, positionRef.current),
+  }), [persistNow, persistDebounced]);
 
   // Stable state object - derived isDocked inside
   const state = useMemo<BuddyPanelState>(() => ({

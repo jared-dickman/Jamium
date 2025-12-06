@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, memo, useCallback, type FormEvent, type RefObject } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Minimize2, Maximize2, GripHorizontal, PanelRight, Maximize, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
+import { Bot, X, Minimize2, Maximize2, GripHorizontal, PanelRight, Move, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -119,7 +119,7 @@ const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, 
     setShowPicker(false);
   }, [isDocked, onSelectEdge, onToggleDock]);
 
-  const Icon = isDocked ? Maximize : PanelRight;
+  const Icon = isDocked ? Move : PanelRight;
   const title = isDocked ? 'Float freely' : 'Dock to edge';
 
   return (
