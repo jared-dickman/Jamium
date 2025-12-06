@@ -1,14 +1,15 @@
 'use client';
 
-import { useRef, useEffect, type FormEvent, type RefObject } from 'react';
+import { useState, useRef, useEffect, type FormEvent, type RefObject } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Minimize2, Maximize2, GripHorizontal, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
+import { Bot, X, Minimize2, Maximize2, GripHorizontal, PanelRight, Maximize, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { RandomLoader } from '@/components/ui/loaders/RandomLoader';
 import { cn } from '@/lib/utils';
-import type { BuddyMessage, Suggestion } from '@/lib/types/buddy.types';
+import type { BuddyMessage, Suggestion, DockEdge, DockMode } from '@/lib/types/buddy.types';
 import type { SearchResult } from '@/lib/types';
 import {
   ContextChip,
@@ -26,6 +27,8 @@ import {
   BUDDY_GRADIENT_ICON_BOX,
   BUDDY_GRADIENT_USER_MSG,
   BUDDY_GRADIENT_SEND_BTN,
+  BUDDY_EDGE_PICKER_VARIANTS,
+  BUDDY_EDGE_PICKER_CONTAINER,
 } from '@/lib/constants/buddy.constants';
 
 const NAV_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -35,17 +38,120 @@ const NAV_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   waveform: AudioWaveform, turntable: Turntable,
 };
 
+const EDGE_ARROWS: { edge: DockEdge; Icon: typeof ChevronUp; position: string }[] = [
+  { edge: 'top', Icon: ChevronUp, position: 'top-0 left-1/2 -translate-x-1/2' },
+  { edge: 'bottom', Icon: ChevronDown, position: 'bottom-0 left-1/2 -translate-x-1/2' },
+  { edge: 'left', Icon: ChevronLeft, position: 'left-0 top-1/2 -translate-y-1/2' },
+  { edge: 'right', Icon: ChevronRight, position: 'right-0 top-1/2 -translate-y-1/2' },
+];
+
+interface EdgePickerProps {
+  currentEdge: DockEdge;
+  onSelectEdge: (edge: DockEdge) => void;
+  onClose: () => void;
+}
+
+function EdgePicker({ currentEdge, onSelectEdge, onClose }: EdgePickerProps) {
+  return (
+    <motion.div
+      variants={BUDDY_EDGE_PICKER_CONTAINER}
+      initial="hidden"
+      animate="visible"
+      className="relative w-20 h-20"
+    >
+      {/* Center dot */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg shadow-blue-500/30" />
+
+      {/* Directional arrows */}
+      {EDGE_ARROWS.map(({ edge, Icon, position }) => (
+        <motion.button
+          key={edge}
+          variants={BUDDY_EDGE_PICKER_VARIANTS}
+          onClick={() => { onSelectEdge(edge); onClose(); }}
+          className={cn(
+            'absolute p-1.5 rounded-lg transition-all duration-150',
+            position,
+            currentEdge === edge
+              ? 'bg-gradient-to-br from-blue-500/40 to-purple-500/40 text-white scale-110'
+              : 'text-white/50 hover:text-white hover:bg-white/10 hover:scale-110'
+          )}
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Icon className="h-4 w-4" />
+        </motion.button>
+      ))}
+    </motion.div>
+  );
+}
+
+interface DockToggleProps {
+  dockMode: DockMode;
+  dockEdge: DockEdge;
+  onToggleDock: () => void;
+  onSelectEdge: (edge: DockEdge) => void;
+}
+
+function DockToggle({ dockMode, dockEdge, onToggleDock, onSelectEdge }: DockToggleProps) {
+  const [showPicker, setShowPicker] = useState(false);
+  const isDocked = dockMode === 'docked';
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDocked) {
+      onToggleDock();
+    } else {
+      setShowPicker(true);
+    }
+  };
+
+  return (
+    <Popover open={showPicker} onOpenChange={setShowPicker}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={HEADER_BUTTON_CLASS}
+          onClick={handleClick}
+          title={isDocked ? 'Float freely' : 'Dock to edge'}
+        >
+          {isDocked ? <Maximize className="h-3.5 w-3.5" /> : <PanelRight className="h-3.5 w-3.5" />}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="center"
+        className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10"
+      >
+        <div className="text-[10px] text-white/50 text-center mb-2 uppercase tracking-wider">Pick edge</div>
+        <EdgePicker
+          currentEdge={dockEdge}
+          onSelectEdge={(edge) => {
+            onSelectEdge(edge);
+            if (!isDocked) onToggleDock();
+          }}
+          onClose={() => setShowPicker(false)}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 interface BuddyHeaderProps {
   context: { page: string; artist?: string; song?: string };
   isStatic: boolean;
   isOnboarding: boolean;
   isMinimized: boolean;
+  dockMode: DockMode;
+  dockEdge: DockEdge;
   onMinimize: () => void;
   onClose: () => void;
   onSkip?: () => void;
+  onToggleDock: () => void;
+  onSelectEdge: (edge: DockEdge) => void;
 }
 
-const HEADER_BUTTON_CLASS = 'h-6 w-6 text-white/40 hover:text-white/80 hover:bg-white/10';
+const HEADER_BUTTON_CLASS = 'h-7 w-7 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors';
 const RESULT_LABEL_CLASS = 'text-[9px] uppercase tracking-widest text-white/40 mb-1';
 
 function ResultSection({ label, results, type, onSelect, disabled }: {
@@ -66,7 +172,7 @@ function ResultSection({ label, results, type, onSelect, disabled }: {
   );
 }
 
-function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, onMinimize, onClose, onSkip }: Omit<BuddyHeaderProps, 'context'>) {
+function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }: Omit<BuddyHeaderProps, 'context'>) {
   if (isOnboarding) {
     return (
       <Button variant="outline" size="sm" className="h-6 px-2 text-xs text-white/40 hover:text-white/80 hover:bg-white/10" onClick={onSkip}>
@@ -77,23 +183,35 @@ function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, onMinimize, 
 
   if (isStatic) return null;
 
+  const isDocked = dockMode === 'docked';
+
   return (
-    <div className="flex items-center gap-1">
-      <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onMinimize(); }}>
-        {isMinimized ? <Maximize2 className="h-3 w-3" /> : <Minimize2 className="h-3 w-3" />}
-      </Button>
+    <div className="flex items-center gap-0.5">
+      <DockToggle
+        dockMode={dockMode}
+        dockEdge={dockEdge}
+        onToggleDock={onToggleDock}
+        onSelectEdge={onSelectEdge}
+      />
+      <div className="w-px h-4 bg-white/10 mx-1" />
+      {!isDocked && (
+        <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onMinimize(); }}>
+          {isMinimized ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
+        </Button>
+      )}
       <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onClose(); }}>
-        <X className="h-3 w-3" />
+        <X className="h-3.5 w-3.5" />
       </Button>
     </div>
   );
 }
 
-export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, onMinimize, onClose, onSkip }: BuddyHeaderProps) {
+export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }: BuddyHeaderProps) {
+  const isDocked = dockMode === 'docked';
   return (
-    <div className={cn('flex items-center justify-between px-4 py-3 border-b border-white/5 select-none', !isStatic && 'cursor-grab active:cursor-grabbing')}>
+    <div className={cn('flex items-center justify-between px-4 py-3 border-b border-white/5 select-none', !isStatic && !isDocked && 'cursor-grab active:cursor-grabbing')}>
       <div className="flex items-center gap-2.5">
-        {!isStatic && <GripHorizontal className="h-4 w-4 text-white/20" />}
+        {!isStatic && !isDocked && <GripHorizontal className="h-4 w-4 text-white/15" />}
         <motion.div
           animate={BUDDY_ICON_GLOW_ANIMATION}
           transition={BUDDY_ICON_GLOW_TRANSITION}
@@ -106,7 +224,7 @@ export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, onMi
           {!isMinimized && !isStatic && <ContextChip />}
         </div>
       </div>
-      <BuddyHeaderControls {...{ isStatic, isOnboarding, isMinimized, onMinimize, onClose, onSkip }} />
+      <BuddyHeaderControls {...{ isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }} />
     </div>
   );
 }

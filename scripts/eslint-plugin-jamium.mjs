@@ -1,4 +1,4 @@
-moni// Custom ESLint plugin for Blogzilla-specific rules
+// Custom ESLint plugin for Jamium-specific rules
 // Handles JSX attribute validation that ast-grep struggles with
 
 export default {

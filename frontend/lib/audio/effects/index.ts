@@ -10,14 +10,6 @@ export type {
   DistortionPedalConfig,
 } from '@/lib/audio/effects/DistortionPedal';
 
-export { Pedalboard } from '@/lib/audio/effects/Pedalboard';
-export type { PedalSlot, PedalboardConfig } from '@/lib/audio/effects/Pedalboard';
-
-// Legendary guitarist preset chains
-export { loadLegendaryRig, getLegendaryRigs } from '@/lib/audio/effects/LegendaryRigs';
-export type { LegendaryRigConfig } from '@/lib/audio/effects/LegendaryRigs';
-export { LEGENDARY_RIGS } from '@/lib/audio/effects/LegendaryRigs';
-
 // Pizzicato-based effects
 export {
   DelayPedal,

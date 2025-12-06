@@ -4,6 +4,10 @@
 
 import type { SearchResult } from '@/lib/types';
 
+/** Dock feature types */
+export type DockEdge = 'top' | 'bottom' | 'left' | 'right';
+export type DockMode = 'floating' | 'docked';
+
 export interface Suggestion {
   artist: string;
   title: string;
