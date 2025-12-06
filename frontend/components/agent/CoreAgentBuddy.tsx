@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, useMemo, type FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Bot, X, Send } from 'lucide-react';
 import type { DockEdge, DockMode } from '@/lib/types/buddy.types';
 import { useIntervalEffect } from '@/lib/hooks/useIntervalEffect';
@@ -324,9 +324,20 @@ function DesktopPanel({
   const isDocked = dockMode === 'docked';
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ offsetX: number; offsetY: number } | null>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
-  /** Start drag - capture mouse offset from panel corner */
+  // Motion values for instant drag updates (bypasses React)
+  const motionX = useMotionValue(position.x);
+  const motionY = useMotionValue(position.y);
+
+  // Sync motion values when position prop changes (e.g., from localStorage)
+  useEffect(() => {
+    if (!isDragging) {
+      motionX.set(position.x);
+      motionY.set(position.y);
+    }
+  }, [position.x, position.y, isDragging, motionX, motionY]);
+
+  /** Start drag */
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (isStatic || isDocked) return;
     if ((e.target as HTMLElement).closest('button, input, a, [role="button"]')) return;
@@ -343,23 +354,21 @@ function DesktopPanel({
     };
   }, [isStatic, isDocked]);
 
-  /** Move drag - direct DOM update for zero-lag tracking */
+  /** Move drag - instant via motion values */
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragRef.current || !panelRef.current) return;
+    if (!dragRef.current) return;
     const pos = clampPosition(
       e.clientX - dragRef.current.offsetX,
       e.clientY - dragRef.current.offsetY
     );
-    // Direct DOM update bypasses React for instant response
-    panelRef.current.style.left = `${pos.x}px`;
-    panelRef.current.style.top = `${pos.y}px`;
-  }, []);
+    motionX.set(pos.x);
+    motionY.set(pos.y);
+  }, [motionX, motionY]);
 
-  /** End drag - sync final position to React state */
+  /** End drag */
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    if (!dragRef.current || !panelRef.current) return;
+    if (!dragRef.current) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
-    // Sync final position to state for persistence
     const pos = clampPosition(
       e.clientX - dragRef.current.offsetX,
       e.clientY - dragRef.current.offsetY
@@ -378,20 +387,13 @@ function DesktopPanel({
 
   const panelStyle = useMemo<React.CSSProperties>(() => {
     if (isStatic) {
-      // Mobile: full viewport handled by classes (inset-0)
-      // Desktop: centered with fixed dimensions
       return { touchAction: 'none' };
     }
     if (isDocked) {
       return { touchAction: 'none', ...getDockedStyle(dockEdge) };
     }
-    return {
-      touchAction: 'none',
-      left: position.x,
-      top: position.y,
-      cursor: isDragging ? 'grabbing' : undefined,
-    };
-  }, [isStatic, isDocked, dockEdge, position.x, position.y, isDragging]);
+    return { touchAction: 'none' };
+  }, [isStatic, isDocked, dockEdge]);
 
   // Key forces remount when dock edge changes → instant correct dimensions
   const panelKey = isDocked ? `docked-${dockEdge}` : 'floating';
@@ -414,8 +416,11 @@ function DesktopPanel({
           ? 'inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:h-[640px]'
           : 'hidden md:block'
       )}
-      style={panelStyle}
-      layout={!isDocked}
+      style={{
+        ...panelStyle,
+        ...(!isStatic && !isDocked ? { left: motionX, top: motionY } : {}),
+      }}
+      layout={!isDocked && !isDragging}
       transition={BUDDY_DOCK_SPRING}
     >
       <GlowEffects isFirstLoad={isFirstLoad} />
