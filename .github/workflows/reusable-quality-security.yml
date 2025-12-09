@@ -34,6 +34,9 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: 🔧 Build ast-grep native binary
+        run: pnpm rebuild @ast-grep/cli
+
       - name: 🔍 TypeScript type check
         run: pnpm run typecheck
 
