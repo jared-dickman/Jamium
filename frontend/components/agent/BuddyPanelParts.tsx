@@ -12,7 +12,6 @@ import { cn } from '@/lib/utils';
 import type { BuddyMessage, Suggestion, DockEdge, DockMode } from '@/lib/types/buddy.types';
 import type { SearchResult } from '@/lib/types';
 import {
-  ContextChip,
   SearchResultButton,
   StructuredBlock,
   EmptyState,
@@ -215,10 +214,7 @@ export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, dock
         >
           <Bot className="h-4 w-4 text-blue-400" />
         </motion.div>
-        <div className="flex flex-col">
-          <span className="font-semibold text-sm text-white/90">Buddy</span>
-          {!isMinimized && !isStatic && <ContextChip />}
-        </div>
+        <span className="font-semibold text-sm text-white/90">Buddy</span>
       </div>
       <BuddyHeaderControls {...{ isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }} />
     </div>
@@ -270,13 +266,12 @@ interface BuddyMessageListProps {
   isLoading: boolean;
   isThinking: boolean;
   thinkingPun: string;
-  placeholder: string;
   isSaving: boolean;
   onSelectSuggestion: (suggestion: Suggestion) => void;
   onSelectResult: (result: SearchResult, type: 'chord' | 'tab') => void;
 }
 
-export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun, placeholder, isSaving, onSelectSuggestion, onSelectResult }: BuddyMessageListProps) {
+export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun, isSaving, onSelectSuggestion, onSelectResult }: BuddyMessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isEmptyState = messages.length === 0;
 
@@ -291,7 +286,7 @@ export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun,
   return (
     <div className={BUDDY_SCROLL_CONTAINER_CLASS}>
       <AnimatePresence mode="wait">
-        {isEmptyState && !isLoading && <EmptyState placeholder={placeholder} />}
+        {isEmptyState && !isLoading && <EmptyState />}
       </AnimatePresence>
 
       {messages.map((message, i) => {

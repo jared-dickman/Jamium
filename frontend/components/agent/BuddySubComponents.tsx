@@ -8,7 +8,6 @@ import type { SearchResult } from '@/lib/types';
 import {
   BUDDY_DEFAULT_RATING,
   BUDDY_RATING_PRECISION,
-  BUDDY_EMPTY_STATE_SUBTITLE,
   STRUCTURED_DATA_TYPES,
 } from '@/lib/constants/buddy.constants';
 import placeholders from '@/lib/data/placeholders.json';
@@ -19,29 +18,6 @@ interface StructuredData {
 }
 
 const ROTATION_INTERVAL_MS = 8000; // 8 seconds - very slow rotation
-
-export function ContextChip() {
-  const [phraseIndex, setPhraseIndex] = useState(() => Math.floor(Math.random() * placeholders.length));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPhraseIndex(prev => (prev + 1) % placeholders.length);
-    }, ROTATION_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <motion.span
-      key={phraseIndex}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="text-[10px] text-white/50 font-mono lowercase tracking-wide"
-    >
-      {placeholders[phraseIndex]}
-    </motion.span>
-  );
-}
 
 export function SearchResultButton({
   result,
@@ -137,7 +113,16 @@ export function StructuredBlock({ data }: { data: StructuredData }) {
   return null;
 }
 
-export function EmptyState({ placeholder }: { placeholder: string }) {
+export function EmptyState() {
+  const [phraseIndex, setPhraseIndex] = useState(() => Math.floor(Math.random() * placeholders.length));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex(prev => (prev + 1) % placeholders.length);
+    }, ROTATION_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -159,16 +144,13 @@ export function EmptyState({ placeholder }: { placeholder: string }) {
         <Sparkles className="h-7 w-7 text-blue-400/80" />
       </motion.div>
       <motion.p
-        key={placeholder}
+        key={phraseIndex}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-sm text-white/70 font-medium max-w-[200px]"
+        className="text-sm text-white/70 font-medium max-w-[240px]"
       >
-        {placeholder}
+        {placeholders[phraseIndex]}
       </motion.p>
-      <p className="text-[10px] text-white/30 mt-2 max-w-[180px]">
-        {BUDDY_EMPTY_STATE_SUBTITLE}
-      </p>
     </motion.div>
   );
 }

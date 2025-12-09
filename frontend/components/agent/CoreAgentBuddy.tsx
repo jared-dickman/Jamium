@@ -4,27 +4,23 @@ import { useState, useRef, useEffect, useCallback, useMemo, type FormEvent } fro
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Bot, X, Send } from 'lucide-react';
 import type { DockEdge, DockMode } from '@/lib/types/buddy.types';
-import { useIntervalEffect } from '@/lib/hooks/useIntervalEffect';
 import { useBuddyChat } from '@/lib/hooks/useBuddyChat';
 import { useBuddyPanelState, clampPosition, getDockedStyle } from '@/lib/hooks/useBuddyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RandomLoader } from '@/components/ui/loaders/RandomLoader';
-import { cn, selectRandomWithFallback } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useBuddy } from '@/lib/contexts/BuddyContext';
 import type { SearchResult } from '@/lib/types';
 import type { BuddyMessage } from '@/lib/types/buddy.types';
 import type { OnboardingState } from '@/lib/hooks/useOnboardingDemo';
-import placeholders from '@/lib/data/placeholders.json';
 import {
   BuddyHeader,
   BuddyNavBar,
   BuddyMessageList,
   BuddyInput,
 } from '@/components/agent/BuddyPanelParts';
-import { ContextChip } from '@/components/agent/BuddySubComponents';
 import {
-  BUDDY_PLACEHOLDER_INTERVAL_MS,
   BUDDY_FIRST_LOAD_VARIANTS,
   BUDDY_LANDING_VARIANTS,
   BUDDY_PANEL_VARIANTS,
@@ -33,9 +29,6 @@ import {
   BUDDY_AUTOFOCUS_DELAY_MS,
   BUDDY_ENTRANCE_DELAY_MS,
   BUDDY_FIRST_LOAD_DELAY_MS,
-  BUDDY_DEFAULT_PLACEHOLDER,
-  BUDDY_PANEL_WIDTH,
-  BUDDY_PANEL_HEIGHT,
   BUDDY_HEADER_HEIGHT,
   BUDDY_INPUT_PLACEHOLDER,
   BUDDY_ICON_GLOW_ANIMATION,
@@ -43,7 +36,6 @@ import {
   BUDDY_SCROLL_CONTAINER_CLASS,
   BUDDY_GRADIENT_ICON_BOX,
   BUDDY_DOCK_SPRING,
-  BUDDY_DOCKED_HEIGHT,
 } from '@/lib/constants/buddy.constants';
 
 interface CoreAgentBuddyProps {
@@ -68,16 +60,11 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isReady, setIsReady] = useState(false);
-  const [currentPlaceholder, setCurrentPlaceholder] = useState(() =>
-    selectRandomWithFallback(placeholders, BUDDY_DEFAULT_PLACEHOLDER)
-  );
 
   const displayMessages = isOnboarding ? (onboarding?.messages as BuddyMessage[]) : chat.messages;
   const displayLoading = isOnboarding ? onboarding?.isLoading : chat.isLoading;
   const displayThinking = isOnboarding ? false : chat.isThinking;
   const displayInput = isOnboarding ? onboarding?.typingText : chat.input;
-  const isEmptyState = displayMessages.length === 0;
-  const shouldRotatePlaceholder = isEmptyState && isOpen && !isMinimized && !isStatic;
 
   useEffect(() => {
     const timer = setTimeout(() => setIsReady(true), BUDDY_ENTRANCE_DELAY_MS);
@@ -115,12 +102,6 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
     wasProcessingRef.current = isProcessing;
   }, [chat.isLoading, chat.isThinking]);
 
-  useIntervalEffect(
-    () => setCurrentPlaceholder(selectRandomWithFallback(placeholders, BUDDY_DEFAULT_PLACEHOLDER)),
-    BUDDY_PLACEHOLDER_INTERVAL_MS,
-    shouldRotatePlaceholder
-  );
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     chat.sendMessage(chat.input);
@@ -142,7 +123,6 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
               isThinking={chat.isThinking}
               isSaving={isSaving}
               thinkingPun={chat.thinkingPun}
-              placeholder={currentPlaceholder}
               inputRef={inputRef}
               onInputChange={chat.setInput}
               onSubmit={handleSubmit}
@@ -170,7 +150,6 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
             isLoading={chat.isLoading}
             isSaving={isSaving}
             thinkingPun={chat.thinkingPun}
-            placeholder={currentPlaceholder}
             inputRef={inputRef}
             onInputChange={chat.setInput}
             onSubmit={handleSubmit}
@@ -199,7 +178,6 @@ interface MobilePanelProps {
   isThinking: boolean;
   isSaving: boolean;
   thinkingPun: string;
-  placeholder: string;
   inputRef: React.RefObject<HTMLInputElement | null>;
   onInputChange: (value: string) => void;
   onSubmit: (e: FormEvent) => void;
@@ -208,7 +186,7 @@ interface MobilePanelProps {
   onSelectResult: (result: SearchResult, type: 'chord' | 'tab') => void;
 }
 
-function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving, thinkingPun, placeholder, inputRef, onInputChange, onSubmit, onClose, onSelectSuggestion, onSelectResult }: MobilePanelProps) {
+function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving, thinkingPun, inputRef, onInputChange, onSubmit, onClose, onSelectSuggestion, onSelectResult }: MobilePanelProps) {
   return (
     <motion.div
       initial={{ y: '100%' }}
@@ -227,7 +205,6 @@ function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving
             isLoading={isLoading}
             isThinking={isThinking}
             thinkingPun={thinkingPun}
-            placeholder={placeholder}
             isSaving={isSaving}
             onSelectSuggestion={onSelectSuggestion}
             onSelectResult={onSelectResult}
@@ -299,7 +276,6 @@ interface DesktopPanelProps {
   isLoading: boolean;
   isSaving: boolean;
   thinkingPun: string;
-  placeholder: string;
   inputRef: React.RefObject<HTMLInputElement | null>;
   onInputChange: (value: string) => void;
   onSubmit: (e: FormEvent) => void;
@@ -318,7 +294,7 @@ interface DesktopPanelProps {
 function DesktopPanel({
   context, isStatic, isOnboarding, isMinimized, isFirstLoad, position, dockMode, dockEdge,
   displayMessages, displayLoading, displayThinking, displayInput, input, isLoading, isSaving,
-  thinkingPun, placeholder, inputRef, onInputChange, onSubmit, onPositionChange, onDragEnd,
+  thinkingPun, inputRef, onInputChange, onSubmit, onPositionChange, onDragEnd,
   onMinimize, onClose, onToggleDock, onSelectEdge, onSkip, onAnimationComplete, onSelectSuggestion, onSelectResult
 }: DesktopPanelProps) {
   const isDocked = dockMode === 'docked';
@@ -471,7 +447,6 @@ function DesktopPanel({
                   isLoading={displayLoading ?? false}
                   isThinking={displayThinking ?? false}
                   thinkingPun={isOnboarding ? 'Finding your jam...' : thinkingPun}
-                  placeholder={placeholder}
                   isSaving={isSaving}
                   onSelectSuggestion={onSelectSuggestion}
                   onSelectResult={onSelectResult}
