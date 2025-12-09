@@ -27,14 +27,16 @@ interface ChordsDbChord {
 
 /**
  * Map of common chord suffix variations to chords-db suffixes
+ * Tonal.js aliases → chords-db suffix format
  */
 const SUFFIX_MAP: Record<string, string> = {
-  // Major variations
+  // Major variations (Tonal returns 'M' for major chords)
   '': 'major',
   'M': 'major',
   'maj': 'major',
+  '^': 'major',
 
-  // Minor variations
+  // Minor variations (Tonal returns 'm' for minor)
   'm': 'minor',
   'min': 'minor',
   '-': 'minor',
@@ -51,18 +53,37 @@ const SUFFIX_MAP: Record<string, string> = {
   // Suspended
   'sus2': 'sus2',
   'sus4': 'sus4',
+  'sus': 'sus4',
 
   // Seventh chords
   '7': '7',
   'dom7': '7',
   'maj7': 'maj7',
   'M7': 'maj7',
+  '^7': 'maj7',
+  'Δ7': 'maj7',
   'm7': 'm7',
   'min7': 'm7',
   '-7': 'm7',
+  'mi7': 'm7',
   'dim7': 'dim7',
+  'o7': 'dim7',
+  '°7': 'dim7',
   'm7b5': 'm7b5',
   'ø': 'm7b5',
+  'ø7': 'm7b5',
+
+  // Minor-major seventh (Tonal returns 'm/ma7', 'mM7', etc.)
+  'm/ma7': 'mmaj7',
+  'm/maj7': 'mmaj7',
+  'mM7': 'mmaj7',
+  'mMaj7': 'mmaj7',
+  'm/M7': 'mmaj7',
+  '-Δ7': 'mmaj7',
+  'mΔ': 'mmaj7',
+  '-^7': 'mmaj7',
+  '-maj7': 'mmaj7',
+  'mmaj7': 'mmaj7',
 
   // Extended chords
   '9': '9',
@@ -70,21 +91,43 @@ const SUFFIX_MAP: Record<string, string> = {
   '13': '13',
   'maj9': 'maj9',
   'M9': 'maj9',
+  '^9': 'maj9',
   'm9': 'm9',
+  'min9': 'm9',
+  '-9': 'm9',
   'maj11': 'maj11',
+  'M11': 'maj11',
   'm11': 'm11',
+  'min11': 'm11',
+  '-11': 'm11',
   'maj13': 'maj13',
+  'M13': 'maj13',
+  'm13': 'm13',
+  'min13': 'm13',
 
-  // Add chords
+  // Add chords (Tonal returns 'Madd9' for add9)
   'add9': 'add9',
+  'Madd9': 'add9',
+  'add2': 'add9',
+  '2': 'add9',
   'madd9': 'madd9',
+  'madd2': 'madd9',
+
+  // Sixth chords (Tonal returns '6add9' for 69)
   '6': '6',
   'm6': 'm6',
   '69': '69',
+  '6add9': '69',
+  '6/9': '69',
+  'M69': '69',
+  'm69': 'm69',
 
-  // Altered
+  // Altered chords (Tonal returns '7#5' for aug7)
   '7b5': '7b5',
   '7#5': 'aug7',
+  '+7': 'aug7',
+  '7+': 'aug7',
+  '7aug': 'aug7',
   'aug7': 'aug7',
   '7b9': '7b9',
   '7#9': '7#9',
@@ -93,6 +136,10 @@ const SUFFIX_MAP: Record<string, string> = {
   '9#11': '9#11',
   'alt': 'alt',
   '7sus4': '7sus4',
+  '7sus': '7sus4',
+
+  // Power chord
+  '5': '5',
 };
 
 /**
