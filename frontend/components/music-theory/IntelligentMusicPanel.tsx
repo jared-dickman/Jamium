@@ -10,6 +10,7 @@ import { Eye, EyeOff, Sparkles } from 'lucide-react';
 interface IntelligentMusicPanelProps {
   chords: string[];
   currentChordIndex: number;
+  songKey?: string;
   onChordClick?: (chord: string) => void;
   onPlayChord?: (chord: string) => void;
 }
@@ -28,13 +29,14 @@ interface IntelligentMusicPanelProps {
 export default function IntelligentMusicPanel({
   chords,
   currentChordIndex,
+  songKey,
   onChordClick,
   onPlayChord,
 }: IntelligentMusicPanelProps) {
   const [showWheel, setShowWheel] = useState(true);
 
   const currentChord = chords[currentChordIndex];
-  const key = detectKey(chords);
+  const key = songKey ? detectKey(chords, songKey) : detectKey(chords);
   const suggestions = key ? suggestNextChords(chords, key) : [];
   const suggestedChords = suggestions.map(s => s.chord);
 
