@@ -395,12 +395,16 @@ export const CHORD_DATABASE: Record<string, ChordVoicing[]> = {
 /**
  * Get chord voicings for a chord name
  * Handles sharps, flats, and common chord variations
+ * Falls back to comprehensive guitar chord database if not in static database
  */
 export function getChordVoicings(chordName: string): ChordVoicing[] {
+  // Import resolver dynamically to avoid circular dependencies
+  const { resolveChordVoicings } = require('@/lib/services/chordResolver');
+
   // Normalize chord name
   const normalized = chordName.trim();
 
-  // Try exact match first
+  // Try exact match first in static database
   if (CHORD_DATABASE[normalized]) {
     return CHORD_DATABASE[normalized];
   }
@@ -408,7 +412,8 @@ export function getChordVoicings(chordName: string): ChordVoicing[] {
   // Extract root note and quality
   const match = normalized.match(/^([A-G][#b]?)(.*)?$/);
   if (!match) {
-    return [];
+    // If can't parse, try resolver as last resort
+    return resolveChordVoicings(normalized);
   }
 
   const [, root, quality = ''] = match;
@@ -419,12 +424,13 @@ export function getChordVoicings(chordName: string): ChordVoicing[] {
     return CHORD_DATABASE[withQuality];
   }
 
-  // Try just root (major)
-  if (root && CHORD_DATABASE[root]) {
+  // Try just root (major) - ONLY if no quality was specified
+  if (root && quality === '' && CHORD_DATABASE[root]) {
     return CHORD_DATABASE[root];
   }
 
-  return [];
+  // Fallback to comprehensive chord resolver
+  return resolveChordVoicings(normalized);
 }
 
 /**
