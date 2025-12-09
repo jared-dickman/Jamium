@@ -7,8 +7,7 @@ import {
   type ChordAnalysis,
   type KeyAnalysis,
 } from '@/lib/music-theory/intelligentChordEngine';
-import { Music2, TrendingUp, Info } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Music2, Info } from 'lucide-react';
 
 interface ChordProgressionAnalyzerProps {
   chords: string[];
@@ -115,61 +114,6 @@ export default function ChordProgressionAnalyzer({
             <p className="text-sm text-gray-400 mb-1">Parallel Key</p>
             <p className="text-sm text-white font-medium">{keyAnalysis.parallelKey}</p>
           </div>
-        </div>
-      </div>
-
-      {/* Chord Function Analysis */}
-      <div className="bg-gray-800/50 border border-sapphire-500/10 rounded-lg p-6 transition-all hover:border-sapphire-500/30">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-sapphire-400" />
-          <h3 className="text-lg font-bold text-white">Harmonic Function</h3>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {chords.map((chord, i) => {
-            const analysis = chordAnalyses[i];
-            const isCurrent = i === currentChordIndex;
-            const romanNumeral = chordFunctions[i];
-
-            return (
-              <div
-                key={i}
-                className={cn(
-                  'px-4 py-3 rounded-lg border-2 transition-all duration-200',
-                  isCurrent
-                    ? 'bg-sapphire-500/20 border-sapphire-500 scale-105 shadow-lg shadow-sapphire-500/30'
-                    : 'bg-gray-700/30 border-sapphire-500/10'
-                )}
-              >
-                <div className="flex flex-col items-center gap-1">
-                  <p className="text-xs text-gray-400 font-medium">{romanNumeral}</p>
-                  <p
-                    className={cn(
-                      'text-lg font-bold',
-                      isCurrent ? 'text-sapphire-400' : 'text-white'
-                    )}
-                  >
-                    {chord}
-                  </p>
-                  {analysis && (
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{
-                        backgroundColor:
-                          analysis.quality === 'major'
-                            ? 'var(--sapphire-500)'
-                            : analysis.quality === 'minor'
-                              ? 'var(--sapphire-400)'
-                              : analysis.quality === 'dominant'
-                                ? 'var(--sapphire-300)'
-                                : '#6B7280',
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
