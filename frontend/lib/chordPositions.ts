@@ -424,8 +424,8 @@ export function getChordVoicings(chordName: string): ChordVoicing[] {
     return CHORD_DATABASE[withQuality];
   }
 
-  // Try just root (major)
-  if (root && CHORD_DATABASE[root]) {
+  // Try just root (major) - ONLY if no quality was specified
+  if (root && quality === '' && CHORD_DATABASE[root]) {
     return CHORD_DATABASE[root];
   }
 
