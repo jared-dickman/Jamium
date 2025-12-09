@@ -41,7 +41,7 @@ jobs:
         run: pnpm run lint:check
 
       - name: 🔒 ast-grep rules enforcement
-        run: npx @ast-grep/cli scan
+        run: pnpm dlx @ast-grep/cli@0.40.0 scan
 
       - name: 🔐 Secret scanning
         uses: trufflesecurity/trufflehog@v3.91.1
