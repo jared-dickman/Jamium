@@ -1,4 +1,4 @@
-import { FINGER_COLORS } from '@/lib/constants/canvas.constants';
+import { FINGER_COLORS, SAPPHIRE } from '@/lib/constants/canvas.constants';
 
 const MUTED_STRING = -1;
 const OPEN_STRING = 0;
@@ -16,8 +16,8 @@ interface Barre {
 }
 
 export function drawMutedString(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-  ctx.strokeStyle = '#ef4444';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = SAPPHIRE[600];
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.moveTo(x - MUTED_SYMBOL_SIZE, y - MUTED_SYMBOL_SIZE);
   ctx.lineTo(x + MUTED_SYMBOL_SIZE, y + MUTED_SYMBOL_SIZE);
@@ -27,11 +27,16 @@ export function drawMutedString(ctx: CanvasRenderingContext2D, x: number, y: num
 }
 
 export function drawOpenString(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-  ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 2;
+  // Draw outer circle with gradient
+  ctx.strokeStyle = SAPPHIRE[400];
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.arc(x, y, OPEN_SYMBOL_RADIUS, 0, Math.PI * 2);
   ctx.stroke();
+
+  // Fill with subtle glow
+  ctx.fillStyle = `${SAPPHIRE[500]}30`;
+  ctx.fill();
 }
 
 export function drawFrettedNote(
@@ -43,14 +48,39 @@ export function drawFrettedNote(
 ): void {
   const color =
     finger > 0 && finger <= 4 ? (FINGER_COLORS[finger] ?? FINGER_COLORS[0]) : FINGER_COLORS[0];
-  ctx.fillStyle = color ?? '#3b82f6';
+
+  // Draw glow effect
+  const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, FINGER_DOT_RADIUS * 1.5);
+  glowGradient.addColorStop(0, `${color ?? SAPPHIRE[500]}80`);
+  glowGradient.addColorStop(1, `${color ?? SAPPHIRE[500]}00`);
+  ctx.fillStyle = glowGradient;
+  ctx.beginPath();
+  ctx.arc(x, y, FINGER_DOT_RADIUS * 1.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw main dot
+  ctx.fillStyle = color ?? SAPPHIRE[500];
   ctx.beginPath();
   ctx.arc(x, y, FINGER_DOT_RADIUS, 0, Math.PI * 2);
   ctx.fill();
 
+  // Add subtle highlight
+  const highlightGradient = ctx.createRadialGradient(
+    x - FINGER_DOT_RADIUS / 3,
+    y - FINGER_DOT_RADIUS / 3,
+    0,
+    x,
+    y,
+    FINGER_DOT_RADIUS
+  );
+  highlightGradient.addColorStop(0, `${SAPPHIRE[200]}40`);
+  highlightGradient.addColorStop(1, `${SAPPHIRE[200]}00`);
+  ctx.fillStyle = highlightGradient;
+  ctx.fill();
+
   if (showFingerNumbers && finger > 0) {
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 12px sans-serif';
+    ctx.fillStyle = SAPPHIRE.ABYSS;
+    ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(finger.toString(), x, y);
@@ -124,7 +154,13 @@ export function drawBarres(
     const y1 = padding + y1Position * stringSpacing;
     const y2 = padding + y2Position * stringSpacing;
 
-    ctx.strokeStyle = '#3b82f6';
+    // Draw barre with gradient and glow
+    const barreGradient = ctx.createLinearGradient(x - BARRE_LINE_WIDTH / 2, y1, x + BARRE_LINE_WIDTH / 2, y2);
+    barreGradient.addColorStop(0, SAPPHIRE[500]);
+    barreGradient.addColorStop(0.5, SAPPHIRE[400]);
+    barreGradient.addColorStop(1, SAPPHIRE[500]);
+
+    ctx.strokeStyle = barreGradient;
     ctx.lineWidth = BARRE_LINE_WIDTH;
     ctx.lineCap = 'round';
     ctx.globalAlpha = BARRE_OPACITY;
