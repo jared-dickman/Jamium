@@ -34,9 +34,6 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 🔧 Build ast-grep native binary
-        run: pnpm rebuild @ast-grep/cli
-
       - name: 🔍 TypeScript type check
         run: pnpm run typecheck
 
@@ -44,7 +41,7 @@ jobs:
         run: pnpm run lint:check
 
       - name: 🔒 ast-grep rules enforcement
-        run: pnpm run ast-grep:scan
+        run: npx @ast-grep/cli scan
 
       - name: 🔐 Secret scanning
         uses: trufflesecurity/trufflehog@v3.91.1
