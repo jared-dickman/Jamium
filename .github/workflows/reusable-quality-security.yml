@@ -20,23 +20,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
+        run: pnpm install --frozen-lockfile
 
       - name: 🔍 TypeScript type check
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: 🎨 ESLint check
-        run: npm run lint:check
+        run: pnpm run lint:check
 
       - name: 🔒 ast-grep rules enforcement
-        run: npm run ast-grep:scan
+        run: pnpm --package=@ast-grep/cli@0.40.0 dlx ast-grep scan
 
       - name: 🔐 Secret scanning
         uses: trufflesecurity/trufflehog@v3.91.1

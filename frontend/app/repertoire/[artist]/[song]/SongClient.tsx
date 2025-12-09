@@ -11,9 +11,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './SongClient.module.css';
 import { ChordDisplay } from '@/components/ChordDisplay';
 import { PianoDisplay } from '@/components/PianoDisplay';
-import { ChordJourneyVisualization } from '@/components/ChordJourneyVisualization';
-import { ChordRhythmGame } from '@/components/ChordRhythmGame';
-import { LoopPracticeMode } from '@/components/LoopPracticeMode';
 import { Button } from '@/components/ui/button';
 import { Guitar, Piano, ChevronRight } from 'lucide-react';
 import { useGuitarPlayback } from '@/lib/hooks';
@@ -388,38 +385,6 @@ export function SongClient({ song, artistSlug, songSlug }: SongClientProps): Rea
         onPlayChord={chord => {
           setCurrentChord(chord);
         }}
-      />
-
-      {/* Loop Practice Mode */}
-      <LoopPracticeMode
-        song={song}
-        bpm={bpm}
-        onBpmChange={setBpm}
-        isAutoScrollEnabled={isAutoScrollEnabled}
-        onToggleAutoScroll={toggleAutoScroll}
-        lyricsContainerRef={lyricsContainerRef as React.RefObject<HTMLDivElement>}
-        className="mt-6"
-      />
-
-      {/* Chord Journey Visualization */}
-      <ChordJourneyVisualization
-        song={song}
-        currentChord={currentChord}
-        onChordClick={chord => {
-          setCurrentChord(chord);
-          setIsAutoScrollEnabled(false);
-        }}
-        className="mt-6"
-      />
-
-      {/* Chord Hero Rhythm Game */}
-      <ChordRhythmGame
-        song={song}
-        bpm={bpm}
-        onChordHit={chord => {
-          setCurrentChord(chord);
-        }}
-        className="mt-6"
       />
     </div>
   );

@@ -109,41 +109,6 @@ export default function IntelligentMusicPanel({
           />
         </div>
       </div>
-
-      {/* Feature Showcase */}
-      <div className="bg-gradient-to-r from-sapphire-800/20 to-sapphire-500/20 border border-sapphire-500/30 rounded-lg p-6">
-        <h3 className="text-sm font-bold text-white mb-3">✨ Powered By</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-sapphire-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <span className="text-2xl">🎼</span>
-            </div>
-            <p className="text-xs font-medium text-white">Tonal.js</p>
-            <p className="text-xs text-gray-400">Music Theory</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-sapphire-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <span className="text-2xl">📊</span>
-            </div>
-            <p className="text-xs font-medium text-white">D3.js</p>
-            <p className="text-xs text-gray-400">Visualization</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-sapphire-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <span className="text-2xl">🤖</span>
-            </div>
-            <p className="text-xs font-medium text-white">AI Engine</p>
-            <p className="text-xs text-gray-400">Smart Suggestions</p>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-sapphire-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <span className="text-2xl">🎸</span>
-            </div>
-            <p className="text-xs font-medium text-white">Tone.js</p>
-            <p className="text-xs text-gray-400">Audio Engine</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
