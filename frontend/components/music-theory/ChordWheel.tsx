@@ -30,8 +30,27 @@ export default function ChordWheel({
   width = 600,
   height = 600,
 }: ChordWheelProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredChord, setHoveredChord] = useState<string | null>(null);
+  const [containerSize, setContainerSize] = useState({ width, height });
+
+  // Responsive sizing
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const size = Math.min(rect.width, 600);
+        setContainerSize({ width: size, height: size });
+      }
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  const effectiveWidth = containerSize.width;
+  const effectiveHeight = containerSize.height;
 
   // Circle of fifths order
   const circleOfFifths = ['C', 'G', 'D', 'A', 'E', 'B', 'F♯/G♭', 'D♭', 'A♭', 'E♭', 'B♭', 'F'];
@@ -58,9 +77,9 @@ export default function ChordWheel({
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const outerRadius = Math.min(width, height) / 2 - 40;
+    const centerX = effectiveWidth / 2;
+    const centerY = effectiveHeight / 2;
+    const outerRadius = Math.min(effectiveWidth, effectiveHeight) / 2 - 50;
     const innerRadius = outerRadius * 0.6;
 
     // Create main group
@@ -213,8 +232,10 @@ export default function ChordWheel({
       .attr('font-weight', 'bold')
       .text('Fifths');
 
-    // Legend
-    const legend = svg.append('g').attr('transform', `translate(20, ${height - 80})`);
+    // Legend - horizontal at bottom center
+    const legend = svg
+      .append('g')
+      .attr('transform', `translate(${effectiveWidth / 2 - 150}, ${effectiveHeight - 30})`);
 
     const legendData = [
       { label: 'Current', color: '#FBBF24' },
@@ -224,27 +245,29 @@ export default function ChordWheel({
     ];
 
     legendData.forEach((item, i) => {
-      legend
-        .append('circle')
-        .attr('cx', 0)
-        .attr('cy', i * 20)
-        .attr('r', 6)
-        .attr('fill', item.color);
+      const xOffset = i * 80;
+      legend.append('circle').attr('cx', xOffset).attr('cy', 0).attr('r', 6).attr('fill', item.color);
 
       legend
         .append('text')
-        .attr('x', 15)
-        .attr('y', i * 20)
+        .attr('x', xOffset + 12)
+        .attr('y', 0)
         .attr('dominant-baseline', 'middle')
         .attr('fill', '#9CA3AF')
-        .attr('font-size', '12px')
+        .attr('font-size', '11px')
         .text(item.label);
     });
-  }, [currentChord, suggestedChords, width, height, onChordClick]);
+  }, [currentChord, suggestedChords, effectiveWidth, effectiveHeight, onChordClick]);
 
   return (
-    <div className="relative">
-      <svg ref={svgRef} width={width} height={height} className="bg-gray-900 rounded-lg" />
+    <div ref={containerRef} className="relative w-full max-w-[600px] mx-auto">
+      <svg
+        ref={svgRef}
+        width={effectiveWidth}
+        height={effectiveHeight}
+        className="bg-gray-900 rounded-lg w-full"
+        viewBox={`0 0 ${effectiveWidth} ${effectiveHeight}`}
+      />
       {hoveredChord && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 px-4 py-2 rounded-lg shadow-lg border border-gray-700">
           <p className="text-sm text-white font-medium">{hoveredChord}</p>
