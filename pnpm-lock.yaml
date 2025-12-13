@@ -313,8 +313,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       wavesurfer.js:
-        specifier: 7.11.1
-        version: 7.11.1
+        specifier: 7.12.1
+        version: 7.12.1
       zod:
         specifier: 4.1.13
         version: 4.1.13
@@ -5508,8 +5508,8 @@ packages:
   vexflow@5.0.0:
     resolution: {integrity: sha512-rjB7TV4ygKE5Fl3W5OlG+0dHv22CFufUJdMG6oNgvcn0zp34u+sOboZsadQXnF1O3tZ3myXThaUIaLkJlpNM2Q==}
 
-  wavesurfer.js@7.11.1:
-    resolution: {integrity: sha512-8Q+wwItpjJAlhQ7crQLtKwgfbqqczm5/wx+76K4PptP+MBAjB0OA78+A9OuLnULz/8GpAQ+fKM6s81DonEO0Sg==}
+  wavesurfer.js@7.12.1:
+    resolution: {integrity: sha512-NswPjVHxk0Q1F/VMRemCPUzSojjuHHisQrBqQiRXg7MVbe3f5vQ6r0rTTXA/a/neC/4hnOEC4YpXca4LpH0SUg==}
 
   webgl-constants@1.1.1:
     resolution: {integrity: sha512-LkBXKjU5r9vAW7Gcu3T5u+5cvSvh5WwINdr0C+9jpzVB41cjQAP5ePArDtk/WHYdVj0GefCgM73BA7FlIiNtdg==}
@@ -11082,7 +11082,7 @@ snapshots:
 
   vexflow@5.0.0: {}
 
-  wavesurfer.js@7.11.1: {}
+  wavesurfer.js@7.12.1: {}
 
   webgl-constants@1.1.1: {}
 
