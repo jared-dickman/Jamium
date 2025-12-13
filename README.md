@@ -13,6 +13,5 @@ npm run jamium     # Frontend only
 ## Stack
 
 - **Frontend:** Next.js 16, React 19, Tailwind, TanStack Query, Tone.js
-- **Backend:** Go REST API
 - **Database:** Supabase
-- **Deploy:** Vercel (frontend), Hostinger VPS (backend)
+- **Deploy:** Vercel

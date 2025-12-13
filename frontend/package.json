@@ -3,15 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "pkill -9 -f 'scraper/server' 2>/dev/null; pkill -9 -f 'next dev -p 4242' 2>/dev/null; lsof -ti:4242 | xargs kill -9 2>/dev/null; sleep 0.5; rm -f .next/dev/lock; (ADDR=:8080 SONGS_DIR=../songs ../scraper/server &) && (sleep 2 && open http://jamium.localhost:4242 &) && next dev -p 4242 --hostname 0.0.0.0",
+    "dev": "pkill -9 -f 'next dev -p 4242' 2>/dev/null; lsof -ti:4242 | xargs kill -9 2>/dev/null; sleep 0.5; rm -f .next/dev/lock; (sleep 2 && open http://jamium.localhost:4242 &) && next dev -p 4242 --hostname 0.0.0.0",
     "dev:frontend": "next dev",
     "jamium": "pkill -9 -f 'next dev -p 4242' 2>/dev/null; lsof -ti:4242 | xargs kill -9 2>/dev/null; sleep 0.5; rm -rf .next && (sleep 3 && open http://jamium.localhost:4242 &) && next dev -p 4242",
     "build": "echo '🔍 Build starting...' && echo \"Node: $(node -v)\" && echo \"npm: $(npm -v)\" && echo \"PWD: $PWD\" && ls -la && SKIP_ENV_VALIDATION=true next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "format": "npx prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "npx prettier --check \"**/*.{ts,tsx,json,md}\"",
     "type-check": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run build",
     "prepare": "husky"
