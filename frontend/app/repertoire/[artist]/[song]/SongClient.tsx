@@ -378,6 +378,7 @@ export function SongClient({ song, artistSlug, songSlug }: SongClientProps): Rea
           .flatMap(s => s.lines)
           .filter(l => l.chord?.name)
           .findIndex(l => l.chord!.name === currentChord)}
+        songKey={currentKey}
         onChordClick={chord => {
           setCurrentChord(chord);
           setIsAutoScrollEnabled(false);

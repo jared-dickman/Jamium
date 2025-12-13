@@ -7,7 +7,7 @@ import {
   analyzeChord,
   type ChordSuggestion,
 } from '@/lib/music-theory/intelligentChordEngine';
-import { Sparkles, Play, ArrowRight } from 'lucide-react';
+import { Sparkles, Play, ChevronRight } from 'lucide-react';
 
 interface ChordSuggestionsProps {
   currentChords: string[];
@@ -15,15 +15,6 @@ interface ChordSuggestionsProps {
   onPlaySuggestion?: (chord: string) => void;
 }
 
-/**
- * 🤖 AI-POWERED CHORD SUGGESTIONS
- *
- * Displays intelligent next chord suggestions based on:
- * - Music theory (voice leading, cadences)
- * - Common progressions (I-V-vi-IV, etc.)
- * - Harmonic function (tonic, dominant, subdominant)
- * - Jazz substitutions (tritone subs, etc.)
- */
 export default function ChordSuggestions({
   currentChords,
   onChordSelect,
@@ -39,148 +30,130 @@ export default function ChordSuggestions({
     }
 
     setLoading(true);
-
-    // Small delay for dramatic effect
     const timer = setTimeout(() => {
       const key = detectKey(currentChords);
       const nextChords = suggestNextChords(currentChords, key);
       setSuggestions(nextChords);
       setLoading(false);
-    }, 300);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [currentChords]);
 
   if (currentChords.length === 0) {
     return (
-      <div className="bg-gray-800/50 border border-sapphire-500/10 rounded-lg p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-5 h-5 text-sapphire-400" />
-          <h3 className="text-lg font-bold text-white">AI Chord Suggestions</h3>
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
+            <Sparkles className="h-4 w-4 text-amber-400" />
+          </div>
+          <h3 className="text-[13px] font-semibold tracking-tight text-white/90">AI Suggestions</h3>
         </div>
-        <p className="text-sm text-gray-400">Play some chords to get intelligent suggestions...</p>
+        <p className="text-[13px] text-white/40">Play chords to see suggestions</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-sapphire-800/40 to-sapphire-500/40 border border-sapphire-500/50 rounded-lg p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-5 h-5 text-sapphire-400" />
-        <h3 className="text-lg font-bold text-white">AI Chord Suggestions</h3>
+    <div className="rounded-xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-transparent p-5">
+      <div className="mb-5 flex items-center gap-2.5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
+          <Sparkles className="h-4 w-4 text-amber-400" />
+        </div>
+        <h3 className="text-[13px] font-semibold tracking-tight text-white/90">AI Suggestions</h3>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sapphire-500" />
+        <div className="flex items-center justify-center py-6">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/10 border-t-amber-400" />
         </div>
       ) : suggestions.length === 0 ? (
-        <p className="text-sm text-gray-400">No suggestions available for this progression.</p>
+        <p className="text-[13px] text-white/40">No suggestions for this progression</p>
       ) : (
-        <div className="space-y-3">
-          {suggestions.map((suggestion, i) => {
+        <div className="space-y-2">
+          {suggestions.slice(0, 3).map((suggestion, i) => {
             const analysis = analyzeChord(suggestion.chord);
             const probabilityPercent = Math.round(suggestion.probability * 100);
 
             return (
               <div
                 key={i}
-                className="bg-gray-800/60 border border-sapphire-500/10 rounded-lg p-4 hover:bg-gray-700/60 hover:border-sapphire-500/30 transition-all duration-200 group"
+                className="group relative rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 transition-all hover:border-white/[0.12] hover:bg-white/[0.04]"
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-sapphire-500/20 rounded-full text-sapphire-400 font-bold text-sm">
-                      #{i + 1}
-                    </div>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/[0.06] text-[11px] font-semibold text-white/50">
+                      {i + 1}
+                    </span>
                     <div>
-                      <p className="text-xl font-bold text-white group-hover:text-sapphire-400 transition-colors">
+                      <p className="text-[18px] font-bold leading-none tracking-tight text-white">
                         {suggestion.chord}
                       </p>
-                      <p className="text-xs text-gray-400 capitalize">
-                        {suggestion.function} function
+                      <p className="mt-0.5 text-[11px] font-medium capitalize text-white/40">
+                        {suggestion.function}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     {onPlaySuggestion && (
                       <button
                         onClick={() => onPlaySuggestion(suggestion.chord)}
-                        className="p-2 bg-sapphire-500/20 hover:bg-sapphire-500/40 rounded-lg transition-all duration-200"
-                        title="Preview chord"
+                        className="flex h-7 w-7 items-center justify-center rounded-md bg-white/[0.06] text-white/50 transition-all hover:bg-white/[0.12] hover:text-white"
                       >
-                        <Play className="w-4 h-4 text-sapphire-400" />
+                        <Play className="h-3.5 w-3.5" />
                       </button>
                     )}
                     {onChordSelect && (
                       <button
                         onClick={() => onChordSelect(suggestion.chord)}
-                        className="p-2 bg-sapphire-500/20 hover:bg-sapphire-500/40 rounded-lg transition-all duration-200"
-                        title="Add to progression"
+                        className="flex h-7 w-7 items-center justify-center rounded-md bg-white/[0.06] text-white/50 transition-all hover:bg-white/[0.12] hover:text-white"
                       >
-                        <ArrowRight className="w-4 h-4 text-sapphire-400" />
+                        <ChevronRight className="h-3.5 w-3.5" />
                       </button>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  {/* Probability Bar */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs text-gray-400">Probability</p>
-                      <p className="text-xs font-medium text-sapphire-400">{probabilityPercent}%</p>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="mr-4 flex-1">
+                    <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
                       <div
-                        className={`h-2 rounded-full transition-all ${
-                          probabilityPercent >= 80
-                            ? 'bg-sapphire-600'
-                            : probabilityPercent >= 60
-                              ? 'bg-sapphire-500'
-                              : 'bg-sapphire-400'
-                        }`}
+                        className="h-full rounded-full bg-gradient-to-r from-amber-500/80 to-amber-400/60 transition-all"
                         style={{ width: `${probabilityPercent}%` }}
                       />
                     </div>
                   </div>
-
-                  {/* Reason */}
-                  <div className="flex items-start gap-2">
-                    <div className="w-1 h-1 rounded-full bg-sapphire-400 mt-1.5" />
-                    <p className="text-sm text-gray-300">{suggestion.reason}</p>
-                  </div>
-
-                  {/* Chord Notes */}
-                  {analysis && (
-                    <div className="flex items-center gap-2 pt-2 border-t border-gray-700">
-                      <p className="text-xs text-gray-400">Notes:</p>
-                      <div className="flex gap-1">
-                        {analysis.notes.map((note, noteIdx) => (
-                          <span
-                            key={noteIdx}
-                            className="px-2 py-0.5 bg-gray-700 rounded text-xs text-white font-mono"
-                          >
-                            {note}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <span className="tabular-nums text-[11px] font-semibold text-white/50">
+                    {probabilityPercent}%
+                  </span>
                 </div>
+
+                <p className="mt-2 text-[12px] leading-relaxed text-white/50">
+                  {suggestion.reason}
+                </p>
+
+                {analysis && (
+                  <div className="mt-2 flex gap-1">
+                    {analysis.notes.map((note, noteIdx) => (
+                      <span
+                        key={noteIdx}
+                        className="flex h-6 w-6 items-center justify-center rounded bg-white/[0.04] text-[10px] font-semibold text-white/60"
+                      >
+                        {note}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       )}
 
-      {/* Tips */}
-      <div className="mt-6 pt-4 border-t border-sapphire-500/30">
-        <p className="text-xs text-gray-400 italic">
-          💡 Suggestions are based on music theory, common progressions, and harmonic function.
-          Higher probability means more natural resolution.
-        </p>
-      </div>
+      <p className="mt-4 text-[11px] leading-relaxed text-white/30">
+        Based on music theory and harmonic function
+      </p>
     </div>
   );
 }

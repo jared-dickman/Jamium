@@ -87,9 +87,30 @@ export function analyzeChord(chordSymbol: string): ChordAnalysis | null {
 
 /**
  * Detect the most likely key from a chord progression
+ * @param hintKey - Optional key hint (e.g., 'C' or 'Am') to use directly
  */
-export function detectKey(chordSymbols: string[]): KeyAnalysis | null {
+export function detectKey(chordSymbols: string[], hintKey?: string): KeyAnalysis | null {
   try {
+    // If hint provided, use it directly
+    if (hintKey) {
+      const isMinor = hintKey.endsWith('m');
+      const tonic = isMinor ? hintKey.replace('m', '') : hintKey;
+      const keyData = isMinor ? Key.minorKey(tonic) : Key.majorKey(tonic);
+      const scale = isMinor ? Scale.get(`${tonic} minor`) : Scale.get(`${tonic} major`);
+      const keyChords = 'chords' in keyData ? Array.from(keyData.chords) : [];
+
+      return {
+        tonic,
+        type: isMinor ? 'minor' : 'major',
+        scale: Array.from(scale.notes),
+        chords: keyChords,
+        relativeKey: isMinor ? Note.transpose(tonic, '3m') : Note.transpose(tonic, '-3m') + 'm',
+        parallelKey: isMinor ? tonic : tonic + 'm',
+        dominantKey: Note.transpose(tonic, '5P'),
+        subdominantKey: Note.transpose(tonic, '4P'),
+      };
+    }
+
     // Get all possible keys
     const majorKeys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'];
     const minorKeys = ['Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'Bbm', 'Fm', 'Cm', 'Gm', 'Dm'];
