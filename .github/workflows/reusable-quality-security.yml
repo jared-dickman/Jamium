@@ -44,6 +44,6 @@ jobs:
         run: pnpm --package=@ast-grep/cli@0.40.0 dlx ast-grep scan
 
       - name: 🔐 Secret scanning
-        uses: trufflesecurity/trufflehog@v3.91.1
+        uses: trufflesecurity/trufflehog@v3.91.2
         with:
           extra_args: --results=verified,unknown
