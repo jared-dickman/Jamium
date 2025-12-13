@@ -1,18 +1,10 @@
 /**
- * Intelligent Composer Demo Page
- * Showcases the composable music intelligence system
+ * Composer Page - Redirects to Jam with Expert mode
+ * The IntelligentComposer is now integrated into the unified Jam experience
  */
 
-'use client';
-
-import dynamic from 'next/dynamic';
-import { RandomLoader } from '@/components/ui/loaders/RandomLoader';
-
-const IntelligentComposer = dynamic(() => import('@/components/IntelligentComposer'), {
-  ssr: false,
-  loading: () => <RandomLoader />,
-});
+import { redirect } from 'next/navigation';
 
 export default function ComposerPage() {
-  return <IntelligentComposer />;
+  redirect('/jam?mode=expert');
 }

@@ -1,11 +1,13 @@
 'use client';
 
+import { useState, useCallback, useRef } from 'react';
 import { type ChordProgression, FUNCTION_COLORS } from '@/lib/jamProgressions';
+import { getChordPlayer } from '@/lib/audio/chordPlayer';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Play, Edit, Clock, Music } from 'lucide-react';
+import { Play, Square, Edit, Clock, Music } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProgressionCardProps {
@@ -27,6 +29,66 @@ export default function ProgressionCard({
   onSelect,
   onBuild,
 }: ProgressionCardProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentChordIndex, setCurrentChordIndex] = useState(-1);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const stopPlayback = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    const player = getChordPlayer();
+    player.stop();
+    setIsPlaying(false);
+    setCurrentChordIndex(-1);
+  }, []);
+
+  const playProgression = useCallback(async () => {
+    if (isPlaying) {
+      stopPlayback();
+      return;
+    }
+
+    const player = getChordPlayer();
+    await player.initialize();
+
+    setIsPlaying(true);
+
+    const msPerBeat = (60 / progression.bpm) * 1000;
+
+    const playChordAtIndex = (index: number): void => {
+      if (index >= progression.chords.length) {
+        setIsPlaying(false);
+        setCurrentChordIndex(-1);
+        return;
+      }
+
+      const chord = progression.chords[index];
+      if (!chord) return;
+
+      setCurrentChordIndex(index);
+      player.playChord(chord.name, 2);
+
+      const durationBeats = chord.duration ?? 4;
+      const durationMs = durationBeats * msPerBeat;
+
+      timeoutRef.current = setTimeout(() => {
+        playChordAtIndex(index + 1);
+      }, durationMs);
+    };
+
+    playChordAtIndex(0);
+  }, [isPlaying, progression, stopPlayback]);
+
+  const handlePlayClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      playProgression();
+    },
+    [playProgression]
+  );
+
   return (
     <motion.div
       layout
@@ -43,7 +105,6 @@ export default function ProgressionCard({
         )}
         onClick={onSelect}
       >
-        {/* Selection indicator with animation */}
         <AnimatePresence>
           {isSelected && (
             <motion.div
@@ -79,19 +140,24 @@ export default function ProgressionCard({
         </CardHeader>
 
         <CardContent className="space-y-3">
-          {/* Chord visualization with stagger animation */}
           <div className="flex flex-wrap gap-2">
             {progression.chords.map((chord, idx) => (
               <motion.div
                 key={idx}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium"
+                className={cn(
+                  'flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-all',
+                  currentChordIndex === idx && 'ring-2 ring-white scale-110'
+                )}
                 style={{
-                  backgroundColor: `${FUNCTION_COLORS[chord.function]}15`,
+                  backgroundColor:
+                    currentChordIndex === idx
+                      ? FUNCTION_COLORS[chord.function]
+                      : `${FUNCTION_COLORS[chord.function]}15`,
                   border: `1px solid ${FUNCTION_COLORS[chord.function]}30`,
-                  color: FUNCTION_COLORS[chord.function],
+                  color: currentChordIndex === idx ? 'white' : FUNCTION_COLORS[chord.function],
                 }}
                 initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
+                animate={{ opacity: 1, scale: currentChordIndex === idx ? 1.1 : 1, y: 0 }}
                 transition={{
                   delay: 0.3 + idx * 0.05,
                   type: 'spring',
@@ -112,10 +178,8 @@ export default function ProgressionCard({
             ))}
           </div>
 
-          {/* Description */}
           <p className="text-sm text-muted-foreground leading-relaxed">{progression.description}</p>
 
-          {/* Examples */}
           {progression.examples && progression.examples.length > 0 && (
             <div className="pt-2 border-t border-border/50">
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Used in:</p>
@@ -133,7 +197,6 @@ export default function ProgressionCard({
             </div>
           )}
 
-          {/* Metadata */}
           <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2">
             <div className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
@@ -172,14 +235,20 @@ export default function ProgressionCard({
           >
             <Button
               size="sm"
-              className="w-full"
-              onClick={e => {
-                e.stopPropagation();
-                // TODO: Implement play functionality
-              }}
+              className={cn('w-full', isPlaying && 'bg-red-500 hover:bg-red-600')}
+              onClick={handlePlayClick}
             >
-              <Play className="w-4 h-4 mr-1" />
-              Play
+              {isPlaying ? (
+                <>
+                  <Square className="w-4 h-4 mr-1" />
+                  Stop
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 mr-1" />
+                  Play
+                </>
+              )}
             </Button>
           </motion.div>
         </CardFooter>
