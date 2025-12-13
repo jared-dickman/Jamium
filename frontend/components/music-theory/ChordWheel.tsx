@@ -82,6 +82,9 @@ export default function ChordWheel({
     const outerRadius = Math.min(effectiveWidth, effectiveHeight) / 2 - 50;
     const innerRadius = outerRadius * 0.6;
 
+    // Scale factor for circles/fonts based on container size (baseline 600px)
+    const scaleFactor = effectiveWidth / 600;
+
     // Create main group
     const g = svg.append('g').attr('transform', `translate(${centerX},${centerY})`);
 
@@ -127,7 +130,7 @@ export default function ChordWheel({
         .append('circle')
         .attr('cx', x)
         .attr('cy', y)
-        .attr('r', isCurrentChord ? 32 : 28)
+        .attr('r', (isCurrentChord ? 32 : 28) * scaleFactor)
         .attr('fill', analysis ? getChordColor(analysis.quality) : '#6B7280')
         .attr('stroke', isCurrentChord ? '#FBBF24' : isSuggested ? '#10B981' : '#374151')
         .attr('stroke-width', isCurrentChord ? 4 : isSuggested ? 3 : 2)
@@ -143,7 +146,7 @@ export default function ChordWheel({
         circle
           .append('animate')
           .attr('attributeName', 'r')
-          .attr('values', '32;36;32')
+          .attr('values', `${32 * scaleFactor};${36 * scaleFactor};${32 * scaleFactor}`)
           .attr('dur', '2s')
           .attr('repeatCount', 'indefinite');
       }
@@ -155,7 +158,7 @@ export default function ChordWheel({
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .attr('fill', 'white')
-        .attr('font-size', '14px')
+        .attr('font-size', `${14 * scaleFactor}px`)
         .attr('font-weight', isCurrentChord ? 'bold' : 'normal')
         .attr('pointer-events', 'none')
         .text(chord);
@@ -180,7 +183,7 @@ export default function ChordWheel({
       g.append('circle')
         .attr('cx', x)
         .attr('cy', y)
-        .attr('r', isCurrentChord ? 28 : 24)
+        .attr('r', (isCurrentChord ? 28 : 24) * scaleFactor)
         .attr('fill', analysis ? getChordColor(analysis.quality) : '#6B7280')
         .attr('stroke', isCurrentChord ? '#FBBF24' : isSuggested ? '#10B981' : '#374151')
         .attr('stroke-width', isCurrentChord ? 4 : isSuggested ? 3 : 2)
@@ -198,7 +201,7 @@ export default function ChordWheel({
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .attr('fill', 'white')
-        .attr('font-size', '12px')
+        .attr('font-size', `${12 * scaleFactor}px`)
         .attr('font-weight', isCurrentChord ? 'bold' : 'normal')
         .attr('pointer-events', 'none')
         .text(chord);
@@ -216,26 +219,26 @@ export default function ChordWheel({
     // Center label
     g.append('text')
       .attr('x', 0)
-      .attr('y', -10)
+      .attr('y', -10 * scaleFactor)
       .attr('text-anchor', 'middle')
       .attr('fill', '#9CA3AF')
-      .attr('font-size', '16px')
+      .attr('font-size', `${16 * scaleFactor}px`)
       .attr('font-weight', 'bold')
       .text('Circle of');
 
     g.append('text')
       .attr('x', 0)
-      .attr('y', 10)
+      .attr('y', 10 * scaleFactor)
       .attr('text-anchor', 'middle')
       .attr('fill', '#9CA3AF')
-      .attr('font-size', '16px')
+      .attr('font-size', `${16 * scaleFactor}px`)
       .attr('font-weight', 'bold')
       .text('Fifths');
 
     // Legend - horizontal at bottom center
     const legend = svg
       .append('g')
-      .attr('transform', `translate(${effectiveWidth / 2 - 150}, ${effectiveHeight - 30})`);
+      .attr('transform', `translate(${effectiveWidth / 2 - 150 * scaleFactor}, ${effectiveHeight - 30 * scaleFactor})`);
 
     const legendData = [
       { label: 'Current', color: '#FBBF24' },
@@ -245,16 +248,16 @@ export default function ChordWheel({
     ];
 
     legendData.forEach((item, i) => {
-      const xOffset = i * 80;
-      legend.append('circle').attr('cx', xOffset).attr('cy', 0).attr('r', 6).attr('fill', item.color);
+      const xOffset = i * 80 * scaleFactor;
+      legend.append('circle').attr('cx', xOffset).attr('cy', 0).attr('r', 6 * scaleFactor).attr('fill', item.color);
 
       legend
         .append('text')
-        .attr('x', xOffset + 12)
+        .attr('x', xOffset + 12 * scaleFactor)
         .attr('y', 0)
         .attr('dominant-baseline', 'middle')
         .attr('fill', '#9CA3AF')
-        .attr('font-size', '11px')
+        .attr('font-size', `${11 * scaleFactor}px`)
         .text(item.label);
     });
   }, [currentChord, suggestedChords, effectiveWidth, effectiveHeight, onChordClick]);
