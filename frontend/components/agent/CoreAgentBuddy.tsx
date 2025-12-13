@@ -389,7 +389,7 @@ function DesktopPanel({
       className={cn(
         'fixed z-[60] isolate',
         isStatic
-          ? 'inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:h-[640px]'
+          ? 'inset-x-4 inset-y-0 mx-auto max-w-[calc(100vw-2rem)] md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:max-w-none md:h-[640px]'
           : 'hidden md:block'
       )}
       style={{
