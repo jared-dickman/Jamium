@@ -4,7 +4,8 @@
  */
 
 import { redirect } from 'next/navigation';
+import { pageRoutes } from '@/lib/routes';
 
 export default function ComposerPage() {
-  redirect('/jam?mode=expert');
+  redirect(`${pageRoutes.jam}?mode=expert`);
 }
