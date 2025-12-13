@@ -75,7 +75,7 @@
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
     "d3": "7.9.0",
-    "drizzle-kit": "^0.31.5",
+    "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.44.6",
     "framer-motion": "12.23.24",
     "input-otp": "1.4.2",
