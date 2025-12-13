@@ -128,7 +128,7 @@ export function EmptyState() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex flex-col items-center justify-center text-center py-8"
+      className="flex-1 min-h-[50vh] flex flex-col items-center justify-center text-center"
     >
       <motion.div
         animate={{

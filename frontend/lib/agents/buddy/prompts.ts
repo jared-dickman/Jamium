@@ -14,7 +14,7 @@ const navDestinations = Object.entries(buddyRoutes)
   .map(([, r]) => `${r.path} - ${r.desc}`)
   .join('\n');
 const songNav = `${buddyRoutes.repertoire.path}/{Artist}/{Song} - Specific song (use Title_Case_With_Underscores)`;
-const extraNav = `${pageRoutes.metronome} - Get your timing tight\n${pageRoutes.musicTheory} - Level up your knowledge`;
+const extraNav = `${pageRoutes.tempo} - Get your timing tight\n${pageRoutes.theory} - Level up your knowledge`;
 
 // =============================================================================
 // CORE PERSONALITY - The Soul of Buddy

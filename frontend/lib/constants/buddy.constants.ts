@@ -42,7 +42,7 @@ export const BUDDY_ICON_GLOW_TRANSITION = { duration: 2, repeat: Infinity };
 
 /** Shared scrollable container class */
 export const BUDDY_SCROLL_CONTAINER_CLASS =
-  'flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent';
+  'flex-1 flex flex-col overflow-y-auto overflow-x-hidden px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent';
 
 /** Gradient classes - DRY brand colors */
 export const BUDDY_GRADIENT_ICON_BOX = 'rounded-lg bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center border border-white/10';
@@ -208,5 +208,6 @@ export const STRUCTURED_DATA_TYPES = {
 export const BUDDY_NAV_ROUTES = [
   { path: pageRoutes.repertoire, label: 'Repertoire', icon: 'turntable' },
   { path: pageRoutes.jam, label: 'Jam', icon: 'waveform' },
-  { path: pageRoutes.composer, label: 'Compose', icon: 'feather' },
+  { path: pageRoutes.theory, label: 'Theory', icon: 'feather' },
+  { path: pageRoutes.tempo, label: 'Tempo', icon: 'clock' },
 ] as const;

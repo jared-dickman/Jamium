@@ -199,7 +199,7 @@ function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving
         <MobileHeader context={context} onClose={onClose} />
         <BuddyNavBar onNavigate={onClose} />
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        <div className="flex-1 flex flex-col min-h-0">
           <BuddyMessageList
             messages={messages}
             isLoading={isLoading}
@@ -389,7 +389,7 @@ function DesktopPanel({
       className={cn(
         'fixed z-[60] isolate',
         isStatic
-          ? 'inset-x-4 inset-y-0 mx-auto max-w-[calc(100vw-2rem)] md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:max-w-none md:h-[640px]'
+          ? 'inset-0 flex items-center justify-center p-4 md:p-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[420px] md:h-[640px]'
           : 'hidden md:block'
       )}
       style={{
@@ -405,11 +405,12 @@ function DesktopPanel({
         variants={isDocked ? undefined : BUDDY_MINIMIZED_VARIANTS}
         animate={isMinimized ? 'minimized' : 'open'}
         className={cn(
-          'overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50',
-          // Full-screen modes (static landing or docked)
-          (isDocked || isStatic) && 'h-full w-full flex flex-col',
-          // Rounded corners: none on mobile landing/docked, rounded on desktop
-          isStatic ? 'rounded-none md:rounded-2xl' : isDocked ? 'rounded-none' : 'rounded-2xl',
+          'overflow-hidden bg-gradient-to-b from-slate-900/95 to-slate-950/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50 flex flex-col',
+          // Sizing: mobile static is centered card, desktop static/docked fills parent
+          isDocked && 'h-full w-full',
+          isStatic && 'w-full max-w-[420px] h-[min(640px,100%)] md:h-full md:max-w-none',
+          // Rounded corners: always rounded on static, none on docked
+          isStatic ? 'rounded-2xl' : isDocked ? 'rounded-none' : 'rounded-2xl',
           isMinimized && 'cursor-pointer',
           isFirstLoad && 'ring-2 ring-blue-500/50 ring-offset-2 ring-offset-transparent'
         )}

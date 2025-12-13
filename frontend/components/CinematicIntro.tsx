@@ -108,7 +108,7 @@ export function CinematicIntro({ onComplete, headerLogoRef }: CinematicIntroProp
         >
           <motion.h1
             ref={textRef}
-            className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tight logo-gradient select-none"
+            className="text-7xl sm:text-[7.5rem] md:text-8xl font-bold tracking-tight logo-gradient select-none"
             initial={{ opacity: 0, scale: 0.96 }}
             animate={
               isFlying
