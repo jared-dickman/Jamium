@@ -1,146 +1,109 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Lightbulb, Music2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { RotateCcw } from 'lucide-react';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { JamHeader } from '@/components/jam/JamHeader';
+import { Button } from '@/components/ui/button';
 import { SkillLevelSelector } from '@/components/jam/SkillLevelSelector';
-import VibeSelector from '@/components/jam/VibeSelector';
-import { ProgressionsGrid } from '@/components/jam/ProgressionsGrid';
-import { EmptyBuildState } from '@/components/jam/EmptyBuildState';
-import JamBuilder from '@/components/jam/JamBuilder';
-import { QuickStart } from '@/components/ui/quick-start';
-import { JamWizard, type WizardStep } from '@/components/jam/JamWizard';
-import { getProgressionsByVibe, type ChordProgression } from '@/lib/jamProgressions';
+import { BeginnerFlow, IntermediateFlow, ExpertComposer } from '@/components/jam/flows';
 import { cn } from '@/lib/utils';
-import { type Vibe } from '@/lib/jamProgressions';
 import { SkillLevel } from '@/lib/enums/skillLevel.enum';
-import { ANIMATION_DURATION, FADE_VARIANTS } from '@/lib/constants/animation.constants';
 import { MAX_WIDTH } from '@/lib/constants/ui.constants';
-import { QUICK_TIPS } from '@/lib/constants/help-content.constants';
 
-export default function JamAssistantClient(): React.JSX.Element {
-  const [selectedVibe, setSelectedVibe] = useState<Vibe>('pop');
-  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.Intermediate);
-  const [selectedProgression, setSelectedProgression] = useState<ChordProgression | null>(null);
-  const [customProgression, setCustomProgression] = useState<ChordProgression | null>(null);
-  const [showQuickStart, setShowQuickStart] = useState<boolean>(true);
-  const [useWizardMode, setUseWizardMode] = useState<boolean>(false);
+const STORAGE_KEY = 'jam-skill-level';
 
-  const filteredProgressions = useMemo(
-    () => getProgressionsByVibe(selectedVibe, skillLevel),
-    [selectedVibe, skillLevel]
-  );
+interface JamAssistantClientProps {
+  initialMode?: string | null;
+}
+
+const SKILL_FROM_MODE: Record<string, SkillLevel> = {
+  beginner: SkillLevel.Beginner,
+  intermediate: SkillLevel.Intermediate,
+  expert: SkillLevel.Expert,
+};
+
+type WizardStep = 'skill' | 'flow';
+
+export default function JamAssistantClient({
+  initialMode,
+}: JamAssistantClientProps): React.JSX.Element {
+  const [step, setStep] = useState<WizardStep>('skill');
+  const [skillLevel, setSkillLevel] = useState<SkillLevel | null>(null);
 
   useEffect(() => {
-    if (filteredProgressions.length > 0 && !selectedProgression) {
-      setSelectedProgression(filteredProgressions[0] ?? null);
+    if (initialMode && SKILL_FROM_MODE[initialMode]) {
+      setSkillLevel(SKILL_FROM_MODE[initialMode]);
+      setStep('flow');
+      return;
     }
-  }, [filteredProgressions, selectedProgression]);
 
-  const handleBuildFromProgression = (progression: ChordProgression): void => {
-    setCustomProgression({ ...progression });
-    setUseWizardMode(true);
-  };
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && Object.values(SkillLevel).includes(saved as SkillLevel)) {
+      setSkillLevel(saved as SkillLevel);
+      setStep('flow');
+    }
+  }, [initialMode]);
 
-  const wizardSteps: WizardStep[] = [
-    {
-      id: 'skill',
-      title: 'Select Your Skill Level',
-      description: 'Choose your experience level to get appropriate chord progressions',
-      component: <SkillLevelSelector selectedLevel={skillLevel} onSelectLevel={setSkillLevel} />,
-    },
-    {
-      id: 'vibe',
-      title: 'Choose Your Vibe',
-      description: 'Pick the musical style that inspires you',
-      component: <VibeSelector selectedVibe={selectedVibe} onSelectVibe={setSelectedVibe} />,
-    },
-    {
-      id: 'progression',
-      title: 'Pick a Progression',
-      description: 'Select a chord progression to practice',
-      component: (
-        <ProgressionsGrid
-          vibe={selectedVibe}
-          progressions={filteredProgressions}
-          selectedProgressionId={selectedProgression?.id ?? null}
-          onSelectProgression={setSelectedProgression}
-          onBuildProgression={handleBuildFromProgression}
-        />
-      ),
-    },
-  ];
+  const handleSkillSelect = useCallback((level: SkillLevel) => {
+    setSkillLevel(level);
+    localStorage.setItem(STORAGE_KEY, level);
+    setStep('flow');
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setStep('skill');
+  }, []);
 
   return (
-    <motion.div
-      className={cn('container mx-auto py-6 md:py-8 px-4 overflow-x-hidden', MAX_WIDTH.EXTRA_LARGE)}
-      variants={FADE_VARIANTS}
-      initial="hidden"
-      animate="show"
-      transition={{ duration: ANIMATION_DURATION.NORMAL }}
-    >
-      <JamHeader />
-      <SkillLevelSelector selectedLevel={skillLevel} onSelectLevel={setSkillLevel} />
-
-      {showQuickStart && (
-        <QuickStart
-          tips={QUICK_TIPS.jam}
-          className="mb-6"
-          onDismiss={() => setShowQuickStart(false)}
-        />
-      )}
-
-      {useWizardMode && customProgression ? (
-        <div className="space-y-6">
-          <JamBuilder
-            progression={customProgression}
-            onUpdate={setCustomProgression}
-            onClear={() => {
-              setCustomProgression(null);
-              setUseWizardMode(false);
-            }}
-          />
-        </div>
-      ) : (
-        <Tabs defaultValue="discover" className="w-full">
-          <TabsList className={cn('grid w-full mx-auto grid-cols-2 mb-6 md:mb-8', MAX_WIDTH.SMALL)}>
-            <TabsTrigger value="discover" className="flex items-center gap-2 h-11">
-              <Lightbulb className="w-4 h-4" />
-              Discover
-            </TabsTrigger>
-            <TabsTrigger value="build" className="flex items-center gap-2 h-11">
-              <Music2 className="w-4 h-4" />
-              Build
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="discover" className="space-y-6">
-            <JamWizard
-              steps={wizardSteps}
-              onComplete={() => {
-                if (selectedProgression) {
-                  handleBuildFromProgression(selectedProgression);
-                }
-              }}
+    <div className={cn('container mx-auto py-8 px-4', MAX_WIDTH.EXTRA_LARGE)}>
+      <AnimatePresence mode="wait">
+        {step === 'skill' && (
+          <motion.div
+            key="skill-select"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h1 className="text-2xl font-bold mb-2">Let's Jam</h1>
+            <p className="text-muted-foreground mb-8">What's your skill level?</p>
+            <SkillLevelSelector
+              selectedLevel={skillLevel ?? SkillLevel.Beginner}
+              onSelectLevel={handleSkillSelect}
             />
-          </TabsContent>
+          </motion.div>
+        )}
 
-          <TabsContent value="build" className="space-y-6">
-            {customProgression ? (
-              <JamBuilder
-                progression={customProgression}
-                onUpdate={setCustomProgression}
-                onClear={() => setCustomProgression(null)}
-              />
-            ) : (
-              <EmptyBuildState onCreateProgression={setCustomProgression} />
+        {step === 'flow' && skillLevel && (
+          <motion.div
+            key="flow"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <div className="flex justify-end mb-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRestart}
+                className="text-muted-foreground text-xs"
+              >
+                <RotateCcw className="w-3 h-3 mr-1" />
+                Change skill
+              </Button>
+            </div>
+
+            {skillLevel === SkillLevel.Beginner && (
+              <BeginnerFlow onSkillChange={() => handleSkillSelect(SkillLevel.Intermediate)} />
             )}
-          </TabsContent>
-        </Tabs>
-      )}
-    </motion.div>
+            {skillLevel === SkillLevel.Intermediate && (
+              <IntermediateFlow onSkillChange={() => handleSkillSelect(SkillLevel.Expert)} />
+            )}
+            {skillLevel === SkillLevel.Expert && <ExpertComposer />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
