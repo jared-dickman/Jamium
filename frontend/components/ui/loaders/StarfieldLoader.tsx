@@ -55,7 +55,7 @@ export function StarfieldLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {/* Twinkling stars */}
-        {stars.map((star) => (
+        {stars.map(star => (
           <motion.circle
             key={star.id}
             cx={star.x}
@@ -78,7 +78,7 @@ export function StarfieldLoader({ className, size = 'md' }: LoaderProps) {
         ))}
 
         {/* Shooting stars */}
-        {shootingStars.map((star) => (
+        {shootingStars.map(star => (
           <motion.g key={`shooting-${star.id}`}>
             {/* Star trail */}
             <motion.line

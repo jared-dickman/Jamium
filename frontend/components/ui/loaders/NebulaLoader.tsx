@@ -19,7 +19,13 @@ export function NebulaLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
@@ -58,8 +64,8 @@ export function NebulaLoader({ className, size = 'md' }: LoaderProps) {
         {[...Array(6)].map((_, i) => (
           <motion.circle
             key={`star-${i}`}
-            cx={(center + (i * dim * 0.15)) % dim}
-            cy={(center + (i * dim * 0.2)) % dim}
+            cx={(center + i * dim * 0.15) % dim}
+            cy={(center + i * dim * 0.2) % dim}
             r={dim * 0.015}
             fill={SAPPHIRE[3]}
             animate={{

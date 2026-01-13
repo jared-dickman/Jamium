@@ -32,14 +32,8 @@ export function ScatterLoader({ size = 'md' }: LoaderProps) {
                 opacity: 0,
               }}
               animate={{
-                cx: [
-                  dimension / 2,
-                  dimension / 2 + Math.cos(angle) * endRadius,
-                ],
-                cy: [
-                  dimension / 2,
-                  dimension / 2 + Math.sin(angle) * endRadius,
-                ],
+                cx: [dimension / 2, dimension / 2 + Math.cos(angle) * endRadius],
+                cy: [dimension / 2, dimension / 2 + Math.sin(angle) * endRadius],
                 opacity: [0, 1, 0],
                 scale: [0, 1.2, 0.8],
               }}

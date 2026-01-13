@@ -22,8 +22,9 @@ const [bpm, setBpm] = useJamParams('bpm', jamParsers.bpm);
 ## Buddy Integration
 
 Navigate tool accepts `params` arg to control UI state:
+
 ```ts
-navigate({ path: "/songs/Oasis/Wonderwall", params: { tab: "chords", bpm: "90" } })
+navigate({ path: '/songs/Oasis/Wonderwall', params: { tab: 'chords', bpm: '90' } });
 ```
 
 ## Adding Params

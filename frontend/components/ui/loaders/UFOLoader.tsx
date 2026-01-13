@@ -62,13 +62,7 @@ export function UFOLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* UFO saucer body - main disc */}
-          <ellipse
-            cx={center}
-            cy={center}
-            rx={dim * 0.28}
-            ry={dim * 0.09}
-            fill={SAPPHIRE[1]}
-          />
+          <ellipse cx={center} cy={center} rx={dim * 0.28} ry={dim * 0.09} fill={SAPPHIRE[1]} />
 
           {/* Top highlight */}
           <ellipse

@@ -26,13 +26,13 @@ export function VinylLoader({ size = 'md' }: LoaderProps) {
         <motion.g
           animate={{
             rotate: [0, 1.2, -1.0, 1.5, -0.8, 0],
-            scale: [1, 1.006, 0.995, 1.008, 0.997, 1]
+            scale: [1, 1.006, 0.995, 1.008, 0.997, 1],
           }}
           transition={{
             duration: 3,
             repeat: Infinity,
             ease: [0.45, 0.05, 0.55, 0.95],
-            times: [0, 0.2, 0.4, 0.6, 0.8, 1]
+            times: [0, 0.2, 0.4, 0.6, 0.8, 1],
           }}
           style={{ transformOrigin: `${dimension / 2}px ${dimension / 2}px` }}
         >
@@ -61,7 +61,13 @@ export function VinylLoader({ size = 'md' }: LoaderProps) {
           ))}
 
           {/* Center label */}
-          <circle cx={dimension / 2} cy={dimension / 2} r={dimension * 0.08} fill={SAPPHIRE[2]} opacity={0.8} />
+          <circle
+            cx={dimension / 2}
+            cy={dimension / 2}
+            r={dimension * 0.08}
+            fill={SAPPHIRE[2]}
+            opacity={0.8}
+          />
 
           {/* Spindle hole */}
           <circle cx={dimension / 2} cy={dimension / 2} r={dimension * 0.03} fill="#0f172a" />

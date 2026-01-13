@@ -15,11 +15,7 @@ interface DramaticLoaderProps {
   className?: string;
 }
 
-export function DramaticLoader({
-  isLoading = true,
-  size = 'lg',
-  className,
-}: DramaticLoaderProps) {
+export function DramaticLoader({ isLoading = true, size = 'lg', className }: DramaticLoaderProps) {
   const [showLoader, setShowLoader] = useState(isLoading);
 
   useEffect(() => {
@@ -47,10 +43,7 @@ export function DramaticLoader({
             duration: DRAMATIC_DURATION,
             ease: 'easeInOut',
           }}
-          className={cn(
-            'flex items-center justify-center absolute inset-0',
-            className
-          )}
+          className={cn('flex items-center justify-center absolute inset-0', className)}
         >
           <div className="scale-150">
             <RandomLoader size={size} />

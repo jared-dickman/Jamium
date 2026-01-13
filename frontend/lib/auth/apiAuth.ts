@@ -1,4 +1,4 @@
-import type { NextRequest} from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { logger } from '@/lib/logger';
@@ -43,10 +43,7 @@ export function validateApiAuth(request: NextRequest): AuthResult {
     });
     return {
       authorized: false,
-      response: NextResponse.json(
-        { error: 'Unauthorized: API key required' },
-        { status: 401 }
-      ),
+      response: NextResponse.json({ error: 'Unauthorized: API key required' }, { status: 401 }),
     };
   }
 
@@ -71,10 +68,7 @@ export function validateApiAuth(request: NextRequest): AuthResult {
     });
     return {
       authorized: false,
-      response: NextResponse.json(
-        { error: 'Not found' },
-        { status: 404 }
-      ),
+      response: NextResponse.json({ error: 'Not found' }, { status: 404 }),
     };
   }
 

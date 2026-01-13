@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, LOADER_STROKE, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  LOADER_STROKE,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function RadarLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -69,7 +74,7 @@ export function RadarLoader({ className, size = 'md' }: LoaderProps) {
           transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
           style={{
             transformOrigin: `${centerX}px ${centerY}px`,
-            transformBox: 'fill-box'
+            transformBox: 'fill-box',
           }}
         >
           <path
@@ -101,7 +106,7 @@ export function RadarLoader({ className, size = 'md' }: LoaderProps) {
                 fill={SAPPHIRE[3]}
                 animate={{
                   opacity: [0, 1, 1, 0.3, 0],
-                  scale: [0.5, 1.2, 1, 1, 0.5]
+                  scale: [0.5, 1.2, 1, 1, 0.5],
                 }}
                 transition={{
                   duration: 2.5,
@@ -114,19 +119,8 @@ export function RadarLoader({ className, size = 'md' }: LoaderProps) {
           );
         })}
 
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={dim * 0.035}
-          fill={SAPPHIRE[2]}
-          opacity="0.8"
-        />
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={dim * 0.02}
-          fill={SAPPHIRE[3]}
-        />
+        <circle cx={centerX} cy={centerY} r={dim * 0.035} fill={SAPPHIRE[2]} opacity="0.8" />
+        <circle cx={centerX} cy={centerY} r={dim * 0.02} fill={SAPPHIRE[3]} />
       </svg>
     </div>
   );

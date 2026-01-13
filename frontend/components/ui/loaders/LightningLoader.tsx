@@ -8,10 +8,11 @@ export function LightningLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
 
   // Jagged, realistic lightning bolt path with angular segments
-  const mainBolt = "M50,5 L48,15 L52,18 L49,28 L53,32 L47,42 L51,46 L45,58 L49,62 L42,75 L46,78 L38,95";
+  const mainBolt =
+    'M50,5 L48,15 L52,18 L49,28 L53,32 L47,42 L51,46 L45,58 L49,62 L42,75 L46,78 L38,95';
   // Secondary branch - splits off midway
-  const branch1 = "M47,42 L42,48 L44,52 L38,62";
-  const branch2 = "M45,58 L52,65 L50,70 L56,78";
+  const branch1 = 'M47,42 L42,48 L44,52 L38,62';
+  const branch2 = 'M45,58 L52,65 L50,70 L56,78';
 
   return (
     <div
@@ -23,10 +24,10 @@ export function LightningLoader({ className, size = 'md' }: LoaderProps) {
       <svg width={dim} height={dim} viewBox="0 0 100 100" style={{ display: 'block' }}>
         <defs>
           <filter id="lightning-glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>

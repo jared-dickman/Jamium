@@ -26,13 +26,28 @@ export function SunriseLoader({ className, size = 'md' }: LoaderProps) {
           {/* Animated sky gradient */}
           <linearGradient id={`sunrise-sky-${size}`} x1="0" y1="0" x2="0" y2="1">
             <motion.stop offset="0%" stopColor={SAPPHIRE[0]}>
-              <animate attributeName="stop-color" values={`${SAPPHIRE[0]};${SAPPHIRE[1]};${SAPPHIRE[0]}`} dur="4s" repeatCount="indefinite" />
+              <animate
+                attributeName="stop-color"
+                values={`${SAPPHIRE[0]};${SAPPHIRE[1]};${SAPPHIRE[0]}`}
+                dur="4s"
+                repeatCount="indefinite"
+              />
             </motion.stop>
             <motion.stop offset="70%" stopColor={SAPPHIRE[1]}>
-              <animate attributeName="stop-color" values={`${SAPPHIRE[1]};${SAPPHIRE[2]};${SAPPHIRE[1]}`} dur="4s" repeatCount="indefinite" />
+              <animate
+                attributeName="stop-color"
+                values={`${SAPPHIRE[1]};${SAPPHIRE[2]};${SAPPHIRE[1]}`}
+                dur="4s"
+                repeatCount="indefinite"
+              />
             </motion.stop>
             <motion.stop offset="100%" stopColor={SAPPHIRE[2]}>
-              <animate attributeName="stop-color" values={`${SAPPHIRE[2]};${SAPPHIRE[3]};${SAPPHIRE[2]}`} dur="4s" repeatCount="indefinite" />
+              <animate
+                attributeName="stop-color"
+                values={`${SAPPHIRE[2]};${SAPPHIRE[3]};${SAPPHIRE[2]}`}
+                dur="4s"
+                repeatCount="indefinite"
+              />
             </motion.stop>
           </linearGradient>
 
@@ -136,12 +151,7 @@ export function SunriseLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* Sun core */}
-          <circle
-            cx={dim / 2}
-            cy={horizonY}
-            r={sunRadius}
-            fill={`url(#sunrise-sun-${size})`}
-          />
+          <circle cx={dim / 2} cy={horizonY} r={sunRadius} fill={`url(#sunrise-sun-${size})`} />
         </motion.g>
 
         {/* Horizon line */}

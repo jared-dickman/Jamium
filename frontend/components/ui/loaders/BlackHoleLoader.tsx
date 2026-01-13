@@ -13,7 +13,13 @@ export function BlackHoleLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
@@ -71,14 +77,8 @@ export function BlackHoleLoader({ className, size = 'md' }: LoaderProps) {
                 r={dim * 0.025}
                 fill={SAPPHIRE[i % 4]}
                 animate={{
-                  cx: [
-                    center + startRadius * Math.cos((angle * Math.PI) / 180),
-                    center,
-                  ],
-                  cy: [
-                    center + startRadius * Math.sin((angle * Math.PI) / 180),
-                    center,
-                  ],
+                  cx: [center + startRadius * Math.cos((angle * Math.PI) / 180), center],
+                  cy: [center + startRadius * Math.sin((angle * Math.PI) / 180), center],
                   scale: [1, 0],
                   opacity: [1, 0],
                 }}

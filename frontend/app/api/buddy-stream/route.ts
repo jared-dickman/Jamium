@@ -79,7 +79,7 @@ const TOOL_DEFINITIONS: Anthropic.Tool[] = [
   },
   {
     name: 'list_artists',
-    description: 'List all artists in the user\'s song library.',
+    description: "List all artists in the user's song library.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -103,7 +103,10 @@ const TOOL_DEFINITIONS: Anthropic.Tool[] = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        path: { type: 'string', description: 'The path to navigate to (e.g., /repertoire/pink-floyd/fearless)' },
+        path: {
+          type: 'string',
+          description: 'The path to navigate to (e.g., /repertoire/pink-floyd/fearless)',
+        },
         reason: { type: 'string', description: 'Brief explanation of why navigating' },
       },
       required: ['path'],
@@ -155,9 +158,10 @@ export async function POST(request: NextRequest): Promise<Response> {
     return authResult.response!;
   }
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
 
   if (!checkRateLimit(ip, 10, 60000)) {
     const remaining = getRemainingRequests(ip, 10);
@@ -166,14 +170,14 @@ export async function POST(request: NextRequest): Promise<Response> {
       JSON.stringify({
         error: 'Too Many Requests',
         message: 'Rate limit exceeded. Please wait before retrying.',
-        retryAfter: 60
+        retryAfter: 60,
       }),
       {
         status: 429,
         headers: {
           'Content-Type': 'application/json',
-          'Retry-After': '60'
-        }
+          'Retry-After': '60',
+        },
       }
     );
   }
@@ -213,9 +217,14 @@ export async function POST(request: NextRequest): Promise<Response> {
       }
 
       const historyMessages = messages.slice(0, -1);
-      const conversationHistory = historyMessages.length > 0
-        ? historyMessages.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${escapeXmlForLlm(m.content)}`).join('\n\n')
-        : '';
+      const conversationHistory =
+        historyMessages.length > 0
+          ? historyMessages
+              .map(
+                m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${escapeXmlForLlm(m.content)}`
+              )
+              .join('\n\n')
+          : '';
 
       const fullPrompt = conversationHistory
         ? `<conversation_history>\n${conversationHistory}\n</conversation_history>\n\nUser: ${escapeXmlForLlm(lastUserMessage.content)}`
@@ -228,9 +237,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       });
 
       // Build initial messages
-      let apiMessages: Anthropic.MessageParam[] = [
-        { role: 'user', content: fullPrompt }
-      ];
+      let apiMessages: Anthropic.MessageParam[] = [{ role: 'user', content: fullPrompt }];
 
       let turns = 0;
       let totalInputTokens = 0;
@@ -264,7 +271,10 @@ export async function POST(request: NextRequest): Promise<Response> {
             }
           } else if (event.type === 'content_block_start') {
             if (event.content_block.type === 'tool_use') {
-              await sendEvent('tool_start', { tool: event.content_block.name, id: event.content_block.id });
+              await sendEvent('tool_start', {
+                tool: event.content_block.name,
+                id: event.content_block.id,
+              });
               await sendEvent('thinking', {});
             }
           } else if (event.type === 'content_block_stop') {
@@ -298,7 +308,10 @@ export async function POST(request: NextRequest): Promise<Response> {
         for (const call of toolCalls) {
           logger.info('[buddy-stream/tool-exec]', { tool: call.name, input: call.input });
           const result = await executeTool(call.name, call.input);
-          logger.info('[buddy-stream/tool-result]', { tool: call.name, result: result.substring(0, 200) });
+          logger.info('[buddy-stream/tool-result]', {
+            tool: call.name,
+            result: result.substring(0, 200),
+          });
 
           // Check for navigation
           if (call.name === 'navigate') {
@@ -338,7 +351,6 @@ export async function POST(request: NextRequest): Promise<Response> {
       });
 
       logger.info('[buddy-stream/done]', { turns, totalInputTokens, totalOutputTokens });
-
     } catch (err) {
       const errorDetails = serverErrorTracker.captureApiError(err, {
         service: 'buddy-stream',

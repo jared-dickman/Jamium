@@ -27,7 +27,7 @@ export function HexagonLoader({ className, size = 'md' }: LoaderProps) {
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         {/* Nested hexagons with rotating and scaling */}
-        {[0, 1, 2].map((index) => {
+        {[0, 1, 2].map(index => {
           const scale = 1 - index * 0.25;
           return (
             <motion.polygon

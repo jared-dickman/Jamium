@@ -8,7 +8,14 @@ export function CloudDriftLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
 
   // Fluffy, puffy cloud with overlapping circles for organic shape
-  const Cloud = ({ x, y, scale = 1, delay = 0, duration = 8, layer = 1 }: {
+  const Cloud = ({
+    x,
+    y,
+    scale = 1,
+    delay = 0,
+    duration = 8,
+    layer = 1,
+  }: {
     x: number;
     y: number;
     scale?: number;
@@ -31,20 +38,83 @@ export function CloudDriftLoader({ className, size = 'md' }: LoaderProps) {
     >
       {/* Puffy cloud - multiple overlapping puffs for realistic shape */}
       {/* Bottom layer - larger puffs */}
-      <ellipse cx={x} cy={y + 4 * scale} rx={10 * scale} ry={7 * scale} fill={SAPPHIRE[layer % 4]} opacity="0.7" />
-      <ellipse cx={x + 12 * scale} cy={y + 5 * scale} rx={11 * scale} ry={8 * scale} fill={SAPPHIRE[(layer + 1) % 4]} opacity="0.75" />
-      <ellipse cx={x + 24 * scale} cy={y + 4 * scale} rx={10 * scale} ry={7 * scale} fill={SAPPHIRE[layer % 4]} opacity="0.7" />
+      <ellipse
+        cx={x}
+        cy={y + 4 * scale}
+        rx={10 * scale}
+        ry={7 * scale}
+        fill={SAPPHIRE[layer % 4]}
+        opacity="0.7"
+      />
+      <ellipse
+        cx={x + 12 * scale}
+        cy={y + 5 * scale}
+        rx={11 * scale}
+        ry={8 * scale}
+        fill={SAPPHIRE[(layer + 1) % 4]}
+        opacity="0.75"
+      />
+      <ellipse
+        cx={x + 24 * scale}
+        cy={y + 4 * scale}
+        rx={10 * scale}
+        ry={7 * scale}
+        fill={SAPPHIRE[layer % 4]}
+        opacity="0.7"
+      />
 
       {/* Top layer - smaller puffs creating fluffy top */}
-      <circle cx={x + 4 * scale} cy={y} r={8 * scale} fill={SAPPHIRE[(layer + 2) % 4]} opacity="0.8" />
-      <circle cx={x + 12 * scale} cy={y - 2 * scale} r={9 * scale} fill={SAPPHIRE[(layer + 3) % 4]} opacity="0.85" />
-      <circle cx={x + 20 * scale} cy={y - 1 * scale} r={8 * scale} fill={SAPPHIRE[(layer + 2) % 4]} opacity="0.8" />
-      <circle cx={x + 28 * scale} cy={y + 1 * scale} r={7 * scale} fill={SAPPHIRE[(layer + 1) % 4]} opacity="0.75" />
+      <circle
+        cx={x + 4 * scale}
+        cy={y}
+        r={8 * scale}
+        fill={SAPPHIRE[(layer + 2) % 4]}
+        opacity="0.8"
+      />
+      <circle
+        cx={x + 12 * scale}
+        cy={y - 2 * scale}
+        r={9 * scale}
+        fill={SAPPHIRE[(layer + 3) % 4]}
+        opacity="0.85"
+      />
+      <circle
+        cx={x + 20 * scale}
+        cy={y - 1 * scale}
+        r={8 * scale}
+        fill={SAPPHIRE[(layer + 2) % 4]}
+        opacity="0.8"
+      />
+      <circle
+        cx={x + 28 * scale}
+        cy={y + 1 * scale}
+        r={7 * scale}
+        fill={SAPPHIRE[(layer + 1) % 4]}
+        opacity="0.75"
+      />
 
       {/* Middle puffs for depth */}
-      <circle cx={x + 8 * scale} cy={y + 2 * scale} r={6 * scale} fill={SAPPHIRE[(layer + 1) % 4]} opacity="0.65" />
-      <circle cx={x + 16 * scale} cy={y + 1 * scale} r={7 * scale} fill={SAPPHIRE[(layer + 2) % 4]} opacity="0.7" />
-      <circle cx={x + 24 * scale} cy={y + 2 * scale} r={6 * scale} fill={SAPPHIRE[(layer + 1) % 4]} opacity="0.65" />
+      <circle
+        cx={x + 8 * scale}
+        cy={y + 2 * scale}
+        r={6 * scale}
+        fill={SAPPHIRE[(layer + 1) % 4]}
+        opacity="0.65"
+      />
+      <circle
+        cx={x + 16 * scale}
+        cy={y + 1 * scale}
+        r={7 * scale}
+        fill={SAPPHIRE[(layer + 2) % 4]}
+        opacity="0.7"
+      />
+      <circle
+        cx={x + 24 * scale}
+        cy={y + 2 * scale}
+        r={6 * scale}
+        fill={SAPPHIRE[(layer + 1) % 4]}
+        opacity="0.65"
+      />
     </motion.g>
   );
 

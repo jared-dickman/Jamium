@@ -1,7 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SAPPHIRE, LOADER_SIZE, DURATION, TRANSITION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  TRANSITION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function HealthBarLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -44,15 +50,21 @@ export function HealthBarLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
           <filter id={`heart-glow-${size}`}>
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
 
@@ -77,11 +89,7 @@ export function HealthBarLoader({ className, size = 'md' }: LoaderProps) {
         {/* Heart 1 - Static with subtle pulse */}
         <g>
           {/* Shadow/outline */}
-          <path
-            d={createHeartPath(startX, heartY, heartSize)}
-            fill={SAPPHIRE[0]}
-            opacity={0.3}
-          />
+          <path d={createHeartPath(startX, heartY, heartSize)} fill={SAPPHIRE[0]} opacity={0.3} />
           {/* Main heart */}
           <path
             d={createHeartPath(startX, heartY, heartSize)}

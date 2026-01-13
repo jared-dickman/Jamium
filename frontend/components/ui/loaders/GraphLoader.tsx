@@ -23,9 +23,7 @@ export function GraphLoader({ className, size = 'md' }: LoaderProps) {
   });
 
   // Create path from points
-  const pathData = sinePoints
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-    .join(' ');
+  const pathData = sinePoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 
   // Grid lines
   const gridLines = {
@@ -126,14 +124,8 @@ export function GraphLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Axis arrows */}
-        <path
-          d={`M ${100 - padding} ${originY} l -2 -1.5 l 0 3 Z`}
-          fill={SAPPHIRE[1]}
-        />
-        <path
-          d={`M ${originX} ${padding} l -1.5 2 l 3 0 Z`}
-          fill={SAPPHIRE[1]}
-        />
+        <path d={`M ${100 - padding} ${originY} l -2 -1.5 l 0 3 Z`} fill={SAPPHIRE[1]} />
+        <path d={`M ${originX} ${padding} l -1.5 2 l 3 0 Z`} fill={SAPPHIRE[1]} />
 
         {/* Animated sine curve */}
         <motion.path
@@ -163,8 +155,8 @@ export function GraphLoader({ className, size = 'md' }: LoaderProps) {
           fill={SAPPHIRE[3]}
           filter={`url(#graph-glow-${size})`}
           animate={{
-            cx: sinePoints.map((p) => p.x),
-            cy: sinePoints.map((p) => p.y),
+            cx: sinePoints.map(p => p.x),
+            cy: sinePoints.map(p => p.y),
           }}
           transition={{
             duration: 2.5,
@@ -184,8 +176,8 @@ export function GraphLoader({ className, size = 'md' }: LoaderProps) {
           strokeWidth="0.5"
           opacity="0.6"
           animate={{
-            cx: sinePoints.map((p) => p.x),
-            cy: sinePoints.map((p) => p.y),
+            cx: sinePoints.map(p => p.x),
+            cy: sinePoints.map(p => p.y),
             scale: [1, 2, 1],
             opacity: [0.6, 0, 0.6],
           }}

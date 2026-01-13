@@ -21,7 +21,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export const KEY_SIGNATURES = [
-  'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
 ] as const;
 
 interface SongToolbarProps {
@@ -76,11 +87,7 @@ export function SongToolbar({
               isAutoScrollEnabled && 'bg-gradient-to-r from-blue-500 to-purple-500'
             )}
           >
-            {isAutoScrollEnabled ? (
-              <Square className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
+            {isAutoScrollEnabled ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
             {isAutoScrollEnabled ? 'Stop' : 'Play'}
           </Button>
 
@@ -146,7 +153,9 @@ export function SongToolbar({
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-white/60">
                       <Music className="h-4 w-4" />
-                      <span className="text-sm font-medium uppercase tracking-wider">Key & Transpose</span>
+                      <span className="text-sm font-medium uppercase tracking-wider">
+                        Key & Transpose
+                      </span>
                     </div>
                     <div className="bg-white/5 rounded-2xl p-4 space-y-4">
                       {/* Key Selector */}
@@ -225,7 +234,7 @@ export function SongToolbar({
                           <input
                             type="number"
                             value={bpm}
-                            onChange={(e) => {
+                            onChange={e => {
                               const val = Number(e.target.value);
                               if (Number.isFinite(val) && val >= 0) onBpmChange(val);
                             }}
@@ -265,14 +274,18 @@ export function SongToolbar({
                         )}
                         <span className="text-white">Chord Playback</span>
                       </div>
-                      <div className={cn(
-                        'w-12 h-7 rounded-full transition-all relative',
-                        isAudioEnabled ? 'bg-blue-500' : 'bg-white/20'
-                      )}>
-                        <div className={cn(
-                          'absolute top-1 w-5 h-5 bg-white rounded-full transition-all',
-                          isAudioEnabled ? 'left-6' : 'left-1'
-                        )} />
+                      <div
+                        className={cn(
+                          'w-12 h-7 rounded-full transition-all relative',
+                          isAudioEnabled ? 'bg-blue-500' : 'bg-white/20'
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'absolute top-1 w-5 h-5 bg-white rounded-full transition-all',
+                            isAudioEnabled ? 'left-6' : 'left-1'
+                          )}
+                        />
                       </div>
                     </button>
                   </div>
@@ -320,7 +333,11 @@ export function SongToolbar({
           onClick={onToggleAutoScroll}
           className="h-8 px-3 gap-1.5"
         >
-          {isAutoScrollEnabled ? <Square className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+          {isAutoScrollEnabled ? (
+            <Square className="h-3.5 w-3.5" />
+          ) : (
+            <Play className="h-3.5 w-3.5" />
+          )}
           <span className="text-xs font-medium">{isAutoScrollEnabled ? 'Stop' : 'Play'}</span>
         </Button>
 
@@ -333,16 +350,28 @@ export function SongToolbar({
             className="h-8 pl-2 pr-5 text-xs font-semibold bg-muted/30 border border-border/50 cursor-pointer hover:bg-muted/50 hover:border-border rounded transition-colors focus:outline-none focus:ring-1 focus:ring-sapphire-500/50 appearance-none"
           >
             {KEY_SIGNATURES.map(key => (
-              <option key={key} value={key}>{key}</option>
+              <option key={key} value={key}>
+                {key}
+              </option>
             ))}
           </select>
-          <Button variant="outline" size="sm" onClick={() => onTransposeChange(transpose - 1)} className="h-7 w-6 p-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onTransposeChange(transpose - 1)}
+            className="h-7 w-6 p-0"
+          >
             <ChevronDown className="h-3.5 w-3.5" />
           </Button>
           <span className="w-6 text-center text-xs font-mono tabular-nums text-muted-foreground">
             {transpose >= 0 ? `+${transpose}` : transpose}
           </span>
-          <Button variant="outline" size="sm" onClick={() => onTransposeChange(transpose + 1)} className="h-7 w-6 p-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onTransposeChange(transpose + 1)}
+            className="h-7 w-6 p-0"
+          >
             <ChevronUp className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -350,14 +379,19 @@ export function SongToolbar({
         <div className="w-px h-5 bg-border/50 mx-1" />
 
         <div className="flex items-center gap-0.5">
-          <Button variant="outline" size="sm" onClick={() => onBpmChange(Math.max(40, bpm - 5))} className="h-7 w-6 p-0 text-muted-foreground hover:text-foreground">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onBpmChange(Math.max(40, bpm - 5))}
+            className="h-7 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
             <ChevronDown className="h-3.5 w-3.5" />
           </Button>
           <div className="flex items-center gap-1 px-1">
             <input
               type="number"
               value={bpm}
-              onChange={(e) => {
+              onChange={e => {
                 const val = Number(e.target.value);
                 if (Number.isFinite(val) && val >= 0) onBpmChange(val);
               }}
@@ -367,7 +401,12 @@ export function SongToolbar({
             />
             <span className="text-[10px] text-muted-foreground font-medium">BPM</span>
           </div>
-          <Button variant="outline" size="sm" onClick={() => onBpmChange(Math.min(300, bpm + 5))} className="h-7 w-6 p-0 text-muted-foreground hover:text-foreground">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onBpmChange(Math.min(300, bpm + 5))}
+            className="h-7 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
             <ChevronUp className="h-3.5 w-3.5" />
           </Button>
         </div>

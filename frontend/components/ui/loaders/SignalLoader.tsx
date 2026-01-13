@@ -40,7 +40,7 @@ export function SignalLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {Array.from({ length: waves }).map((_, i) => {
-          const amplitude = dim * 0.15 * (waves - i) / waves;
+          const amplitude = (dim * 0.15 * (waves - i)) / waves;
           const frequency = 2 + i;
 
           return (

@@ -21,7 +21,13 @@ export function CoinLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
@@ -33,12 +39,7 @@ export function CoinLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {/* Coin body - static gold surface */}
-        <circle
-          cx={center}
-          cy={center}
-          r={coinRadius}
-          fill={`url(#coin-gold-${size})`}
-        />
+        <circle cx={center} cy={center} r={coinRadius} fill={`url(#coin-gold-${size})`} />
 
         {/* Arcade coin rim/ridge */}
         <circle

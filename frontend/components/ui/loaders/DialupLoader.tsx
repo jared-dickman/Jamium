@@ -12,7 +12,13 @@ export function DialupLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim * 0.8} height={dim * 0.8} viewBox="0 0 100 100">
         {/* Modem body */}
@@ -28,7 +34,7 @@ export function DialupLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Status lights - blinking */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={`light-${i}`}
             cx={25 + i * 12}
@@ -49,7 +55,7 @@ export function DialupLoader({ className, size = 'md' }: LoaderProps) {
         ))}
 
         {/* Sound wave bars */}
-        {[0, 1, 2, 3, 4].map((i) => {
+        {[0, 1, 2, 3, 4].map(i => {
           const height = 8 + (i === 2 ? 8 : i % 2 === 0 ? 4 : 0);
           return (
             <motion.rect
@@ -119,7 +125,7 @@ export function DialupLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Signal waves emanating */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={`signal-${i}`}
             cx="50"

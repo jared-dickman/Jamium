@@ -24,7 +24,14 @@ export function drawMarkers(
 
       const drawMarker = (markerX: number, markerY: number) => {
         // Glow effect
-        const glowGradient = ctx.createRadialGradient(markerX, markerY, 0, markerX, markerY, MARKER_RADIUS * 2);
+        const glowGradient = ctx.createRadialGradient(
+          markerX,
+          markerY,
+          0,
+          markerX,
+          markerY,
+          MARKER_RADIUS * 2
+        );
         glowGradient.addColorStop(0, `${SAPPHIRE[700]}60`);
         glowGradient.addColorStop(1, `${SAPPHIRE[700]}00`);
         ctx.fillStyle = glowGradient;
@@ -33,7 +40,14 @@ export function drawMarkers(
         ctx.fill();
 
         // Main marker
-        const markerGradient = ctx.createRadialGradient(markerX, markerY, 0, markerX, markerY, MARKER_RADIUS);
+        const markerGradient = ctx.createRadialGradient(
+          markerX,
+          markerY,
+          0,
+          markerX,
+          markerY,
+          MARKER_RADIUS
+        );
         markerGradient.addColorStop(0, SAPPHIRE[800]);
         markerGradient.addColorStop(0.7, SAPPHIRE[900]);
         markerGradient.addColorStop(1, SAPPHIRE.DARK);

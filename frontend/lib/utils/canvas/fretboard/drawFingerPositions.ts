@@ -155,7 +155,12 @@ export function drawBarres(
     const y2 = padding + y2Position * stringSpacing;
 
     // Draw barre with gradient and glow
-    const barreGradient = ctx.createLinearGradient(x - BARRE_LINE_WIDTH / 2, y1, x + BARRE_LINE_WIDTH / 2, y2);
+    const barreGradient = ctx.createLinearGradient(
+      x - BARRE_LINE_WIDTH / 2,
+      y1,
+      x + BARRE_LINE_WIDTH / 2,
+      y2
+    );
     barreGradient.addColorStop(0, SAPPHIRE[500]);
     barreGradient.addColorStop(0.5, SAPPHIRE[400]);
     barreGradient.addColorStop(1, SAPPHIRE[500]);

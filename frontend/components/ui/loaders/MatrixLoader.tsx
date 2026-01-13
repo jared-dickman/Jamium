@@ -34,7 +34,7 @@ export function MatrixLoader({ className, size = 'md' }: LoaderProps) {
             <g key={col}>
               {Array.from({ length: trail }).map((_, i) => {
                 const char = chars[Math.floor(Math.random() * chars.length)];
-                const opacity = 1 - (i / trail);
+                const opacity = 1 - i / trail;
 
                 return (
                   <motion.text
@@ -48,7 +48,7 @@ export function MatrixLoader({ className, size = 'md' }: LoaderProps) {
                     fill="url(#matrixGradient)"
                     opacity={opacity}
                     animate={{
-                      y: [-(i * dim / trail), dim + (trail - i) * dim / trail],
+                      y: [-((i * dim) / trail), dim + ((trail - i) * dim) / trail],
                     }}
                     transition={{
                       duration: 3,

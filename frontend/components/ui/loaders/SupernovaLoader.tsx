@@ -12,7 +12,13 @@ export function SupernovaLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
@@ -29,7 +35,7 @@ export function SupernovaLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {/* Expanding shockwave rings */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={`ring-${i}`}
             cx={center}

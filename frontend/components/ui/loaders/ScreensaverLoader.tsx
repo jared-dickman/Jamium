@@ -23,14 +23,19 @@ const WIN95_SAYINGS = [
 
 export function ScreensaverLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
-  const logoWidth = dim * 0.75;  // 3x bigger - takes up most of container
+  const logoWidth = dim * 0.75; // 3x bigger - takes up most of container
   const logoHeight = dim * 0.45; // 2.5x bigger - prominent and visible
 
-  const [position, setPosition] = useState({ x: dim / 2 - logoWidth / 2, y: dim / 2 - logoHeight / 2 });
+  const [position, setPosition] = useState({
+    x: dim / 2 - logoWidth / 2,
+    y: dim / 2 - logoHeight / 2,
+  });
   const [colorIndex, setColorIndex] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const velocityRef = useRef({ x: 0.6, y: 0.5 });
-  const [trail, setTrail] = useState<Array<{ x: number; y: number; color: string; opacity: number }>>([]);
+  const [trail, setTrail] = useState<
+    Array<{ x: number; y: number; color: string; opacity: number }>
+  >([]);
 
   useEffect(() => {
     const animate = () => {
@@ -72,7 +77,7 @@ export function ScreensaverLoader({ className, size = 'md' }: LoaderProps) {
           const currentColor = SAPPHIRE[colorIndex] || '#3b82f6';
           const newTrail = [
             { x: newX + logoWidth / 2, y: newY + logoHeight / 2, color: currentColor, opacity: 1 },
-            ...prev.map(t => ({ ...t, opacity: t.opacity * 0.92 }))
+            ...prev.map(t => ({ ...t, opacity: t.opacity * 0.92 })),
           ].slice(0, 15);
           return newTrail;
         });

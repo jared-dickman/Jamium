@@ -20,7 +20,11 @@ export function CinematicIntro({ onComplete, headerLogoRef }: CinematicIntroProp
   const reducedMotion = useReducedMotion();
   const { setIntroLanding } = useIntro();
   const [phase, setPhase] = useState<'fadeIn' | 'hold' | 'flyToHeader' | 'done'>('fadeIn');
-  const [targetPosition, setTargetPosition] = useState<{ x: number; y: number; scale: number } | null>(null);
+  const [targetPosition, setTargetPosition] = useState<{
+    x: number;
+    y: number;
+    scale: number;
+  } | null>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const clickCount = useRef(0);
   const clickTimer = useRef<NodeJS.Timeout | null>(null);
@@ -127,7 +131,12 @@ export function CinematicIntro({ onComplete, headerLogoRef }: CinematicIntroProp
                     duration: FADE_IN,
                     delay: BLACK_DELAY,
                     ease: 'easeOut',
-                    scale: { duration: FADE_IN * 1.2, delay: BLACK_DELAY, times: [0, 0.7, 1], ease: 'easeInOut' },
+                    scale: {
+                      duration: FADE_IN * 1.2,
+                      delay: BLACK_DELAY,
+                      times: [0, 0.7, 1],
+                      ease: 'easeInOut',
+                    },
                   }
             }
             onAnimationComplete={() => {

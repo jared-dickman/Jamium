@@ -40,7 +40,9 @@ export function SearchResultButton({
       className="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all mb-1.5 disabled:opacity-50 group"
     >
       <div className="flex justify-between items-center">
-        <span className="font-medium text-xs text-white/90 group-hover:text-white">{result.title}</span>
+        <span className="font-medium text-xs text-white/90 group-hover:text-white">
+          {result.title}
+        </span>
         <span className="text-[10px] text-white/40 tabular-nums">{formattedRating}★</span>
       </div>
       <span className="text-[10px] text-white/50">{result.artist}</span>
@@ -48,14 +50,21 @@ export function SearchResultButton({
   );
 }
 
-function InfluenceChainBlock({ chain }: { chain: Array<{ artist: string; relationship: string }> }) {
+function InfluenceChainBlock({
+  chain,
+}: {
+  chain: Array<{ artist: string; relationship: string }>;
+}) {
   return (
     <div className="mt-3 p-2.5 bg-white/5 rounded-lg border border-white/10">
       <div className="text-[9px] uppercase tracking-widest text-white/40 mb-2">Influence Chain</div>
       <div className="flex flex-wrap items-center gap-1 text-[10px]">
         {chain.map((item, i) => (
           <span key={item.artist} className="flex items-center gap-1">
-            <Badge variant="secondary" className="bg-white/10 text-white/80 text-[10px] px-1.5 py-0">
+            <Badge
+              variant="secondary"
+              className="bg-white/10 text-white/80 text-[10px] px-1.5 py-0"
+            >
               {item.artist}
             </Badge>
             {i < chain.length - 1 && <span className="text-white/30">→</span>}
@@ -84,7 +93,11 @@ function ArtistCardBlock({
       {hasGenres && (
         <div className="flex flex-wrap gap-1 mt-2">
           {genres.map(genre => (
-            <Badge key={genre} variant="outline" className="text-[9px] px-1.5 py-0 border-white/20 text-white/60">
+            <Badge
+              key={genre}
+              variant="outline"
+              className="text-[9px] px-1.5 py-0 border-white/20 text-white/60"
+            >
               {genre}
             </Badge>
           ))}
@@ -114,7 +127,9 @@ export function StructuredBlock({ data }: { data: StructuredData }) {
 }
 
 export function EmptyState() {
-  const [phraseIndex, setPhraseIndex] = useState(() => Math.floor(Math.random() * placeholders.length));
+  const [phraseIndex, setPhraseIndex] = useState(() =>
+    Math.floor(Math.random() * placeholders.length)
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -136,7 +151,7 @@ export function EmptyState() {
             '0 0 20px rgba(59, 130, 246, 0.3)',
             '0 0 40px rgba(147, 51, 234, 0.3)',
             '0 0 20px rgba(59, 130, 246, 0.3)',
-          ]
+          ],
         }}
         transition={{ duration: 3, repeat: Infinity }}
         className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mb-4 border border-white/10"

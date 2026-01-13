@@ -45,7 +45,7 @@ export function SatelliteLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Signal waves emanating from satellite */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={`wave-${i}`}
             cx={50}
@@ -78,116 +78,25 @@ export function SatelliteLoader({ className, size = 'md' }: LoaderProps) {
           style={{ originX: '50px', originY: '35px' }}
         >
           {/* Central satellite body */}
-          <rect
-            x={45}
-            y={30}
-            width={10}
-            height={10}
-            fill={SAPPHIRE[2]}
-            rx={1}
-          />
-          <rect
-            x={46}
-            y={31}
-            width={8}
-            height={8}
-            fill={SAPPHIRE[3]}
-            rx={0.5}
-          />
+          <rect x={45} y={30} width={10} height={10} fill={SAPPHIRE[2]} rx={1} />
+          <rect x={46} y={31} width={8} height={8} fill={SAPPHIRE[3]} rx={0.5} />
 
           {/* Left solar panel */}
-          <rect
-            x={32}
-            y={32}
-            width={12}
-            height={6}
-            fill={SAPPHIRE[1]}
-            opacity={0.7}
-          />
-          <line
-            x1={33}
-            y1={32}
-            x2={33}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={36}
-            y1={32}
-            x2={36}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={39}
-            y1={32}
-            x2={39}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={42}
-            y1={32}
-            x2={42}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
+          <rect x={32} y={32} width={12} height={6} fill={SAPPHIRE[1]} opacity={0.7} />
+          <line x1={33} y1={32} x2={33} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={36} y1={32} x2={36} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={39} y1={32} x2={39} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={42} y1={32} x2={42} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
 
           {/* Right solar panel */}
-          <rect
-            x={56}
-            y={32}
-            width={12}
-            height={6}
-            fill={SAPPHIRE[1]}
-            opacity={0.7}
-          />
-          <line
-            x1={57}
-            y1={32}
-            x2={57}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={60}
-            y1={32}
-            x2={60}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={63}
-            y1={32}
-            x2={63}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
-          <line
-            x1={66}
-            y1={32}
-            x2={66}
-            y2={38}
-            stroke={SAPPHIRE[3]}
-            strokeWidth={0.3}
-          />
+          <rect x={56} y={32} width={12} height={6} fill={SAPPHIRE[1]} opacity={0.7} />
+          <line x1={57} y1={32} x2={57} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={60} y1={32} x2={60} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={63} y1={32} x2={63} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
+          <line x1={66} y1={32} x2={66} y2={38} stroke={SAPPHIRE[3]} strokeWidth={0.3} />
 
           {/* Antenna */}
-          <line
-            x1={50}
-            y1={30}
-            x2={50}
-            y2={25}
-            stroke={SAPPHIRE[2]}
-            strokeWidth={0.5}
-          />
+          <line x1={50} y1={30} x2={50} y2={25} stroke={SAPPHIRE[2]} strokeWidth={0.5} />
 
           {/* Blinking antenna signal */}
           <motion.circle

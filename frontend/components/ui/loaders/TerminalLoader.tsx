@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, LOADER_STROKE, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  LOADER_STROKE,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function TerminalLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -22,10 +27,10 @@ export function TerminalLoader({ className, size = 'md' }: LoaderProps) {
         <defs>
           {/* CRT glow effect */}
           <filter id="terminal-glow">
-            <feGaussianBlur stdDeviation="0.8" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="0.8" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
@@ -60,9 +65,9 @@ export function TerminalLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Title bar dots (macOS style) */}
-        <circle cx={dim * 0.15} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#ff5f56"/>
-        <circle cx={dim * 0.25} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#ffbd2e"/>
-        <circle cx={dim * 0.35} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#27c93f"/>
+        <circle cx={dim * 0.15} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#ff5f56" />
+        <circle cx={dim * 0.25} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#ffbd2e" />
+        <circle cx={dim * 0.35} cy={titleBarHeight * 0.5} r={dim * 0.025} fill="#27c93f" />
 
         {/* Title text */}
         <text

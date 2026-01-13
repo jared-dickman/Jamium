@@ -18,12 +18,25 @@ export function AuroraLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         <defs>
           {waves.map((wave, i) => (
-            <linearGradient key={i} id={`aurora-gradient-${size}-${i}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient
+              key={i}
+              id={`aurora-gradient-${size}-${i}`}
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
               <stop offset="0%" stopColor={wave.color} stopOpacity="0.7" />
               <stop offset="100%" stopColor={wave.color} stopOpacity="0" />
             </linearGradient>
@@ -59,7 +72,7 @@ export function AuroraLoader({ className, size = 'md' }: LoaderProps) {
             cx={(i * dim) / 8}
             cy={dim * 0.3 + (i % 3) * dim * 0.15}
             r={dim * 0.02}
-            fill={SAPPHIRE[(i % 4)]}
+            fill={SAPPHIRE[i % 4]}
             animate={{
               opacity: [0.2, 0.8, 0.2],
               y: [0, dim * -0.1, 0],

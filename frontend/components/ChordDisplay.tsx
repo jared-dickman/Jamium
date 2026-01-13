@@ -57,7 +57,11 @@ export function ChordDisplay({ chordName, className = '' }: ChordDisplayProps) {
               <CardDescription>Select a song to see chord diagrams</CardDescription>
             </div>
             <Button variant="ghost" size="icon" onClick={toggleCollapse}>
-              {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </CardHeader>
@@ -88,7 +92,11 @@ export function ChordDisplay({ chordName, className = '' }: ChordDisplayProps) {
               <CardDescription>Chord: {chordName}</CardDescription>
             </div>
             <Button variant="ghost" size="icon" onClick={toggleCollapse}>
-              {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </CardHeader>

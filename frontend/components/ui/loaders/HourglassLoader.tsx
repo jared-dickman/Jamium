@@ -84,7 +84,7 @@ export function HourglassLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Falling sand particles */}
-        {sandParticles.map((particle) => (
+        {sandParticles.map(particle => (
           <motion.circle
             key={particle.id}
             r={1.5}

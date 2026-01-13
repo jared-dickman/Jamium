@@ -1,7 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SAPPHIRE, LOADER_SIZE, LOADER_STROKE, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  LOADER_STROKE,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function PrismLoader({ size = 'md' }: LoaderProps) {
   const dimension = LOADER_SIZE[size];
@@ -62,7 +67,7 @@ export function PrismLoader({ size = 'md' }: LoaderProps) {
         {/* Rainbow spectrum dispersing from prism - LONGER, THICKER lines */}
         {spectrum.map((color, i) => {
           const totalBeams = spectrum.length;
-          const angle = ((i - (totalBeams - 1) / 2) * 5); // Wider spread
+          const angle = (i - (totalBeams - 1) / 2) * 5; // Wider spread
           const startY = 49; // Mid-point of smaller prism right edge
 
           return (

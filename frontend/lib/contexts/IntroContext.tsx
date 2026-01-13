@@ -25,7 +25,9 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <IntroContext.Provider value={{ introComplete, introLanding, setIntroComplete, setIntroLanding }}>
+    <IntroContext.Provider
+      value={{ introComplete, introLanding, setIntroComplete, setIntroLanding }}
+    >
       {children}
     </IntroContext.Provider>
   );

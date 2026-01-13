@@ -28,7 +28,8 @@ export default function HomePage() {
 
   // Sort songs by most recently updated
   const sortedSongs = useMemo(
-    () => [...songs].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
+    () =>
+      [...songs].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
     [songs]
   );
 
@@ -98,48 +99,48 @@ export default function HomePage() {
           >
             {sortedSongs.map(song => (
               <motion.div key={`${song.artistSlug}/${song.songSlug}`} variants={SLIDE_UP_VARIANTS}>
-              <SapphireCard className="group">
-                <Link
-                  href={`/repertoire/${song.artistSlug}/${song.songSlug}`}
-                  className="block p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-md bg-sapphire-500/10 text-sapphire-400">
-                      <Disc3 className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium truncate group-hover:text-sapphire-400 transition-colors">
-                        {song.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground truncate">{song.artist}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        {song.key && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">
-                            {song.key}
-                          </span>
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(song.updatedAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
+                <SapphireCard className="group">
+                  <Link
+                    href={`/repertoire/${song.artistSlug}/${song.songSlug}`}
+                    className="block p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 rounded-md bg-sapphire-500/10 text-sapphire-400">
+                        <Disc3 className="h-5 w-5" />
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium truncate group-hover:text-sapphire-400 transition-colors">
+                          {song.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground truncate">{song.artist}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {song.key && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">
+                              {song.key}
+                            </span>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(song.updatedAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={e => {
+                          e.preventDefault();
+                          handleDelete(song.artistSlug, song.songSlug, song.title);
+                        }}
+                        disabled={isDeleting}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-destructive/10 rounded text-destructive disabled:opacity-50"
+                        title="Delete song"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={e => {
-                        e.preventDefault();
-                        handleDelete(song.artistSlug, song.songSlug, song.title);
-                      }}
-                      disabled={isDeleting}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-destructive/10 rounded text-destructive disabled:opacity-50"
-                      title="Delete song"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </Link>
-              </SapphireCard>
+                  </Link>
+                </SapphireCard>
               </motion.div>
             ))}
           </motion.div>

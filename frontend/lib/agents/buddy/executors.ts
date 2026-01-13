@@ -7,11 +7,7 @@
 
 import { logger } from '@/lib/logger';
 import { serverErrorTracker } from '@/app/utils/error-tracker.server';
-import {
-  searchTabs,
-  ripSong,
-  type RiffRipperResult,
-} from '@/lib/agents/riff-ripper';
+import { searchTabs, ripSong, type RiffRipperResult } from '@/lib/agents/riff-ripper';
 
 /** Get the API base URL for internal fetch calls (server-side) */
 function getApiBaseUrl(): string {
@@ -41,7 +37,7 @@ export async function executeSearch(
       });
     }
 
-    const chords = results.map((r) => ({
+    const chords = results.map(r => ({
       songUrl: r.url,
       artist,
       title,
@@ -58,8 +54,18 @@ export async function executeSearch(
     });
   } catch (error) {
     logger.error('[buddy/search]', { error: error instanceof Error ? error.message : error });
-    serverErrorTracker.captureApiError(error, { service: 'buddy', operation: 'execute-search', artist, title });
-    return JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error', query: { artist, title }, chords: [], tabs: [] });
+    serverErrorTracker.captureApiError(error, {
+      service: 'buddy',
+      operation: 'execute-search',
+      artist,
+      title,
+    });
+    return JSON.stringify({
+      error: error instanceof Error ? error.message : 'Unknown error',
+      query: { artist, title },
+      chords: [],
+      tabs: [],
+    });
   }
 }
 
@@ -119,8 +125,15 @@ export async function executeDownload(
     });
   } catch (error) {
     logger.error('[buddy/download]', { error: error instanceof Error ? error.message : error });
-    serverErrorTracker.captureApiError(error, { service: 'buddy', operation: 'download-song', songUrl });
-    return JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+    serverErrorTracker.captureApiError(error, {
+      service: 'buddy',
+      operation: 'download-song',
+      songUrl,
+    });
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 }
 
@@ -150,9 +163,7 @@ export async function executeListArtists(_apiBaseUrl?: string): Promise<string> 
       }
     }
 
-    const artists = Array.from(artistMap.values()).sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
+    const artists = Array.from(artistMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
     return JSON.stringify({ artists, count: artists.length });
   } catch (error) {
@@ -165,10 +176,7 @@ export async function executeListArtists(_apiBaseUrl?: string): Promise<string> 
   }
 }
 
-export async function executeGetArtistSongs(
-  _apiBaseUrl: string,
-  artist: string
-): Promise<string> {
+export async function executeGetArtistSongs(_apiBaseUrl: string, artist: string): Promise<string> {
   try {
     const response = await fetch(`${getApiBaseUrl()}/api/songs`, {
       cache: 'no-store',
@@ -190,7 +198,7 @@ export async function executeGetArtistSongs(
     const allSongs: SongEntry[] = await response.json();
     const artistLower = artist.toLowerCase();
     const artistSongs = allSongs.filter(
-      (song) =>
+      song =>
         song.artist.toLowerCase() === artistLower ||
         song.artistSlug.toLowerCase() === artistLower ||
         song.artist.toLowerCase().includes(artistLower)

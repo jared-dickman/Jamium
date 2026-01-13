@@ -11,11 +11,51 @@ function SignalWave({ clickable = false, onClick }: { clickable?: boolean; onCli
   return (
     <span className={className} aria-hidden={!clickable} onClick={onClick}>
       <svg width="24" height="16" viewBox="0 0 18 12" fill="none" className="text-foreground">
-        <line x1="1" y1="5" x2="1" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="5" y1="4" x2="5" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="9" y1="2" x2="9" y2="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="13" y1="4" x2="13" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="17" y1="5" x2="17" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <line
+          x1="1"
+          y1="5"
+          x2="1"
+          y2="7"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="5"
+          y1="4"
+          x2="5"
+          y2="8"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="9"
+          y1="2"
+          x2="9"
+          y2="10"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="13"
+          y1="4"
+          x2="13"
+          y2="8"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="17"
+          y1="5"
+          x2="17"
+          y2="7"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
       </svg>
     </span>
   );
@@ -59,7 +99,9 @@ export function Breadcrumbs() {
 
         const songSlug = segments[2];
         if (songSlug) {
-          const matchedSong = songs.find(s => s.artistSlug === artistSlug && s.songSlug === songSlug);
+          const matchedSong = songs.find(
+            s => s.artistSlug === artistSlug && s.songSlug === songSlug
+          );
           const songTitle = matchedSong?.title ?? decodeURIComponent(songSlug).replace(/_/g, ' ');
           result.push({ label: songTitle, href: `/repertoire/${artistSlug}/${songSlug}` });
         }
@@ -68,7 +110,8 @@ export function Breadcrumbs() {
       // Other routes
       const firstSegment = segments[0];
       if (firstSegment) {
-        const label = routeLabels[firstSegment] ?? firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1);
+        const label =
+          routeLabels[firstSegment] ?? firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1);
         result.push({ label, href: `/${firstSegment}` });
       }
     }
@@ -104,7 +147,10 @@ export function Breadcrumbs() {
               {isLast ? (
                 <span className="text-xl font-bold text-foreground/90">{crumb.label}</span>
               ) : (
-                <Link href={crumb.href} className="text-xl font-bold text-foreground/60 hover:text-foreground/80 transition-colors">
+                <Link
+                  href={crumb.href}
+                  className="text-xl font-bold text-foreground/60 hover:text-foreground/80 transition-colors"
+                >
                   {crumb.label}
                 </Link>
               )}

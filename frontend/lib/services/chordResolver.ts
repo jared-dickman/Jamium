@@ -32,95 +32,95 @@ interface ChordsDbChord {
 const SUFFIX_MAP: Record<string, string> = {
   // Major variations (Tonal returns 'M' for major chords)
   '': 'major',
-  'M': 'major',
-  'maj': 'major',
+  M: 'major',
+  maj: 'major',
   '^': 'major',
 
   // Minor variations (Tonal returns 'm' for minor)
-  'm': 'minor',
-  'min': 'minor',
+  m: 'minor',
+  min: 'minor',
   '-': 'minor',
 
   // Diminished
-  'dim': 'dim',
+  dim: 'dim',
   '°': 'dim',
-  'o': 'dim',
+  o: 'dim',
 
   // Augmented
-  'aug': 'aug',
+  aug: 'aug',
   '+': 'aug',
 
   // Suspended
-  'sus2': 'sus2',
-  'sus4': 'sus4',
-  'sus': 'sus4',
+  sus2: 'sus2',
+  sus4: 'sus4',
+  sus: 'sus4',
 
   // Seventh chords
   '7': '7',
-  'dom7': '7',
-  'maj7': 'maj7',
-  'M7': 'maj7',
+  dom7: '7',
+  maj7: 'maj7',
+  M7: 'maj7',
   '^7': 'maj7',
-  'Δ7': 'maj7',
-  'm7': 'm7',
-  'min7': 'm7',
+  Δ7: 'maj7',
+  m7: 'm7',
+  min7: 'm7',
   '-7': 'm7',
-  'mi7': 'm7',
-  'dim7': 'dim7',
-  'o7': 'dim7',
+  mi7: 'm7',
+  dim7: 'dim7',
+  o7: 'dim7',
   '°7': 'dim7',
-  'm7b5': 'm7b5',
-  'ø': 'm7b5',
-  'ø7': 'm7b5',
+  m7b5: 'm7b5',
+  ø: 'm7b5',
+  ø7: 'm7b5',
 
   // Minor-major seventh (Tonal returns 'm/ma7', 'mM7', etc.)
   'm/ma7': 'mmaj7',
   'm/maj7': 'mmaj7',
-  'mM7': 'mmaj7',
-  'mMaj7': 'mmaj7',
+  mM7: 'mmaj7',
+  mMaj7: 'mmaj7',
   'm/M7': 'mmaj7',
   '-Δ7': 'mmaj7',
-  'mΔ': 'mmaj7',
+  mΔ: 'mmaj7',
   '-^7': 'mmaj7',
   '-maj7': 'mmaj7',
-  'mmaj7': 'mmaj7',
+  mmaj7: 'mmaj7',
 
   // Extended chords
   '9': '9',
   '11': '11',
   '13': '13',
-  'maj9': 'maj9',
-  'M9': 'maj9',
+  maj9: 'maj9',
+  M9: 'maj9',
   '^9': 'maj9',
-  'm9': 'm9',
-  'min9': 'm9',
+  m9: 'm9',
+  min9: 'm9',
   '-9': 'm9',
-  'maj11': 'maj11',
-  'M11': 'maj11',
-  'm11': 'm11',
-  'min11': 'm11',
+  maj11: 'maj11',
+  M11: 'maj11',
+  m11: 'm11',
+  min11: 'm11',
   '-11': 'm11',
-  'maj13': 'maj13',
-  'M13': 'maj13',
-  'm13': 'm13',
-  'min13': 'm13',
+  maj13: 'maj13',
+  M13: 'maj13',
+  m13: 'm13',
+  min13: 'm13',
 
   // Add chords (Tonal returns 'Madd9' for add9)
-  'add9': 'add9',
-  'Madd9': 'add9',
-  'add2': 'add9',
+  add9: 'add9',
+  Madd9: 'add9',
+  add2: 'add9',
   '2': 'add9',
-  'madd9': 'madd9',
-  'madd2': 'madd9',
+  madd9: 'madd9',
+  madd2: 'madd9',
 
   // Sixth chords (Tonal returns '6add9' for 69)
   '6': '6',
-  'm6': 'm6',
+  m6: 'm6',
   '69': '69',
   '6add9': '69',
   '6/9': '69',
-  'M69': '69',
-  'm69': 'm69',
+  M69: '69',
+  m69: 'm69',
 
   // Altered chords (Tonal returns '7#5' for aug7)
   '7b5': '7b5',
@@ -128,13 +128,13 @@ const SUFFIX_MAP: Record<string, string> = {
   '+7': 'aug7',
   '7+': 'aug7',
   '7aug': 'aug7',
-  'aug7': 'aug7',
+  aug7: 'aug7',
   '7b9': '7b9',
   '7#9': '7#9',
   '9b5': '9b5',
-  'aug9': 'aug9',
+  aug9: 'aug9',
   '9#11': '9#11',
-  'alt': 'alt',
+  alt: 'alt',
   '7sus4': '7sus4',
   '7sus': '7sus4',
 
@@ -148,23 +148,23 @@ const SUFFIX_MAP: Record<string, string> = {
  */
 function normalizeRootNote(root: string): string | null {
   const enharmonicMap: Record<string, string> = {
-    'C': 'C',
+    C: 'C',
     'C#': 'Csharp',
-    'Db': 'Csharp',
-    'D': 'D',
+    Db: 'Csharp',
+    D: 'D',
     'D#': 'Eb',
-    'Eb': 'Eb',
-    'E': 'E',
-    'F': 'F',
+    Eb: 'Eb',
+    E: 'E',
+    F: 'F',
     'F#': 'Fsharp',
-    'Gb': 'Fsharp',
-    'G': 'G',
+    Gb: 'Fsharp',
+    G: 'G',
     'G#': 'Ab',
-    'Ab': 'Ab',
-    'A': 'A',
+    Ab: 'Ab',
+    A: 'A',
     'A#': 'Bb',
-    'Bb': 'Bb',
-    'B': 'B',
+    Bb: 'Bb',
+    B: 'B',
   };
 
   return enharmonicMap[root] || null;
@@ -192,11 +192,13 @@ function convertPosition(dbPosition: ChordsDbPosition): ChordPosition {
       });
 
       if (stringIndices.length >= 2) {
-        barres = [{
-          fret: barredFret,
-          fromString: Math.max(...stringIndices), // High string number (low E)
-          toString: Math.min(...stringIndices),    // Low string number (high e)
-        }];
+        barres = [
+          {
+            fret: barredFret,
+            fromString: Math.max(...stringIndices), // High string number (low E)
+            toString: Math.min(...stringIndices), // Low string number (high e)
+          },
+        ];
       }
     }
   }
@@ -212,11 +214,16 @@ function convertPosition(dbPosition: ChordsDbPosition): ChordPosition {
 /**
  * Determine difficulty level based on chord characteristics
  */
-function determineDifficulty(position: ChordPosition, suffix: string): 'beginner' | 'intermediate' | 'advanced' {
+function determineDifficulty(
+  position: ChordPosition,
+  suffix: string
+): 'beginner' | 'intermediate' | 'advanced' {
   const hasBarres = position.barres && position.barres.length > 0;
   const baseFretHigh = position.baseFret > 5;
   const mutedStrings = position.frets.filter(f => f === -1).length;
-  const isExtended = ['9', '11', '13', 'maj9', 'maj11', 'maj13', 'm9', 'm11'].some(s => suffix.includes(s));
+  const isExtended = ['9', '11', '13', 'maj9', 'maj11', 'maj13', 'm9', 'm11'].some(s =>
+    suffix.includes(s)
+  );
   const isAltered = ['b5', '#5', 'b9', '#9', 'alt', 'aug'].some(s => suffix.includes(s));
 
   // Beginner: open chords, no barres, low frets

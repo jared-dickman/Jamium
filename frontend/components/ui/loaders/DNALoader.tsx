@@ -16,7 +16,7 @@ export function DNALoader({ className, size = 'md' }: LoaderProps) {
       style={{ width: dim, height: dim }}
     >
       <svg width={dim} height={dim} viewBox="0 0 64 64">
-        {helixPoints.map((i) => {
+        {helixPoints.map(i => {
           const y = 8 + i * 7;
           const phase = (i * Math.PI) / 3;
 

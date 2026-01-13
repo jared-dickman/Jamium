@@ -1,7 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { SAPPHIRE, LOADER_SIZE, type LoaderProps, DURATION } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  type LoaderProps,
+  DURATION,
+} from '@/components/ui/loaders/loader.constants';
 import { useState, useEffect } from 'react';
 
 // Candy colors: SAPPHIRE palette + sweet extras
@@ -55,9 +60,9 @@ export function CandyCrushLoader({ className, size = 'md' }: LoaderProps) {
       const toMatch: string[] = [];
       for (let row = 0; row < gridSize; row++) {
         for (let col = 0; col <= gridSize - 3; col++) {
-          const c1 = candies.find((c) => c.row === row && c.col === col);
-          const c2 = candies.find((c) => c.row === row && c.col === col + 1);
-          const c3 = candies.find((c) => c.row === row && c.col === col + 2);
+          const c1 = candies.find(c => c.row === row && c.col === col);
+          const c2 = candies.find(c => c.row === row && c.col === col + 1);
+          const c3 = candies.find(c => c.row === row && c.col === col + 2);
           if (c1 && c2 && c3 && c1.color === c2.color && c2.color === c3.color) {
             toMatch.push(c1.id, c2.id, c3.id);
           }
@@ -68,28 +73,31 @@ export function CandyCrushLoader({ className, size = 'md' }: LoaderProps) {
         setMatching(toMatch);
 
         // Create sparkles
-        const newSparkles = toMatch.slice(0, 3).map((id) => {
-          const candy = candies.find((c) => c.id === id);
-          if (!candy) return null;
-          const x = candy.col * (candySize + gap) + candySize / 2;
-          const y = candy.row * (candySize + gap) + candySize / 2;
-          return { id: `sparkle-${id}-${Date.now()}`, x, y };
-        }).filter(Boolean) as { id: string; x: number; y: number }[];
+        const newSparkles = toMatch
+          .slice(0, 3)
+          .map(id => {
+            const candy = candies.find(c => c.id === id);
+            if (!candy) return null;
+            const x = candy.col * (candySize + gap) + candySize / 2;
+            const y = candy.row * (candySize + gap) + candySize / 2;
+            return { id: `sparkle-${id}-${Date.now()}`, x, y };
+          })
+          .filter(Boolean) as { id: string; x: number; y: number }[];
 
         setSparkles(newSparkles);
 
         // Remove matched candies and fill
         setTimeout(() => {
-          setCandies((prev) => {
-            const remaining = prev.filter((c) => !toMatch.includes(c.id));
+          setCandies(prev => {
+            const remaining = prev.filter(c => !toMatch.includes(c.id));
             const newCandies: Candy[] = [];
 
             // Drop existing candies
             for (let col = 0; col < gridSize; col++) {
-              const colCandies = remaining.filter((c) => c.col === col).sort((a, b) => b.row - a.row);
+              const colCandies = remaining.filter(c => c.col === col).sort((a, b) => b.row - a.row);
               let nextRow = gridSize - 1;
 
-              colCandies.forEach((candy) => {
+              colCandies.forEach(candy => {
                 newCandies.push({ ...candy, row: nextRow });
                 nextRow--;
               });
@@ -145,7 +153,7 @@ export function CandyCrushLoader({ className, size = 'md' }: LoaderProps) {
 
         {/* Candies */}
         <AnimatePresence mode="popLayout">
-          {candies.map((candy) => {
+          {candies.map(candy => {
             const x = candy.col * (candySize + gap) + gap;
             const y = candy.row * (candySize + gap) + gap;
             const isMatching = matching.includes(candy.id);
@@ -175,9 +183,7 @@ export function CandyCrushLoader({ className, size = 'md' }: LoaderProps) {
                   r={candySize / 2.5}
                   fill={candy.color}
                   animate={
-                    isMatching
-                      ? { scale: [1, 1.2, 0], rotate: [0, 180] }
-                      : { scale: [1, 1.05, 1] }
+                    isMatching ? { scale: [1, 1.2, 0], rotate: [0, 180] } : { scale: [1, 1.05, 1] }
                   }
                   transition={
                     isMatching
@@ -211,7 +217,7 @@ export function CandyCrushLoader({ className, size = 'md' }: LoaderProps) {
 
         {/* Sparkle effects when matching */}
         <AnimatePresence>
-          {sparkles.map((sparkle) => (
+          {sparkles.map(sparkle => (
             <motion.g key={sparkle.id}>
               {/* Central burst */}
               <motion.circle

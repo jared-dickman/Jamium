@@ -12,7 +12,13 @@ export function CometLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} style={{ overflow: 'visible' }}>
         <defs>
@@ -44,7 +50,7 @@ export function CometLoader({ className, size = 'md' }: LoaderProps) {
           }}
         >
           {/* Trailing tail particles */}
-          {[0, 1, 2, 3].map((i) => (
+          {[0, 1, 2, 3].map(i => (
             <ellipse
               key={i}
               cx={-dim * (0.15 + i * 0.08)}
@@ -66,20 +72,10 @@ export function CometLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* Comet head */}
-          <circle
-            cx={dim * 0.15}
-            cy={center}
-            r={dim * 0.09}
-            fill={`url(#comet-head-${size})`}
-          />
+          <circle cx={dim * 0.15} cy={center} r={dim * 0.09} fill={`url(#comet-head-${size})`} />
 
           {/* Bright core */}
-          <circle
-            cx={dim * 0.15}
-            cy={center}
-            r={dim * 0.035}
-            fill={SAPPHIRE[3]}
-          />
+          <circle cx={dim * 0.15} cy={center} r={dim * 0.035} fill={SAPPHIRE[3]} />
         </motion.g>
       </svg>
     </div>

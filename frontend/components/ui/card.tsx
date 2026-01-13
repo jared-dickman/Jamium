@@ -88,4 +88,13 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-export { Card, SapphireCard, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
+export {
+  Card,
+  SapphireCard,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+};

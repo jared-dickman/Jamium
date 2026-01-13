@@ -111,14 +111,7 @@ export function AstronautLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* Chest pack detail */}
-          <rect
-            x="46"
-            y="60"
-            width="8"
-            height="6"
-            rx="1"
-            fill={SAPPHIRE[1]}
-          />
+          <rect x="46" y="60" width="8" height="6" rx="1" fill={SAPPHIRE[1]} />
 
           {/* Arms */}
           <rect
@@ -165,20 +158,8 @@ export function AstronautLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* Boots */}
-          <ellipse
-            cx="47"
-            cy="82"
-            rx="2.5"
-            ry="1.5"
-            fill={SAPPHIRE[1]}
-          />
-          <ellipse
-            cx="53"
-            cy="82"
-            rx="2.5"
-            ry="1.5"
-            fill={SAPPHIRE[1]}
-          />
+          <ellipse cx="47" cy="82" rx="2.5" ry="1.5" fill={SAPPHIRE[1]} />
+          <ellipse cx="53" cy="82" rx="2.5" ry="1.5" fill={SAPPHIRE[1]} />
         </motion.g>
 
         {/* Floating particles around astronaut */}

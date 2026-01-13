@@ -5,7 +5,10 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     API_BASE_URL: z.string().url().optional().describe('Backend API base URL (server-side)'),
-    ANTHROPIC_API_KEY: z.string().min(1).describe('Anthropic API key for Claude (server-side only)'),
+    ANTHROPIC_API_KEY: z
+      .string()
+      .min(1)
+      .describe('Anthropic API key for Claude (server-side only)'),
     JINA_API_KEY: z.string().min(1).optional().describe('Jina AI API key for web scraping'),
     PINECONE_API_KEY: z.string().min(1).optional().describe('Pinecone API key for vector DB'),
     FIRECRAWL_API_KEY: z.string().min(1).optional().describe('Firecrawl API key for web crawling'),

@@ -44,7 +44,7 @@ export function ElectronLoader({ className, size = 'md' }: LoaderProps) {
 
         {/* Nucleus with protons/neutrons */}
         <g>
-          {[0, 1, 2, 3].map((i) => {
+          {[0, 1, 2, 3].map(i => {
             const angle = (i * 90 * Math.PI) / 180;
             const offset = nucleusR * 0.3;
             const cx = dim / 2 + Math.cos(angle) * offset;
@@ -116,7 +116,7 @@ export function ElectronLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Energy emission pulses */}
-        {[0, 1].map((i) => (
+        {[0, 1].map(i => (
           <motion.circle
             key={`pulse-${i}`}
             cx={dim / 2}

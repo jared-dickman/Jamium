@@ -39,7 +39,7 @@ export function CatalystLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Reaction active sites */}
-        {[0, 1, 2, 3].map((i) => {
+        {[0, 1, 2, 3].map(i => {
           const angle = (i * 90 + 45) * (Math.PI / 180);
           const siteX = dim / 2 + Math.cos(angle) * catalystR * 0.6;
           const siteY = dim / 2 + Math.sin(angle) * catalystR * 0.6;
@@ -67,7 +67,7 @@ export function CatalystLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Reactant molecules approaching */}
-        {[0, 1].map((i) => {
+        {[0, 1].map(i => {
           const startY = dim * 0.3 + i * dim * 0.4;
           const endY = dim / 2;
 
@@ -95,7 +95,7 @@ export function CatalystLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Product molecules leaving */}
-        {[0, 1].map((i) => {
+        {[0, 1].map(i => {
           const startY = dim / 2;
           const endY = dim * 0.3 + i * dim * 0.4;
 

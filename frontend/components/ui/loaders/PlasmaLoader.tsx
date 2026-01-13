@@ -23,10 +23,10 @@ export function PlasmaLoader({ size = 'md' }: LoaderProps) {
             <stop offset="100%" stopColor={SAPPHIRE[0]} stopOpacity={0.3} />
           </radialGradient>
           <filter id="plasmaSoftGlow">
-            <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
@@ -57,10 +57,18 @@ export function PlasmaLoader({ size = 'md' }: LoaderProps) {
 
           const x1 = dimension / 2 + innerRadius * Math.cos((angle * Math.PI) / 180);
           const y1 = dimension / 2 + innerRadius * Math.sin((angle * Math.PI) / 180);
-          const xMid = dimension / 2 + midRadius * Math.cos(((angle + Math.random() * 30 - 15) * Math.PI) / 180);
-          const yMid = dimension / 2 + midRadius * Math.sin(((angle + Math.random() * 30 - 15) * Math.PI) / 180);
-          const x2 = dimension / 2 + outerRadius * Math.cos(((angle + Math.random() * 40 - 20) * Math.PI) / 180);
-          const y2 = dimension / 2 + outerRadius * Math.sin(((angle + Math.random() * 40 - 20) * Math.PI) / 180);
+          const xMid =
+            dimension / 2 +
+            midRadius * Math.cos(((angle + Math.random() * 30 - 15) * Math.PI) / 180);
+          const yMid =
+            dimension / 2 +
+            midRadius * Math.sin(((angle + Math.random() * 30 - 15) * Math.PI) / 180);
+          const x2 =
+            dimension / 2 +
+            outerRadius * Math.cos(((angle + Math.random() * 40 - 20) * Math.PI) / 180);
+          const y2 =
+            dimension / 2 +
+            outerRadius * Math.sin(((angle + Math.random() * 40 - 20) * Math.PI) / 180);
 
           return (
             <motion.path

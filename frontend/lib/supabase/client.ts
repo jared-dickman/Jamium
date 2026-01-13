@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
-import { env } from '@/app/config/env'
+import { createClient } from '@supabase/supabase-js';
+import { env } from '@/app/config/env';
 
-let supabaseInstance: ReturnType<typeof createClient> | null = null
+let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
 /**
  * Get Supabase client singleton
@@ -16,11 +16,11 @@ export function getSupabaseClient() {
         persistSession: false,
         autoRefreshToken: false,
       },
-    })
+    });
   }
-  return supabaseInstance
+  return supabaseInstance;
 }
 
 // Re-export schemas and types from songs.schema.ts
-export { songRowSchema, songInsertSchema, songUpdateSchema } from '@/lib/supabase/songs.schema'
-export type { SongRow, SongInsert, SongUpdate } from '@/lib/supabase/songs.schema'
+export { songRowSchema, songInsertSchema, songUpdateSchema } from '@/lib/supabase/songs.schema';
+export type { SongRow, SongInsert, SongUpdate } from '@/lib/supabase/songs.schema';

@@ -238,7 +238,10 @@ export default function ChordWheel({
     // Legend - horizontal at bottom center
     const legend = svg
       .append('g')
-      .attr('transform', `translate(${effectiveWidth / 2 - 150 * scaleFactor}, ${effectiveHeight - 30 * scaleFactor})`);
+      .attr(
+        'transform',
+        `translate(${effectiveWidth / 2 - 150 * scaleFactor}, ${effectiveHeight - 30 * scaleFactor})`
+      );
 
     const legendData = [
       { label: 'Current', color: '#FBBF24' },
@@ -249,7 +252,12 @@ export default function ChordWheel({
 
     legendData.forEach((item, i) => {
       const xOffset = i * 80 * scaleFactor;
-      legend.append('circle').attr('cx', xOffset).attr('cy', 0).attr('r', 6 * scaleFactor).attr('fill', item.color);
+      legend
+        .append('circle')
+        .attr('cx', xOffset)
+        .attr('cy', 0)
+        .attr('r', 6 * scaleFactor)
+        .attr('fill', item.color);
 
       legend
         .append('text')

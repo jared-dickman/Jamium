@@ -50,7 +50,7 @@ export function CassetteLoader({ className, size = 'md' }: LoaderProps) {
             stroke={SAPPHIRE[2]}
             strokeWidth="1"
           />
-          {[0, 60, 120, 180, 240, 300].map((angle) => (
+          {[0, 60, 120, 180, 240, 300].map(angle => (
             <line
               key={angle}
               x1={dim * 0.3}
@@ -76,7 +76,7 @@ export function CassetteLoader({ className, size = 'md' }: LoaderProps) {
             stroke={SAPPHIRE[2]}
             strokeWidth="1"
           />
-          {[0, 60, 120, 180, 240, 300].map((angle) => (
+          {[0, 60, 120, 180, 240, 300].map(angle => (
             <line
               key={angle}
               x1={dim * 0.7}

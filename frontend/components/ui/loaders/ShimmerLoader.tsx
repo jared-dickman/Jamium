@@ -39,11 +39,7 @@ export function ShimmerLoader({ size = 'md' }: LoaderProps) {
                 height: 0,
               }}
               animate={{
-                y: [
-                  dimension / 2,
-                  dimension / 2 - maxHeight / 2,
-                  dimension / 2,
-                ],
+                y: [dimension / 2, dimension / 2 - maxHeight / 2, dimension / 2],
                 height: [0, maxHeight, 0],
                 opacity: [0.3, 1, 0.3],
               }}

@@ -78,8 +78,7 @@ export function LatticeLoader({ className, size = 'md' }: LoaderProps) {
         {/* Diagonal connections (creating diamond patterns) */}
         {nodes.map((node, i) => {
           const adjacentNodes = nodes.filter(
-            (n) =>
-              (Math.abs(n.row - node.row) === 1 && Math.abs(n.col - node.col) === 1)
+            n => Math.abs(n.row - node.row) === 1 && Math.abs(n.col - node.col) === 1
           );
           return adjacentNodes.map((adj, j) => (
             <motion.line

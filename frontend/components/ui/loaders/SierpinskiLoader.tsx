@@ -18,7 +18,7 @@ export function SierpinskiLoader({ size = 'md' }: LoaderProps) {
     x3: number,
     y3: number,
     depth: number,
-    maxDepth: number,
+    maxDepth: number
   ): Array<{ points: string; depth: number; center: { x: number; y: number } }> => {
     if (depth >= maxDepth) {
       const cx = (x1 + x2 + x3) / 3;
@@ -113,7 +113,7 @@ export function SierpinskiLoader({ size = 'md' }: LoaderProps) {
               bottomRight.x,
               bottomRight.y,
               0,
-              maxDepth,
+              maxDepth
             );
             const layerDelay = layerIndex * 0.5;
             const layerOpacity = 0.8 - layerIndex * 0.15;
@@ -137,7 +137,7 @@ export function SierpinskiLoader({ size = 'md' }: LoaderProps) {
                 {triangles.map((triangle, index) => {
                   const colorIndex = Math.min(
                     SAPPHIRE.length - 1,
-                    Math.floor((triangle.depth / maxDepth) * SAPPHIRE.length),
+                    Math.floor((triangle.depth / maxDepth) * SAPPHIRE.length)
                   );
 
                   // Calculate distance from center for wave effect

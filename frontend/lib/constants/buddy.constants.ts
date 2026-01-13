@@ -45,9 +45,12 @@ export const BUDDY_SCROLL_CONTAINER_CLASS =
   'flex-1 flex flex-col overflow-y-auto overflow-x-hidden px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent';
 
 /** Gradient classes - DRY brand colors */
-export const BUDDY_GRADIENT_ICON_BOX = 'rounded-lg bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center border border-white/10';
-export const BUDDY_GRADIENT_USER_MSG = 'bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white';
-export const BUDDY_GRADIENT_SEND_BTN = 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 border-0';
+export const BUDDY_GRADIENT_ICON_BOX =
+  'rounded-lg bg-gradient-to-br from-blue-500/30 to-purple-500/30 flex items-center justify-center border border-white/10';
+export const BUDDY_GRADIENT_USER_MSG =
+  'bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white';
+export const BUDDY_GRADIENT_SEND_BTN =
+  'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 border-0';
 
 /**
  * Landing page entrance: elegant rise from center after cinematic intro
@@ -139,7 +142,11 @@ export const BUDDY_GLOW_VARIANTS: Variants = {
 
 export const BUDDY_MINIMIZED_VARIANTS: Variants = {
   open: { width: BUDDY_PANEL_WIDTH, height: BUDDY_PANEL_HEIGHT, transition: SPRING_ANIMATION },
-  minimized: { width: BUDDY_MINIMIZED_WIDTH, height: BUDDY_MINIMIZED_HEIGHT, transition: SPRING_ANIMATION },
+  minimized: {
+    width: BUDDY_MINIMIZED_WIDTH,
+    height: BUDDY_MINIMIZED_HEIGHT,
+    transition: SPRING_ANIMATION,
+  },
 };
 
 /** Dock transition spring - elastic feel */

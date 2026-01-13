@@ -38,7 +38,7 @@ export function CrystalLoader({ className, size = 'md' }: LoaderProps) {
           const y = startY + node.y * spacing;
 
           return lattice
-            .filter((other) => {
+            .filter(other => {
               const dx = Math.abs(other.x - node.x);
               const dy = Math.abs(other.y - node.y);
               return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);

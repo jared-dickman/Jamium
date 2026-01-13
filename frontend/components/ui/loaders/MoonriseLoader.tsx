@@ -192,7 +192,7 @@ export function MoonriseLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Additional twinkling stars in foreground */}
-        {[0, 1, 2].map((i) => {
+        {[0, 1, 2].map(i => {
           const angle = (i / 3) * Math.PI * 2;
           const radius = dim * 0.45;
           const x = center + Math.cos(angle) * radius;

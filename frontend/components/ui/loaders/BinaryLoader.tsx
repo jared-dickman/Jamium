@@ -31,7 +31,7 @@ export function BinaryLoader({ className, size = 'md' }: LoaderProps) {
             const x = (col * dim) / cols + dim / cols / 2;
             const y = (row * dim) / rows + dim / rows / 2;
             const bit = Math.random() > 0.5 ? '1' : '0';
-            const delay = (col * 0.1 + row * 0.05);
+            const delay = col * 0.1 + row * 0.05;
 
             return (
               <motion.text

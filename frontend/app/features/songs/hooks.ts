@@ -3,8 +3,15 @@
 import { useApiQuery, useApiMutation } from '@/app/hooks/query-hooks';
 import { songKeys } from '@/app/features/songs/keys';
 import { songOptions, songMutations } from '@/app/features/songs/options';
-import { toSongsListView, toSearchView } from '@/app/features/songs/transformers/song-view.transformer';
-import type { SavedSongResponse, SongDetailResponse, SearchResponseData } from '@/app/features/songs/dto/song-response.schema';
+import {
+  toSongsListView,
+  toSearchView,
+} from '@/app/features/songs/transformers/song-view.transformer';
+import type {
+  SavedSongResponse,
+  SongDetailResponse,
+  SearchResponseData,
+} from '@/app/features/songs/dto/song-response.schema';
 import type {
   SavedSongView,
   SongDetailView,
@@ -46,14 +53,10 @@ export function useSongs() {
 export function useSongDetail(artistSlug: string, songSlug: string) {
   const options = songOptions.detail(artistSlug, songSlug);
 
-  return useApiQuery<SongDetailView, Error, SongDetailView>(
-    options.queryKey,
-    options.queryFn,
-    {
-      staleTime: 10 * 60 * 1000,
-      enabled: Boolean(artistSlug && songSlug),
-    }
-  );
+  return useApiQuery<SongDetailView, Error, SongDetailView>(options.queryKey, options.queryFn, {
+    staleTime: 10 * 60 * 1000,
+    enabled: Boolean(artistSlug && songSlug),
+  });
 }
 
 /**

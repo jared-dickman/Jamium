@@ -5,9 +5,11 @@ import { serverErrorTracker } from '@/app/utils/error-tracker.server';
 
 export const runtime = 'nodejs';
 
-const HealthResponseSchema = z.object({
-  status: z.enum(['healthy', 'degraded', 'unhealthy']),
-}).strict();
+const HealthResponseSchema = z
+  .object({
+    status: z.enum(['healthy', 'degraded', 'unhealthy']),
+  })
+  .strict();
 
 type HealthStatus = z.infer<typeof HealthResponseSchema>['status'];
 

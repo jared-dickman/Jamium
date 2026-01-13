@@ -35,8 +35,24 @@ export function PulleyLoader({ className, size = 'md' }: LoaderProps) {
 
         {/* Left pulley wheel */}
         <g>
-          <circle cx={leftPulleyX} cy={pulleyY} r={pulleyRadius} fill="none" stroke={SAPPHIRE[0]} strokeWidth={dim * 0.025} opacity={0.8} />
-          <circle cx={leftPulleyX} cy={pulleyY} r={pulleyRadius * 0.7} fill="none" stroke={SAPPHIRE[1]} strokeWidth={dim * 0.015} opacity={0.5} />
+          <circle
+            cx={leftPulleyX}
+            cy={pulleyY}
+            r={pulleyRadius}
+            fill="none"
+            stroke={SAPPHIRE[0]}
+            strokeWidth={dim * 0.025}
+            opacity={0.8}
+          />
+          <circle
+            cx={leftPulleyX}
+            cy={pulleyY}
+            r={pulleyRadius * 0.7}
+            fill="none"
+            stroke={SAPPHIRE[1]}
+            strokeWidth={dim * 0.015}
+            opacity={0.5}
+          />
 
           {/* Rotating marks on left pulley - counter-clockwise */}
           <motion.g
@@ -44,19 +60,37 @@ export function PulleyLoader({ className, size = 'md' }: LoaderProps) {
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             style={{ originX: `${leftPulleyX}px`, originY: `${pulleyY}px` }}
           >
-            {[0, 60, 120, 180, 240, 300].map((angle) => {
+            {[0, 60, 120, 180, 240, 300].map(angle => {
               const rad = (angle * Math.PI) / 180;
               const markX = leftPulleyX + Math.cos(rad) * (pulleyRadius * 0.85);
               const markY = pulleyY + Math.sin(rad) * (pulleyRadius * 0.85);
-              return <circle key={angle} cx={markX} cy={markY} r={dim * 0.015} fill={SAPPHIRE[2]} />;
+              return (
+                <circle key={angle} cx={markX} cy={markY} r={dim * 0.015} fill={SAPPHIRE[2]} />
+              );
             })}
           </motion.g>
         </g>
 
         {/* Right pulley wheel */}
         <g>
-          <circle cx={rightPulleyX} cy={pulleyY} r={pulleyRadius} fill="none" stroke={SAPPHIRE[0]} strokeWidth={dim * 0.025} opacity={0.8} />
-          <circle cx={rightPulleyX} cy={pulleyY} r={pulleyRadius * 0.7} fill="none" stroke={SAPPHIRE[1]} strokeWidth={dim * 0.015} opacity={0.5} />
+          <circle
+            cx={rightPulleyX}
+            cy={pulleyY}
+            r={pulleyRadius}
+            fill="none"
+            stroke={SAPPHIRE[0]}
+            strokeWidth={dim * 0.025}
+            opacity={0.8}
+          />
+          <circle
+            cx={rightPulleyX}
+            cy={pulleyY}
+            r={pulleyRadius * 0.7}
+            fill="none"
+            stroke={SAPPHIRE[1]}
+            strokeWidth={dim * 0.015}
+            opacity={0.5}
+          />
 
           {/* Rotating marks on right pulley - clockwise */}
           <motion.g
@@ -64,11 +98,13 @@ export function PulleyLoader({ className, size = 'md' }: LoaderProps) {
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             style={{ originX: `${rightPulleyX}px`, originY: `${pulleyY}px` }}
           >
-            {[0, 60, 120, 180, 240, 300].map((angle) => {
+            {[0, 60, 120, 180, 240, 300].map(angle => {
               const rad = (angle * Math.PI) / 180;
               const markX = rightPulleyX + Math.cos(rad) * (pulleyRadius * 0.85);
               const markY = pulleyY + Math.sin(rad) * (pulleyRadius * 0.85);
-              return <circle key={angle} cx={markX} cy={markY} r={dim * 0.015} fill={SAPPHIRE[3]} />;
+              return (
+                <circle key={angle} cx={markX} cy={markY} r={dim * 0.015} fill={SAPPHIRE[3]} />
+              );
             })}
           </motion.g>
         </g>

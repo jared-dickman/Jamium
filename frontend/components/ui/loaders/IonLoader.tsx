@@ -133,7 +133,7 @@ export function IonLoader({ className, size = 'md' }: LoaderProps) {
         ))}
 
         {/* Attraction/repulsion waves */}
-        {[0, 1].map((i) => (
+        {[0, 1].map(i => (
           <motion.ellipse
             key={`wave-${i}`}
             cx={dim / 2}

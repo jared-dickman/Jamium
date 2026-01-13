@@ -45,13 +45,7 @@ export function HorizonLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {/* Sky */}
-        <rect
-          x="0"
-          y="0"
-          width={dim}
-          height={horizonY}
-          fill={`url(#horizon-sky-${size})`}
-        />
+        <rect x="0" y="0" width={dim} height={horizonY} fill={`url(#horizon-sky-${size})`} />
 
         {/* Ground */}
         <rect

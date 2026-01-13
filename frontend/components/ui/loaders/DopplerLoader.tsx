@@ -33,7 +33,7 @@ export function DopplerLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Compressed waves (moving right) */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.ellipse
             key={`right-${i}`}
             cx="50"
@@ -59,7 +59,7 @@ export function DopplerLoader({ className, size = 'md' }: LoaderProps) {
         ))}
 
         {/* Expanded waves (moving left) */}
-        {[0, 1].map((i) => (
+        {[0, 1].map(i => (
           <motion.ellipse
             key={`left-${i}`}
             cx="50"

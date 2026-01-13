@@ -31,7 +31,7 @@ export function MagnetLoader({ className, size = 'md' }: LoaderProps) {
         <rect x="82" y="35" width="8" height="30" rx="2" fill={SAPPHIRE[3]} />
 
         {/* Field lines */}
-        {[0, 1, 2, 3].map((i) => {
+        {[0, 1, 2, 3].map(i => {
           const yOffset = 25 + i * 15;
           return (
             <motion.path

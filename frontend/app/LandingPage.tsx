@@ -84,10 +84,7 @@ export function LandingPage() {
         <NebulaBackground reducedMotion={reducedMotion} />
         <div className="relative z-10">
           <BuddyErrorBoundary>
-            <CoreAgentBuddy
-              isLanding
-              onboarding={showDemo ? onboarding : undefined}
-            />
+            <CoreAgentBuddy isLanding onboarding={showDemo ? onboarding : undefined} />
           </BuddyErrorBoundary>
         </div>
       </div>

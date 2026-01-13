@@ -80,14 +80,11 @@ export async function POST(request: NextRequest) {
     const validationResult = saveSongSchema.safeParse(body);
 
     if (!validationResult.success) {
-      serverErrorTracker.captureApiError(
-        new Error('Request validation failed'),
-        {
-          service: 'songs-api',
-          operation: 'save-song',
-          validationErrors: validationResult.error.flatten(),
-        }
-      );
+      serverErrorTracker.captureApiError(new Error('Request validation failed'), {
+        service: 'songs-api',
+        operation: 'save-song',
+        validationErrors: validationResult.error.flatten(),
+      });
       return NextResponse.json({ error: GENERIC_ERRORS.VALIDATION }, { status: 400 });
     }
 

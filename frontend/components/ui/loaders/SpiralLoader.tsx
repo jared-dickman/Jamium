@@ -20,9 +20,7 @@ export function SpiralLoader({ className, size = 'md' }: LoaderProps) {
     return { x, y, progress };
   });
 
-  const spiralPath = points.map((p, i) =>
-    `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`
-  ).join(' ');
+  const spiralPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`).join(' ');
 
   return (
     <div
@@ -76,11 +74,7 @@ export function SpiralLoader({ className, size = 'md' }: LoaderProps) {
               delay: offset * 3,
             }}
           >
-            <animateMotion
-              dur="3s"
-              repeatCount="indefinite"
-              begin={`${offset * 3}s`}
-            >
+            <animateMotion dur="3s" repeatCount="indefinite" begin={`${offset * 3}s`}>
               <mpath href={`#spiral-${size}`} />
             </animateMotion>
           </motion.circle>

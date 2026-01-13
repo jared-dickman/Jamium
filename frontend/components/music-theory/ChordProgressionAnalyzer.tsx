@@ -53,7 +53,9 @@ export default function ChordProgressionAnalyzer({
 
         <div className="grid grid-cols-2 gap-x-8 gap-y-5">
           <div>
-            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">Key</p>
+            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">
+              Key
+            </p>
             <p className="text-[28px] font-bold leading-none tracking-tight text-white">
               {keyAnalysis.tonic}
               <span className="ml-1 text-[18px] font-medium text-white/60">
@@ -63,19 +65,25 @@ export default function ChordProgressionAnalyzer({
           </div>
 
           <div>
-            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">Scale</p>
+            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">
+              Scale
+            </p>
             <p className="font-mono text-[13px] leading-relaxed text-white/70">
               {keyAnalysis.scale.join(' · ')}
             </p>
           </div>
 
           <div>
-            <p className="mb-1 text-[11px] font-medium uppercase tracking-wider text-white/40">Relative</p>
+            <p className="mb-1 text-[11px] font-medium uppercase tracking-wider text-white/40">
+              Relative
+            </p>
             <p className="text-[15px] font-medium text-white/80">{keyAnalysis.relativeKey}</p>
           </div>
 
           <div>
-            <p className="mb-1 text-[11px] font-medium uppercase tracking-wider text-white/40">Parallel</p>
+            <p className="mb-1 text-[11px] font-medium uppercase tracking-wider text-white/40">
+              Parallel
+            </p>
             <p className="text-[15px] font-medium text-white/80">{keyAnalysis.parallelKey}</p>
           </div>
         </div>
@@ -102,7 +110,9 @@ export default function ChordProgressionAnalyzer({
             </div>
 
             <div className="text-right">
-              <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">Notes</p>
+              <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-white/40">
+                Notes
+              </p>
               <div className="flex justify-end gap-1">
                 {currentChordAnalysis.notes.map((note, i) => (
                   <span

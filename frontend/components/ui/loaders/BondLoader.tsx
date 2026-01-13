@@ -89,7 +89,7 @@ export function BondLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Electron sharing animation */}
-        {[0, 1].map((i) => (
+        {[0, 1].map(i => (
           <motion.circle
             key={`electron-${i}`}
             cx={leftX}

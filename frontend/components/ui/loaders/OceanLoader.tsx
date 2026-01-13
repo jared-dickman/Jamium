@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, DURATION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function OceanLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -97,11 +102,7 @@ export function OceanLoader({ className, size = 'md' }: LoaderProps) {
         </defs>
 
         {/* Background ocean depth */}
-        <rect
-          width={dim}
-          height={dim}
-          fill={`url(#ocean-depth-${size})`}
-        />
+        <rect width={dim} height={dim} fill={`url(#ocean-depth-${size})`} />
 
         {/* Multiple wave layers with parallax motion */}
         {waves.map((wave, i) => (
@@ -170,11 +171,7 @@ export function OceanLoader({ className, size = 'md' }: LoaderProps) {
                 opacity: [0, 0.7, 0],
                 scale: [0, 1.2, 0.8],
                 cx: [startX, startX + dim * 0.15, startX + dim * 0.3],
-                cy: [
-                  height / 2,
-                  height / 2 - dim * 0.05,
-                  height / 2 + dim * 0.03,
-                ],
+                cy: [height / 2, height / 2 - dim * 0.05, height / 2 + dim * 0.03],
               }}
               transition={{
                 duration: DURATION.slow,

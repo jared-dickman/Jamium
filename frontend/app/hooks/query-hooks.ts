@@ -34,8 +34,10 @@ export function useApiQuery<
   });
 }
 
-interface UseApiMutationOptions<TData, TError, TVariables, TContext>
-  extends Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> {
+interface UseApiMutationOptions<TData, TError, TVariables, TContext> extends Omit<
+  UseMutationOptions<TData, TError, TVariables, TContext>,
+  'mutationFn'
+> {
   /**
    * Query keys to invalidate after successful mutation
    * This triggers automatic refetch of related queries

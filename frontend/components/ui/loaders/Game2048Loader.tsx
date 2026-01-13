@@ -42,7 +42,7 @@ export function Game2048Loader({ className, size = 'md' }: LoaderProps) {
     let directionIndex = 0;
 
     const interval = setInterval(() => {
-      setTiles((prev) => {
+      setTiles(prev => {
         const direction = directions[directionIndex % directions.length];
         directionIndex++;
 
@@ -51,13 +51,13 @@ export function Game2048Loader({ className, size = 'md' }: LoaderProps) {
 
         // Move tiles in the specified direction
         if (direction === 'right') {
-          newTiles = newTiles.map((t) => ({ ...t, col: Math.min(3, t.col + 1) }));
+          newTiles = newTiles.map(t => ({ ...t, col: Math.min(3, t.col + 1) }));
         } else if (direction === 'left') {
-          newTiles = newTiles.map((t) => ({ ...t, col: Math.max(0, t.col - 1) }));
+          newTiles = newTiles.map(t => ({ ...t, col: Math.max(0, t.col - 1) }));
         } else if (direction === 'down') {
-          newTiles = newTiles.map((t) => ({ ...t, row: Math.min(3, t.row + 1) }));
+          newTiles = newTiles.map(t => ({ ...t, row: Math.min(3, t.row + 1) }));
         } else if (direction === 'up') {
-          newTiles = newTiles.map((t) => ({ ...t, row: Math.max(0, t.row - 1) }));
+          newTiles = newTiles.map(t => ({ ...t, row: Math.max(0, t.row - 1) }));
         }
 
         // Check for merges (tiles at same position)
@@ -96,7 +96,7 @@ export function Game2048Loader({ className, size = 'md' }: LoaderProps) {
           const emptyCells: { row: number; col: number }[] = [];
           for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
-              if (!mergedTiles.some((t) => t.row === r && t.col === c)) {
+              if (!mergedTiles.some(t => t.row === r && t.col === c)) {
                 emptyCells.push({ row: r, col: c });
               }
             }
@@ -155,7 +155,7 @@ export function Game2048Loader({ className, size = 'md' }: LoaderProps) {
 
         {/* Animated tiles */}
         <AnimatePresence mode="popLayout">
-          {tiles.map((tile) => {
+          {tiles.map(tile => {
             const pos = getTilePosition(tile.row, tile.col);
             return (
               <motion.g key={tile.id}>

@@ -1,7 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SAPPHIRE, LOADER_SIZE, DURATION, OPACITY, TRANSITION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  OPACITY,
+  TRANSITION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function AtomLoader({ size = 'md' }: LoaderProps) {
   const dimension = LOADER_SIZE[size];
@@ -75,12 +82,12 @@ export function AtomLoader({ size = 'md' }: LoaderProps) {
             strokeWidth={dimension * 0.004}
             animate={{
               scale: [1, 1.05, 1],
-              opacity: [0.9, 1, 0.9]
+              opacity: [0.9, 1, 0.9],
             }}
             transition={{
               duration: DURATION.medium,
               delay: i * 0.1,
-              ...TRANSITION.smooth
+              ...TRANSITION.smooth,
             }}
           />
         ))}
@@ -107,7 +114,7 @@ export function AtomLoader({ size = 'md' }: LoaderProps) {
               animate={{ rotate: 360 }}
               transition={{
                 duration: orbit.duration,
-                ...TRANSITION.linear
+                ...TRANSITION.linear,
               }}
               style={{ transformOrigin: `${center}px ${center}px` }}
             >
@@ -124,7 +131,7 @@ export function AtomLoader({ size = 'md' }: LoaderProps) {
                   }}
                   transition={{
                     duration: DURATION.fast,
-                    ...TRANSITION.smooth
+                    ...TRANSITION.smooth,
                   }}
                 />
               </g>

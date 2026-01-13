@@ -56,7 +56,7 @@ export function FloppyLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Label lines - static */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <line
             key={i}
             x1="25"
@@ -92,7 +92,7 @@ export function FloppyLoader({ className, size = 'md' }: LoaderProps) {
             strokeWidth="1"
           />
           {/* Shutter ridges */}
-          {[0, 1, 2, 3].map((i) => (
+          {[0, 1, 2, 3].map(i => (
             <line
               key={i}
               x1={30 + i * 10}
@@ -107,14 +107,7 @@ export function FloppyLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Disk opening (static) */}
-        <ellipse
-          cx="45"
-          cy="62"
-          rx="10"
-          ry="10"
-          fill={SAPPHIRE[3]}
-          opacity="0.4"
-        />
+        <ellipse cx="45" cy="62" rx="10" ry="10" fill={SAPPHIRE[3]} opacity="0.4" />
 
         {/* Write protect notch */}
         <rect x="82" y="68" width="3" height="8" fill={SAPPHIRE[0]} rx="0.5" />

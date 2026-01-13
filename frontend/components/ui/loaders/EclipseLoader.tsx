@@ -15,7 +15,12 @@ export function EclipseLoader({ className, size = 'md' }: LoaderProps) {
       className={className}
       style={{ width: dim, height: dim }}
     >
-      <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} style={{ display: 'block', overflow: 'visible' }}>
+      <svg
+        width={dim}
+        height={dim}
+        viewBox={`0 0 ${dim} ${dim}`}
+        style={{ display: 'block', overflow: 'visible' }}
+      >
         <defs>
           <radialGradient id={`sun-glow-${size}`}>
             <stop offset="0%" stopColor={SAPPHIRE[3]} stopOpacity="0.9" />
@@ -36,12 +41,7 @@ export function EclipseLoader({ className, size = 'md' }: LoaderProps) {
           fill={`url(#sun-glow-${size})`}
           opacity="0.4"
         />
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
-          fill={SAPPHIRE[2]}
-        />
+        <circle cx={center} cy={center} r={radius} fill={SAPPHIRE[2]} />
 
         {/* Moon - starts off-screen left, exits off-screen right */}
         <motion.circle

@@ -1,7 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SAPPHIRE, LOADER_SIZE, DURATION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function AmongUsLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -141,7 +146,7 @@ export function AmongUsLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Floating particles/dust behind crewmate */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={i}
             cx={20 + i * 10}

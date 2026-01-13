@@ -130,14 +130,7 @@ export function PendulumLoader({ className, size = 'md' }: LoaderProps) {
               strokeWidth={0.8}
             />
             {/* Weight detail line */}
-            <line
-              x1={-3}
-              y1={0}
-              x2={3}
-              y2={0}
-              stroke={SAPPHIRE[2]}
-              strokeWidth={0.5}
-            />
+            <line x1={-3} y1={0} x2={3} y2={0} stroke={SAPPHIRE[2]} strokeWidth={0.5} />
           </g>
 
           {/* Pendulum bob at top */}
@@ -152,12 +145,7 @@ export function PendulumLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Pivot point where arm exits body */}
-        <circle
-          cx={50}
-          cy={pivotY}
-          r={1.5}
-          fill={SAPPHIRE[2]}
-        />
+        <circle cx={50} cy={pivotY} r={1.5} fill={SAPPHIRE[2]} />
       </svg>
     </div>
   );

@@ -1,9 +1,45 @@
 'use client';
 
-import { useState, useRef, useEffect, memo, useCallback, type FormEvent, type RefObject } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  memo,
+  useCallback,
+  type FormEvent,
+  type RefObject,
+} from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Minimize2, Maximize2, GripHorizontal, PanelRight, Move, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Home, Music, Users, PenLine, Guitar, BookOpen, Clock, Piano, SlidersHorizontal, Send, Layers, Radio, Headphones, Feather, AudioWaveform, Disc3 as Turntable } from 'lucide-react';
+import {
+  Bot,
+  X,
+  Minimize2,
+  Maximize2,
+  GripHorizontal,
+  PanelRight,
+  Move,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  Music,
+  Users,
+  PenLine,
+  Guitar,
+  BookOpen,
+  Clock,
+  Piano,
+  SlidersHorizontal,
+  Send,
+  Layers,
+  Radio,
+  Headphones,
+  Feather,
+  AudioWaveform,
+  Disc3 as Turntable,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -31,10 +67,21 @@ import {
 } from '@/lib/constants/buddy.constants';
 
 const NAV_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  home: Home, music: Music, users: Users, pen: PenLine, guitar: Guitar,
-  book: BookOpen, clock: Clock, piano: Piano, sliders: SlidersHorizontal,
-  layers: Layers, radio: Radio, headphones: Headphones, feather: Feather,
-  waveform: AudioWaveform, turntable: Turntable,
+  home: Home,
+  music: Music,
+  users: Users,
+  pen: PenLine,
+  guitar: Guitar,
+  book: BookOpen,
+  clock: Clock,
+  piano: Piano,
+  sliders: SlidersHorizontal,
+  layers: Layers,
+  radio: Radio,
+  headphones: Headphones,
+  feather: Feather,
+  waveform: AudioWaveform,
+  turntable: Turntable,
 };
 
 const EDGE_ARROWS: { edge: DockEdge; Icon: typeof ChevronUp; position: string }[] = [
@@ -66,7 +113,10 @@ function EdgePicker({ currentEdge, onSelectEdge, onClose }: EdgePickerProps) {
         <motion.button
           key={edge}
           variants={BUDDY_EDGE_PICKER_VARIANTS}
-          onClick={() => { onSelectEdge(edge); onClose(); }}
+          onClick={() => {
+            onSelectEdge(edge);
+            onClose();
+          }}
           className={cn(
             'absolute p-1.5 rounded-lg transition-all duration-150',
             position,
@@ -84,21 +134,42 @@ function EdgePicker({ currentEdge, onSelectEdge, onClose }: EdgePickerProps) {
   );
 }
 
-const HEADER_BUTTON_CLASS = 'h-7 w-7 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors';
+const HEADER_BUTTON_CLASS =
+  'h-7 w-7 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors';
 
 /** Collapse/expand floating panel */
-function MinimizeButton({ isMinimized, onMinimize }: { isMinimized: boolean; onMinimize: () => void }) {
+function MinimizeButton({
+  isMinimized,
+  onMinimize,
+}: {
+  isMinimized: boolean;
+  onMinimize: () => void;
+}) {
   const Icon = isMinimized ? Maximize2 : Minimize2;
   const title = isMinimized ? 'Expand' : 'Collapse';
   return (
-    <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onMinimize(); }} title={title}>
+    <Button
+      variant="ghost"
+      size="icon"
+      className={HEADER_BUTTON_CLASS}
+      onClick={e => {
+        e.stopPropagation();
+        onMinimize();
+      }}
+      title={title}
+    >
       <Icon className="h-3.5 w-3.5" />
     </Button>
   );
 }
 
 /** Dock to edge or float freely */
-const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, onSelectEdge }: {
+const DockButton = memo(function DockButton({
+  dockMode,
+  dockEdge,
+  onToggleDock,
+  onSelectEdge,
+}: {
   dockMode: DockMode;
   dockEdge: DockEdge;
   onToggleDock: () => void;
@@ -107,16 +178,22 @@ const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, 
   const [showPicker, setShowPicker] = useState(false);
   const isDocked = dockMode === 'docked';
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    isDocked ? onToggleDock() : setShowPicker(true);
-  }, [isDocked, onToggleDock]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      isDocked ? onToggleDock() : setShowPicker(true);
+    },
+    [isDocked, onToggleDock]
+  );
 
-  const handleSelectEdge = useCallback((edge: DockEdge) => {
-    onSelectEdge(edge);
-    if (!isDocked) onToggleDock();
-    setShowPicker(false);
-  }, [isDocked, onSelectEdge, onToggleDock]);
+  const handleSelectEdge = useCallback(
+    (edge: DockEdge) => {
+      onSelectEdge(edge);
+      if (!isDocked) onToggleDock();
+      setShowPicker(false);
+    },
+    [isDocked, onSelectEdge, onToggleDock]
+  );
 
   const Icon = isDocked ? Move : PanelRight;
   const title = isDocked ? 'Float freely' : 'Dock to edge';
@@ -124,13 +201,29 @@ const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, 
   return (
     <Popover open={showPicker} onOpenChange={setShowPicker}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={handleClick} title={title}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={HEADER_BUTTON_CLASS}
+          onClick={handleClick}
+          title={title}
+        >
           <Icon className="h-3.5 w-3.5" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent side="bottom" align="center" className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10 z-[100]">
-        <div className="text-[10px] text-white/50 text-center mb-2 uppercase tracking-wider">Pick edge</div>
-        <EdgePicker currentEdge={dockEdge} onSelectEdge={handleSelectEdge} onClose={() => setShowPicker(false)} />
+      <PopoverContent
+        side="bottom"
+        align="center"
+        className="w-auto p-3 bg-slate-900/95 backdrop-blur-xl border-white/10 z-[100]"
+      >
+        <div className="text-[10px] text-white/50 text-center mb-2 uppercase tracking-wider">
+          Pick edge
+        </div>
+        <EdgePicker
+          currentEdge={dockEdge}
+          onSelectEdge={handleSelectEdge}
+          onClose={() => setShowPicker(false)}
+        />
       </PopoverContent>
     </Popover>
   );
@@ -139,7 +232,16 @@ const DockButton = memo(function DockButton({ dockMode, dockEdge, onToggleDock, 
 /** Close panel */
 function CloseButton({ onClose }: { onClose: () => void }) {
   return (
-    <Button variant="ghost" size="icon" className={HEADER_BUTTON_CLASS} onClick={(e) => { e.stopPropagation(); onClose(); }} title="Close">
+    <Button
+      variant="ghost"
+      size="icon"
+      className={HEADER_BUTTON_CLASS}
+      onClick={e => {
+        e.stopPropagation();
+        onClose();
+      }}
+      title="Close"
+    >
       <X className="h-3.5 w-3.5" />
     </Button>
   );
@@ -161,7 +263,13 @@ interface BuddyHeaderProps {
 
 const RESULT_LABEL_CLASS = 'text-[9px] uppercase tracking-widest text-white/40 mb-1';
 
-function ResultSection({ label, results, type, onSelect, disabled }: {
+function ResultSection({
+  label,
+  results,
+  type,
+  onSelect,
+  disabled,
+}: {
   label: string;
   results: SearchResult[];
   type: 'chord' | 'tab';
@@ -173,16 +281,38 @@ function ResultSection({ label, results, type, onSelect, disabled }: {
     <div>
       <div className={RESULT_LABEL_CLASS}>{label}</div>
       {results.slice(0, BUDDY_MAX_VISIBLE_RESULTS).map(result => (
-        <SearchResultButton key={result.id} result={result} type={type} onClick={onSelect} disabled={disabled} />
+        <SearchResultButton
+          key={result.id}
+          result={result}
+          type={type}
+          onClick={onSelect}
+          disabled={disabled}
+        />
       ))}
     </div>
   );
 }
 
-function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }: Omit<BuddyHeaderProps, 'context'>) {
+function BuddyHeaderControls({
+  isStatic,
+  isOnboarding,
+  isMinimized,
+  dockMode,
+  dockEdge,
+  onMinimize,
+  onClose,
+  onSkip,
+  onToggleDock,
+  onSelectEdge,
+}: Omit<BuddyHeaderProps, 'context'>) {
   if (isOnboarding) {
     return (
-      <Button variant="outline" size="sm" className="h-6 px-2 text-xs text-white/40 hover:text-white/80 hover:bg-white/10" onClick={onSkip}>
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-6 px-2 text-xs text-white/40 hover:text-white/80 hover:bg-white/10"
+        onClick={onSkip}
+      >
         Skip
       </Button>
     );
@@ -194,17 +324,41 @@ function BuddyHeaderControls({ isStatic, isOnboarding, isMinimized, dockMode, do
   return (
     <div className="flex items-center gap-0.5">
       <div className="w-px h-4 bg-white/10 mr-1" />
-      {!isMinimized && <DockButton dockMode={dockMode} dockEdge={dockEdge} onToggleDock={onToggleDock} onSelectEdge={onSelectEdge} />}
+      {!isMinimized && (
+        <DockButton
+          dockMode={dockMode}
+          dockEdge={dockEdge}
+          onToggleDock={onToggleDock}
+          onSelectEdge={onSelectEdge}
+        />
+      )}
       {!isDocked && <MinimizeButton isMinimized={isMinimized} onMinimize={onMinimize} />}
       <CloseButton onClose={onClose} />
     </div>
   );
 }
 
-export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }: BuddyHeaderProps) {
+export function BuddyHeader({
+  context,
+  isStatic,
+  isOnboarding,
+  isMinimized,
+  dockMode,
+  dockEdge,
+  onMinimize,
+  onClose,
+  onSkip,
+  onToggleDock,
+  onSelectEdge,
+}: BuddyHeaderProps) {
   const isDocked = dockMode === 'docked';
   return (
-    <div className={cn('flex items-center justify-between px-4 py-3 border-b border-white/5 select-none', !isStatic && !isDocked && 'cursor-grab active:cursor-grabbing')}>
+    <div
+      className={cn(
+        'flex items-center justify-between px-4 py-3 border-b border-white/5 select-none',
+        !isStatic && !isDocked && 'cursor-grab active:cursor-grabbing'
+      )}
+    >
       <div className="flex items-center gap-2.5">
         {!isStatic && !isDocked && <GripHorizontal className="h-4 w-4 text-white/15" />}
         <motion.div
@@ -216,7 +370,20 @@ export function BuddyHeader({ context, isStatic, isOnboarding, isMinimized, dock
         </motion.div>
         <span className="font-semibold text-sm text-white/90">Buddy</span>
       </div>
-      <BuddyHeaderControls {...{ isStatic, isOnboarding, isMinimized, dockMode, dockEdge, onMinimize, onClose, onSkip, onToggleDock, onSelectEdge }} />
+      <BuddyHeaderControls
+        {...{
+          isStatic,
+          isOnboarding,
+          isMinimized,
+          dockMode,
+          dockEdge,
+          onMinimize,
+          onClose,
+          onSkip,
+          onToggleDock,
+          onSelectEdge,
+        }}
+      />
     </div>
   );
 }
@@ -238,7 +405,10 @@ export function BuddyNavBar({ onNavigate }: BuddyNavBarProps) {
     <nav className="relative shrink-0 border-b border-white/5 bg-white/[0.02]">
       <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-slate-900/95 to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-slate-900/95 to-transparent z-10 pointer-events-none" />
-      <div className="flex items-center justify-center gap-0.5 px-4 py-2 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <div
+        className="flex items-center justify-center gap-0.5 px-4 py-2 overflow-x-auto"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
         {BUDDY_NAV_ROUTES.map(route => {
           const Icon = NAV_ICONS[route.icon];
           const isActive = pathname === route.path || pathname?.startsWith(route.path);
@@ -248,7 +418,9 @@ export function BuddyNavBar({ onNavigate }: BuddyNavBarProps) {
               onClick={() => handleClick(route.path)}
               className={cn(
                 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all whitespace-nowrap shrink-0',
-                isActive ? 'bg-white/10 text-white shadow-sm' : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                isActive
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-white/50 hover:text-white/80 hover:bg-white/5'
               )}
             >
               {Icon && <Icon className="h-3.5 w-3.5" />}
@@ -271,7 +443,15 @@ interface BuddyMessageListProps {
   onSelectResult: (result: SearchResult, type: 'chord' | 'tab') => void;
 }
 
-export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun, isSaving, onSelectSuggestion, onSelectResult }: BuddyMessageListProps) {
+export function BuddyMessageList({
+  messages,
+  isLoading,
+  isThinking,
+  thinkingPun,
+  isSaving,
+  onSelectSuggestion,
+  onSelectResult,
+}: BuddyMessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isEmptyState = messages.length === 0;
 
@@ -285,9 +465,7 @@ export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun,
 
   return (
     <div className={BUDDY_SCROLL_CONTAINER_CLASS}>
-      <AnimatePresence mode="wait">
-        {isEmptyState && !isLoading && <EmptyState />}
-      </AnimatePresence>
+      <AnimatePresence mode="wait">{isEmptyState && !isLoading && <EmptyState />}</AnimatePresence>
 
       {messages.map((message, i) => {
         const isLastEmptyStreaming = i === messages.length - 1 && isStreamingEmpty;
@@ -298,7 +476,11 @@ export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun,
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.15 }}
-            className={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start', isLastEmptyStreaming && 'justify-center w-full')}
+            className={cn(
+              'flex',
+              message.role === 'user' ? 'justify-end' : 'justify-start',
+              isLastEmptyStreaming && 'justify-center w-full'
+            )}
           >
             {/* Centered loader without background when streaming empty */}
             {isLastEmptyStreaming ? (
@@ -306,38 +488,53 @@ export function BuddyMessageList({ messages, isLoading, isThinking, thinkingPun,
                 <RandomLoader size="lg" />
               </div>
             ) : (
-            <div className={cn(
-              'max-w-[85%] rounded-xl px-3 py-2 text-xs',
-              message.role === 'user'
-                ? BUDDY_GRADIENT_USER_MSG
-                : 'bg-white/5 border border-white/10 text-white/80'
-            )}>
-              <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
+              <div
+                className={cn(
+                  'max-w-[85%] rounded-xl px-3 py-2 text-xs',
+                  message.role === 'user'
+                    ? BUDDY_GRADIENT_USER_MSG
+                    : 'bg-white/5 border border-white/10 text-white/80'
+                )}
+              >
+                <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
 
-              {message.structured && <StructuredBlock data={message.structured} />}
+                {message.structured && <StructuredBlock data={message.structured} />}
 
-              {message.suggestions && message.suggestions.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {message.suggestions.map((suggestion, idx) => (
-                    <button
-                      key={`${suggestion.artist}-${suggestion.title}-${idx}`}
-                      onClick={() => onSelectSuggestion(suggestion)}
-                      disabled={isLoading || isSaving}
-                      className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10 hover:border-white/20 hover:bg-white/15 transition-all text-[10px] font-medium text-white/70 disabled:opacity-50"
-                    >
-                      {suggestion.title}
-                    </button>
-                  ))}
-                </div>
-              )}
+                {message.suggestions && message.suggestions.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {message.suggestions.map((suggestion, idx) => (
+                      <button
+                        key={`${suggestion.artist}-${suggestion.title}-${idx}`}
+                        onClick={() => onSelectSuggestion(suggestion)}
+                        disabled={isLoading || isSaving}
+                        className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10 hover:border-white/20 hover:bg-white/15 transition-all text-[10px] font-medium text-white/70 disabled:opacity-50"
+                      >
+                        {suggestion.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-              {message.results && (message.results.chords.length > 0 || message.results.tabs.length > 0) && (
-                <div className="mt-2 space-y-2">
-                  <ResultSection label="Chords" results={message.results.chords} type="chord" onSelect={onSelectResult} disabled={isSaving} />
-                  <ResultSection label="Tabs" results={message.results.tabs} type="tab" onSelect={onSelectResult} disabled={isSaving} />
-                </div>
-              )}
-            </div>
+                {message.results &&
+                  (message.results.chords.length > 0 || message.results.tabs.length > 0) && (
+                    <div className="mt-2 space-y-2">
+                      <ResultSection
+                        label="Chords"
+                        results={message.results.chords}
+                        type="chord"
+                        onSelect={onSelectResult}
+                        disabled={isSaving}
+                      />
+                      <ResultSection
+                        label="Tabs"
+                        results={message.results.tabs}
+                        type="tab"
+                        onSelect={onSelectResult}
+                        disabled={isSaving}
+                      />
+                    </div>
+                  )}
+              </div>
             )}
           </motion.div>
         );
@@ -372,9 +569,22 @@ interface BuddyInputProps {
   onSubmit: (e: FormEvent) => void;
 }
 
-export function BuddyInput({ input, isLoading, isSaving, isOnboarding, typingText, inputRef, onInputChange, onSubmit }: BuddyInputProps) {
+export function BuddyInput({
+  input,
+  isLoading,
+  isSaving,
+  isOnboarding,
+  typingText,
+  inputRef,
+  onInputChange,
+  onSubmit,
+}: BuddyInputProps) {
   return (
-    <form onSubmit={onSubmit} data-buddy-form className="shrink-0 px-4 py-3 border-t border-white/5">
+    <form
+      onSubmit={onSubmit}
+      data-buddy-form
+      className="shrink-0 px-4 py-3 border-t border-white/5"
+    >
       <div className="flex gap-2">
         {isOnboarding ? (
           <div className="flex-1 h-9 bg-white/5 border border-white/10 rounded-lg px-3 flex items-center text-xs text-white/80">

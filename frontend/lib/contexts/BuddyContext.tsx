@@ -1,8 +1,20 @@
 'use client';
 
-import { createContext, useContext, useState, useMemo, useEffect, useCallback, useRef, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from 'react';
 import { usePathname } from 'next/navigation';
-import { BUDDY_VISIBLE_STORAGE_KEY, BUDDY_STATE_DEBOUNCE_MS } from '@/lib/constants/buddy.constants';
+import {
+  BUDDY_VISIBLE_STORAGE_KEY,
+  BUDDY_STATE_DEBOUNCE_MS,
+} from '@/lib/constants/buddy.constants';
 
 type PageContext =
   | 'landing'

@@ -21,7 +21,12 @@ export function drawFrets(
 
     if (isNut) {
       // Nut with electric sapphire gradient
-      const nutGradient = ctx.createLinearGradient(x - NUT_WIDTH / 2, padding, x + NUT_WIDTH / 2, height - padding);
+      const nutGradient = ctx.createLinearGradient(
+        x - NUT_WIDTH / 2,
+        padding,
+        x + NUT_WIDTH / 2,
+        height - padding
+      );
       nutGradient.addColorStop(0, SAPPHIRE[500]);
       nutGradient.addColorStop(0.5, SAPPHIRE[400]);
       nutGradient.addColorStop(1, SAPPHIRE[500]);

@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, DURATION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function CrankLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -36,7 +41,7 @@ export function CrankLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Gear teeth */}
-        {[0, 60, 120, 180, 240, 300].map((angle) => {
+        {[0, 60, 120, 180, 240, 300].map(angle => {
           const rad = (angle * Math.PI) / 180;
           const x1 = cx + Math.cos(rad) * gearRadius;
           const y1 = cy + Math.sin(rad) * gearRadius;
@@ -71,11 +76,11 @@ export function CrankLoader({ className, size = 'md' }: LoaderProps) {
           transition={{
             duration: DURATION.slow,
             repeat: Infinity,
-            ease: 'linear'
+            ease: 'linear',
           }}
           style={{
             originX: `${cx}px`,
-            originY: `${cy}px`
+            originY: `${cy}px`,
           }}
         >
           {/* Crank arm */}
@@ -103,12 +108,7 @@ export function CrankLoader({ className, size = 'md' }: LoaderProps) {
           />
 
           {/* Handle grip detail */}
-          <circle
-            cx={cx + armLength}
-            cy={cy}
-            r={svgSize * 0.025}
-            fill={SAPPHIRE[1]}
-          />
+          <circle cx={cx + armLength} cy={cy} r={svgSize * 0.025} fill={SAPPHIRE[1]} />
         </motion.g>
       </svg>
     </div>

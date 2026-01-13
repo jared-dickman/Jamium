@@ -73,9 +73,7 @@ export function detectKey(chordProgression: string[]): KeyInfo | null {
   if (!chordProgression.length) return null;
 
   // Extract unique chord roots and qualities
-  const chordData = chordProgression
-    .map(name => Chord.get(name))
-    .filter(c => c.tonic);
+  const chordData = chordProgression.map(name => Chord.get(name)).filter(c => c.tonic);
 
   if (!chordData.length) return null;
 

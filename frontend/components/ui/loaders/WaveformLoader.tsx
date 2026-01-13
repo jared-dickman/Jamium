@@ -27,7 +27,7 @@ export function WaveformLoader({ className, size = 'md' }: LoaderProps) {
       style={{ width: dim, height: dim }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
-        {[0, 1, 2].map((idx) => (
+        {[0, 1, 2].map(idx => (
           <motion.path
             key={idx}
             d={generatePath(0)}

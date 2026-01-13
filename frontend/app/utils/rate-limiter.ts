@@ -17,11 +17,7 @@ const rateLimiter = new Map<string, RateLimitRecord>();
  * @param windowMs - Time window in milliseconds (default: 60000 = 1 minute)
  * @returns true if allowed, false if rate limit exceeded
  */
-export function checkRateLimit(
-  ip: string,
-  limit = 10,
-  windowMs = 60000
-): boolean {
+export function checkRateLimit(ip: string, limit = 10, windowMs = 60000): boolean {
   const now = Date.now();
   const record = rateLimiter.get(ip);
 

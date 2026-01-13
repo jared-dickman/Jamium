@@ -31,7 +31,7 @@ export function NeuronLoader({ className, size = 'md' }: LoaderProps) {
           }}
         />
 
-        {dendrites.map((i) => {
+        {dendrites.map(i => {
           const angle = (i * 360) / dendrites.length;
           const rad = (angle * Math.PI) / 180;
           const x1 = 32 + Math.cos(rad) * 8;

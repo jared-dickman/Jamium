@@ -45,7 +45,12 @@ interface CoreAgentBuddyProps {
   onboarding?: OnboardingState;
 }
 
-export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, onboarding }: CoreAgentBuddyProps) {
+export function CoreAgentBuddy({
+  onSave,
+  isSaving = false,
+  isLanding = false,
+  onboarding,
+}: CoreAgentBuddyProps) {
   const { context, isOpen, setIsOpen, expandSignal } = useBuddy();
   const isOnboarding = !!onboarding;
   const isStatic = isLanding || isOnboarding;
@@ -56,7 +61,8 @@ export function CoreAgentBuddy({ onSave, isSaving = false, isLanding = false, on
   // Consolidated panel state (position, dock, minimize) with localStorage persistence
   const { state: panelState, actions: panelActions } = useBuddyPanelState(isStatic);
   const { position, isMinimized, dockMode, dockEdge, isDocked } = panelState;
-  const { setPosition, setIsMinimized, setDockEdge, handleToggleDock, handleDragEnd } = panelActions;
+  const { setPosition, setIsMinimized, setDockEdge, handleToggleDock, handleDragEnd } =
+    panelActions;
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isReady, setIsReady] = useState(false);
@@ -186,7 +192,21 @@ interface MobilePanelProps {
   onSelectResult: (result: SearchResult, type: 'chord' | 'tab') => void;
 }
 
-function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving, thinkingPun, inputRef, onInputChange, onSubmit, onClose, onSelectSuggestion, onSelectResult }: MobilePanelProps) {
+function MobilePanel({
+  context,
+  messages,
+  input,
+  isLoading,
+  isThinking,
+  isSaving,
+  thinkingPun,
+  inputRef,
+  onInputChange,
+  onSubmit,
+  onClose,
+  onSelectSuggestion,
+  onSelectResult,
+}: MobilePanelProps) {
   return (
     <motion.div
       initial={{ y: '100%' }}
@@ -236,7 +256,13 @@ function MobilePanel({ context, messages, input, isLoading, isThinking, isSaving
   );
 }
 
-function MobileHeader({ context, onClose }: { context: { page: string; artist?: string; song?: string }; onClose: () => void }) {
+function MobileHeader({
+  context,
+  onClose,
+}: {
+  context: { page: string; artist?: string; song?: string };
+  onClose: () => void;
+}) {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
       <div className="flex-1" /> {/* Left spacer for centering */}
@@ -251,7 +277,12 @@ function MobileHeader({ context, onClose }: { context: { page: string; artist?: 
         <span className="font-semibold text-lg text-white">Buddy</span>
       </div>
       <div className="flex-1 flex justify-end">
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10" onClick={onClose}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+          onClick={onClose}
+        >
           <X className="h-5 w-5" />
         </Button>
       </div>
@@ -292,10 +323,35 @@ interface DesktopPanelProps {
 }
 
 function DesktopPanel({
-  context, isStatic, isOnboarding, isMinimized, isFirstLoad, position, dockMode, dockEdge,
-  displayMessages, displayLoading, displayThinking, displayInput, input, isLoading, isSaving,
-  thinkingPun, inputRef, onInputChange, onSubmit, onPositionChange, onDragEnd,
-  onMinimize, onClose, onToggleDock, onSelectEdge, onSkip, onAnimationComplete, onSelectSuggestion, onSelectResult
+  context,
+  isStatic,
+  isOnboarding,
+  isMinimized,
+  isFirstLoad,
+  position,
+  dockMode,
+  dockEdge,
+  displayMessages,
+  displayLoading,
+  displayThinking,
+  displayInput,
+  input,
+  isLoading,
+  isSaving,
+  thinkingPun,
+  inputRef,
+  onInputChange,
+  onSubmit,
+  onPositionChange,
+  onDragEnd,
+  onMinimize,
+  onClose,
+  onToggleDock,
+  onSelectEdge,
+  onSkip,
+  onAnimationComplete,
+  onSelectSuggestion,
+  onSelectResult,
 }: DesktopPanelProps) {
   const isDocked = dockMode === 'docked';
   const [isDragging, setIsDragging] = useState(false);
@@ -314,46 +370,55 @@ function DesktopPanel({
   }, [position.x, position.y, isDragging, motionX, motionY]);
 
   /** Start drag */
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (isStatic || isDocked) return;
-    if ((e.target as HTMLElement).closest('button, input, a, [role="button"]')) return;
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (isStatic || isDocked) return;
+      if ((e.target as HTMLElement).closest('button, input, a, [role="button"]')) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    if (e.clientY - rect.top > BUDDY_HEADER_HEIGHT) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      if (e.clientY - rect.top > BUDDY_HEADER_HEIGHT) return;
 
-    e.currentTarget.setPointerCapture(e.pointerId);
-    e.preventDefault();
-    setIsDragging(true);
-    dragRef.current = {
-      offsetX: e.clientX - rect.left,
-      offsetY: e.clientY - rect.top,
-    };
-  }, [isStatic, isDocked]);
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      setIsDragging(true);
+      dragRef.current = {
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+    },
+    [isStatic, isDocked]
+  );
 
   /** Move drag - instant via motion values */
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragRef.current) return;
-    const pos = clampPosition(
-      e.clientX - dragRef.current.offsetX,
-      e.clientY - dragRef.current.offsetY
-    );
-    motionX.set(pos.x);
-    motionY.set(pos.y);
-  }, [motionX, motionY]);
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!dragRef.current) return;
+      const pos = clampPosition(
+        e.clientX - dragRef.current.offsetX,
+        e.clientY - dragRef.current.offsetY
+      );
+      motionX.set(pos.x);
+      motionY.set(pos.y);
+    },
+    [motionX, motionY]
+  );
 
   /** End drag */
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    if (!dragRef.current) return;
-    e.currentTarget.releasePointerCapture(e.pointerId);
-    const pos = clampPosition(
-      e.clientX - dragRef.current.offsetX,
-      e.clientY - dragRef.current.offsetY
-    );
-    onPositionChange(pos);
-    setIsDragging(false);
-    dragRef.current = null;
-    onDragEnd();
-  }, [onPositionChange, onDragEnd]);
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!dragRef.current) return;
+      e.currentTarget.releasePointerCapture(e.pointerId);
+      const pos = clampPosition(
+        e.clientX - dragRef.current.offsetX,
+        e.clientY - dragRef.current.offsetY
+      );
+      onPositionChange(pos);
+      setIsDragging(false);
+      dragRef.current = null;
+      onDragEnd();
+    },
+    [onPositionChange, onDragEnd]
+  );
 
   const panelVariants = isStatic
     ? BUDDY_LANDING_VARIANTS
@@ -416,7 +481,9 @@ function DesktopPanel({
         )}
         onClick={isMinimized ? () => onMinimize() : undefined}
       >
-        {!isDocked && <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 opacity-50 blur-sm -z-10" />}
+        {!isDocked && (
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 opacity-50 blur-sm -z-10" />
+        )}
 
         <BuddyHeader
           context={context}
@@ -436,9 +503,12 @@ function DesktopPanel({
           {!isMinimized && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: (isDocked || isStatic) ? 'auto' : 560 }}
+              animate={{ opacity: 1, height: isDocked || isStatic ? 'auto' : 560 }}
               exit={{ opacity: 0, height: 0 }}
-              className={cn('flex flex-col min-h-0 overflow-hidden', (isDocked || isStatic) && 'flex-1')}
+              className={cn(
+                'flex flex-col min-h-0 overflow-hidden',
+                (isDocked || isStatic) && 'flex-1'
+              )}
             >
               {!isOnboarding && <BuddyNavBar onNavigate={onClose} />}
 
@@ -474,7 +544,10 @@ function DesktopPanel({
 
 function GlowEffects({ isFirstLoad }: { isFirstLoad: boolean }) {
   return (
-    <div className="absolute inset-0 -z-10 overflow-visible pointer-events-none" style={{ contain: 'layout' }}>
+    <div
+      className="absolute inset-0 -z-10 overflow-visible pointer-events-none"
+      style={{ contain: 'layout' }}
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

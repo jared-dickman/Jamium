@@ -12,23 +12,25 @@ export function PolarLoader({ className, size = 'md' }: LoaderProps) {
   // Generate polar rose curve: r = cos(3θ)
   // Creates a beautiful 3-petaled rose pattern
   const points = 180;
-  const rosePath = Array.from({ length: points }, (_, i) => {
-    const theta = (i / points) * Math.PI * 2;
-    const r = maxRadius * Math.cos(3 * theta);
-    const x = centerX + r * Math.cos(theta);
-    const y = centerY + r * Math.sin(theta);
-    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ') + ' Z';
+  const rosePath =
+    Array.from({ length: points }, (_, i) => {
+      const theta = (i / points) * Math.PI * 2;
+      const r = maxRadius * Math.cos(3 * theta);
+      const x = centerX + r * Math.cos(theta);
+      const y = centerY + r * Math.sin(theta);
+      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+    }).join(' ') + ' Z';
 
   // Generate cardioid curve: r = a(1 + cos(θ))
   // Beautiful heart-shaped curve
-  const cardioidPath = Array.from({ length: points }, (_, i) => {
-    const theta = (i / points) * Math.PI * 2;
-    const r = (maxRadius * 0.5) * (1 + Math.cos(theta));
-    const x = centerX + r * Math.cos(theta);
-    const y = centerY + r * Math.sin(theta);
-    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ') + ' Z';
+  const cardioidPath =
+    Array.from({ length: points }, (_, i) => {
+      const theta = (i / points) * Math.PI * 2;
+      const r = maxRadius * 0.5 * (1 + Math.cos(theta));
+      const x = centerX + r * Math.cos(theta);
+      const y = centerY + r * Math.sin(theta);
+      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+    }).join(' ') + ' Z';
 
   // Polar grid - concentric circles
   const gridCircles = [0.33, 0.66, 1].map(scale => maxRadius * scale);

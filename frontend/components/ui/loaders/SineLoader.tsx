@@ -9,11 +9,19 @@ export function SineLoader({ size = 'md' }: LoaderProps) {
   const points = 100;
   const waves = 3;
 
-  const generatePath = (phase: number, frequency: number, amplitude: number, verticalOffset: number) => {
+  const generatePath = (
+    phase: number,
+    frequency: number,
+    amplitude: number,
+    verticalOffset: number
+  ) => {
     let path = `M 0 ${svgSize / 2 + verticalOffset}`;
     for (let i = 0; i <= points; i++) {
       const x = (i / points) * svgSize;
-      const y = svgSize / 2 + verticalOffset + Math.sin((i / points) * Math.PI * frequency + phase) * amplitude;
+      const y =
+        svgSize / 2 +
+        verticalOffset +
+        Math.sin((i / points) * Math.PI * frequency + phase) * amplitude;
       path += ` L ${x} ${y}`;
     }
     return path;

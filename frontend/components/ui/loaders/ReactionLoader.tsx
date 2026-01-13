@@ -26,7 +26,7 @@ export function ReactionLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Bubbles rising */}
-        {[0, 1, 2, 3, 4, 5].map((i) => {
+        {[0, 1, 2, 3, 4, 5].map(i => {
           const startX = dim * (0.35 + i * 0.05);
           const endY = dim * 0.25;
           const startY = dim * 0.75;
@@ -57,7 +57,7 @@ export function ReactionLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Energy waves */}
-        {[0, 1].map((i) => (
+        {[0, 1].map(i => (
           <motion.circle
             key={`wave-${i}`}
             cx={dim / 2}

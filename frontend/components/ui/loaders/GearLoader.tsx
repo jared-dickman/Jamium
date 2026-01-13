@@ -98,9 +98,18 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
           style={{ originX: `${largeGear.cx}px`, originY: `${largeGear.cy}px` }}
         >
           {/* Outer teeth */}
-          <path d={createGear(largeGear.cx, largeGear.cy, largeGear.radius, largeGear.teeth)} fill="url(#metalGrad1)" />
+          <path
+            d={createGear(largeGear.cx, largeGear.cy, largeGear.radius, largeGear.teeth)}
+            fill="url(#metalGrad1)"
+          />
           {/* Inner hub with gradient */}
-          <circle cx={largeGear.cx} cy={largeGear.cy} r={largeGear.radius * 0.4} fill={SAPPHIRE[0]} opacity={0.7} />
+          <circle
+            cx={largeGear.cx}
+            cy={largeGear.cy}
+            r={largeGear.radius * 0.4}
+            fill={SAPPHIRE[0]}
+            opacity={0.7}
+          />
           {/* Hub spokes */}
           {Array.from({ length: 6 }, (_, i) => {
             const angle = (i * 60 * Math.PI) / 180;
@@ -119,7 +128,12 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
             );
           })}
           {/* Central axle */}
-          <circle cx={largeGear.cx} cy={largeGear.cy} r={largeGear.radius * 0.15} fill={SAPPHIRE[2]} />
+          <circle
+            cx={largeGear.cx}
+            cy={largeGear.cy}
+            r={largeGear.radius * 0.15}
+            fill={SAPPHIRE[2]}
+          />
         </motion.g>
 
         {/* Medium gear - counter-clockwise, meshes with large */}
@@ -132,7 +146,13 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
             d={createGear(mediumGear.cx, mediumGear.cy, mediumGear.radius, mediumGear.teeth)}
             fill="url(#metalGrad2)"
           />
-          <circle cx={mediumGear.cx} cy={mediumGear.cy} r={mediumGear.radius * 0.42} fill={SAPPHIRE[1]} opacity={0.6} />
+          <circle
+            cx={mediumGear.cx}
+            cy={mediumGear.cy}
+            r={mediumGear.radius * 0.42}
+            fill={SAPPHIRE[1]}
+            opacity={0.6}
+          />
           {/* Hub detail */}
           {Array.from({ length: 4 }, (_, i) => {
             const angle = (i * 90 * Math.PI) / 180;
@@ -150,7 +170,12 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
               />
             );
           })}
-          <circle cx={mediumGear.cx} cy={mediumGear.cy} r={mediumGear.radius * 0.16} fill={SAPPHIRE[3]} />
+          <circle
+            cx={mediumGear.cx}
+            cy={mediumGear.cy}
+            r={mediumGear.radius * 0.16}
+            fill={SAPPHIRE[3]}
+          />
         </motion.g>
 
         {/* Small gear - clockwise, meshes with medium */}
@@ -159,8 +184,17 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
           transition={{ duration: smallGear.speed, repeat: Infinity, ease: 'linear' }}
           style={{ originX: `${smallGear.cx}px`, originY: `${smallGear.cy}px` }}
         >
-          <path d={createGear(smallGear.cx, smallGear.cy, smallGear.radius, smallGear.teeth)} fill="url(#metalGrad3)" />
-          <circle cx={smallGear.cx} cy={smallGear.cy} r={smallGear.radius * 0.45} fill={SAPPHIRE[0]} opacity={0.65} />
+          <path
+            d={createGear(smallGear.cx, smallGear.cy, smallGear.radius, smallGear.teeth)}
+            fill="url(#metalGrad3)"
+          />
+          <circle
+            cx={smallGear.cx}
+            cy={smallGear.cy}
+            r={smallGear.radius * 0.45}
+            fill={SAPPHIRE[0]}
+            opacity={0.65}
+          />
           {/* Simple 3-spoke hub */}
           {Array.from({ length: 3 }, (_, i) => {
             const angle = (i * 120 * Math.PI) / 180;
@@ -178,7 +212,12 @@ export function GearLoader({ className, size = 'md' }: LoaderProps) {
               />
             );
           })}
-          <circle cx={smallGear.cx} cy={smallGear.cy} r={smallGear.radius * 0.18} fill={SAPPHIRE[2]} />
+          <circle
+            cx={smallGear.cx}
+            cy={smallGear.cy}
+            r={smallGear.radius * 0.18}
+            fill={SAPPHIRE[2]}
+          />
         </motion.g>
       </svg>
     </div>

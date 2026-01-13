@@ -6,12 +6,14 @@ import { logger } from '@/lib/logger';
 import { serverErrorTracker } from '@/app/utils/error-tracker.server';
 import { validateApiAuth } from '@/lib/auth/apiAuth';
 
-const LabResponseSchema = z.object({
-  message: z.string(),
-  status: z.enum(['connected', 'disconnected']),
-  environment: z.enum(['development', 'production']),
-  backend: z.string(),
-}).strict();
+const LabResponseSchema = z
+  .object({
+    message: z.string(),
+    status: z.enum(['connected', 'disconnected']),
+    environment: z.enum(['development', 'production']),
+    backend: z.string(),
+  })
+  .strict();
 
 export async function GET(request: NextRequest) {
   const authResult = validateApiAuth(request);

@@ -27,7 +27,10 @@ interface BuddyErrorBoundaryState {
  * Buddy-styled Error Boundary
  * Catches errors in Buddy component tree with matching visual aesthetic
  */
-export class BuddyErrorBoundary extends Component<BuddyErrorBoundaryProps, BuddyErrorBoundaryState> {
+export class BuddyErrorBoundary extends Component<
+  BuddyErrorBoundaryProps,
+  BuddyErrorBoundaryState
+> {
   public state: BuddyErrorBoundaryState = {
     hasError: false,
     error: null,

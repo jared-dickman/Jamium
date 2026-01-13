@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, LOADER_STROKE, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  LOADER_STROKE,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function TempoLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -48,7 +53,7 @@ export function TempoLoader({ className, size = 'md' }: LoaderProps) {
 
         <motion.g
           animate={{
-            rotate: [-25, 25, -25]
+            rotate: [-25, 25, -25],
           }}
           transition={{
             duration: 1.2,
@@ -66,20 +71,10 @@ export function TempoLoader({ className, size = 'md' }: LoaderProps) {
             strokeWidth={stroke}
             strokeLinecap="round"
           />
-          <circle
-            cx={centerX}
-            cy={pivotY - armLength}
-            r={dim * 0.06}
-            fill={SAPPHIRE[3]}
-          />
+          <circle cx={centerX} cy={pivotY - armLength} r={dim * 0.06} fill={SAPPHIRE[3]} />
         </motion.g>
 
-        <circle
-          cx={centerX}
-          cy={pivotY}
-          r={dim * 0.04}
-          fill={SAPPHIRE[1]}
-        />
+        <circle cx={centerX} cy={pivotY} r={dim * 0.04} fill={SAPPHIRE[1]} />
       </svg>
     </div>
   );

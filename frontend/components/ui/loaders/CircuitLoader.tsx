@@ -9,10 +9,22 @@ export function CircuitLoader({ size = 'md' }: LoaderProps) {
 
   // Circuit board traces - complex paths
   const traces = [
-    { d: `M ${dimension * 0.1} ${center} L ${dimension * 0.4} ${center} L ${dimension * 0.4} ${dimension * 0.25} L ${dimension * 0.6} ${dimension * 0.25}`, delay: 0 },
-    { d: `M ${dimension * 0.9} ${center} L ${dimension * 0.6} ${center} L ${dimension * 0.6} ${dimension * 0.75} L ${dimension * 0.4} ${dimension * 0.75}`, delay: 0.3 },
-    { d: `M ${center} ${dimension * 0.1} L ${center} ${dimension * 0.3} L ${dimension * 0.75} ${dimension * 0.3} L ${dimension * 0.75} ${center}`, delay: 0.6 },
-    { d: `M ${center} ${dimension * 0.9} L ${center} ${dimension * 0.7} L ${dimension * 0.25} ${dimension * 0.7} L ${dimension * 0.25} ${center}`, delay: 0.9 },
+    {
+      d: `M ${dimension * 0.1} ${center} L ${dimension * 0.4} ${center} L ${dimension * 0.4} ${dimension * 0.25} L ${dimension * 0.6} ${dimension * 0.25}`,
+      delay: 0,
+    },
+    {
+      d: `M ${dimension * 0.9} ${center} L ${dimension * 0.6} ${center} L ${dimension * 0.6} ${dimension * 0.75} L ${dimension * 0.4} ${dimension * 0.75}`,
+      delay: 0.3,
+    },
+    {
+      d: `M ${center} ${dimension * 0.1} L ${center} ${dimension * 0.3} L ${dimension * 0.75} ${dimension * 0.3} L ${dimension * 0.75} ${center}`,
+      delay: 0.6,
+    },
+    {
+      d: `M ${center} ${dimension * 0.9} L ${center} ${dimension * 0.7} L ${dimension * 0.25} ${dimension * 0.7} L ${dimension * 0.25} ${center}`,
+      delay: 0.9,
+    },
   ];
 
   // Connection nodes at intersections

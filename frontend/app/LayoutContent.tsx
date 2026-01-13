@@ -25,7 +25,13 @@ export function useHeaderLogoRef() {
   return useContext(HeaderLogoRefContext);
 }
 
-function LayoutInner({ children, headerLogoRef }: { children: React.ReactNode; headerLogoRef: React.RefObject<HTMLHeadingElement | null> }) {
+function LayoutInner({
+  children,
+  headerLogoRef,
+}: {
+  children: React.ReactNode;
+  headerLogoRef: React.RefObject<HTMLHeadingElement | null>;
+}) {
   const pathname = usePathname();
   const { isOpen, setIsOpen, openBuddy } = useBuddy();
   const { introComplete, introLanding } = useIntro();
@@ -45,10 +51,12 @@ function LayoutInner({ children, headerLogoRef }: { children: React.ReactNode; h
       <div className="flex-1 flex flex-col min-w-0">
         {/* Unified header - logo, breadcrumbs, buddy toggle in single row */}
         {/* Hidden on mobile landing page for cinematic Buddy-first experience */}
-        <header className={cn(
-          'sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
-          isLandingPage && 'hidden md:block'
-        )}>
+        <header
+          className={cn(
+            'sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+            isLandingPage && 'hidden md:block'
+          )}
+        >
           <div className={cn('flex items-center justify-between h-14 w-full', LAYOUT_PADDING)}>
             {/* Logo + Breadcrumbs inline */}
             <div className="flex items-center min-w-0">
@@ -70,7 +78,7 @@ function LayoutInner({ children, headerLogoRef }: { children: React.ReactNode; h
               <Button
                 variant="outline"
                 className="font-medium h-auto px-4 py-2 text-sm gap-2 shrink-0 relative overflow-hidden border-sapphire-500/20 bg-sapphire-500/10 hover:border-sapphire-500/30"
-                onClick={() => isOpen ? setIsOpen(false) : openBuddy()}
+                onClick={() => (isOpen ? setIsOpen(false) : openBuddy())}
               >
                 {/* Animated gradient fill - sweeps right-to-left on open, follows Buddy out on close */}
                 <motion.div
@@ -82,18 +90,32 @@ function LayoutInner({ children, headerLogoRef }: { children: React.ReactNode; h
                   }}
                   transition={{
                     clipPath: isOpen
-                      ? { type: 'spring', stiffness: 180, damping: 20 }  // Open: slow reveal (matches panel)
+                      ? { type: 'spring', stiffness: 180, damping: 20 } // Open: slow reveal (matches panel)
                       : { type: 'spring', stiffness: 450, damping: 32 }, // Close: fast snap (matches panel)
                     backgroundPosition: { duration: 0.4, ease: 'easeOut' },
                   }}
                 />
-                <Bot className={cn('h-4 w-4 relative z-10 transition-colors duration-300', isOpen && 'text-white')} />
-                <span className={cn('hidden sm:inline relative z-10 transition-colors duration-300', isOpen && 'text-white')}>Buddy</span>
+                <Bot
+                  className={cn(
+                    'h-4 w-4 relative z-10 transition-colors duration-300',
+                    isOpen && 'text-white'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'hidden sm:inline relative z-10 transition-colors duration-300',
+                    isOpen && 'text-white'
+                  )}
+                >
+                  Buddy
+                </span>
               </Button>
             )}
           </div>
         </header>
-        <main className={isSongwriterPage ? "w-full flex-1" : `w-full ${LAYOUT_PADDING} pt-2 flex-1`}>
+        <main
+          className={isSongwriterPage ? 'w-full flex-1' : `w-full ${LAYOUT_PADDING} pt-2 flex-1`}
+        >
           {children}
         </main>
       </div>

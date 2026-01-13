@@ -36,7 +36,7 @@ export function DefragLoader({ className, size = 'md' }: LoaderProps) {
         viewBox={`0 0 ${dim * 0.8} ${dim * 0.8}`}
         style={{ display: 'block', margin: `${dim * 0.1}px` }}
       >
-        {squares.map((square) => {
+        {squares.map(square => {
           // Diagonal wave pattern
           const diagonalIndex = square.row + square.col;
           const delay = diagonalIndex * 0.08;

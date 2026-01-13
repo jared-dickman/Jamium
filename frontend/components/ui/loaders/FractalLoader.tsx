@@ -15,7 +15,7 @@ export function FractalLoader({ size = 'md' }: LoaderProps) {
     angle: number,
     depth: number,
     length: number,
-    key: string = '0',
+    key: string = '0'
   ): React.JSX.Element[] => {
     if (depth === 0) return [];
 

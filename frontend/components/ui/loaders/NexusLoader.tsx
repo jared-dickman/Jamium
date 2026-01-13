@@ -98,7 +98,7 @@ export function NexusLoader({ className, size = 'md' }: LoaderProps) {
           </filter>
         </defs>
 
-        {blocks.map((block) => (
+        {blocks.map(block => (
           <motion.g
             key={block.id}
             filter={`url(#nexus-glow-${size})`}

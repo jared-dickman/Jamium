@@ -21,7 +21,12 @@ export function drawStrings(
     const stringWidth = STRING_WIDTH_BASE + (STRING_COUNT - 1 - i) * STRING_WIDTH_INCREMENT;
 
     // Gradient from sapphire to brighter sapphire for metallic look
-    const gradient = ctx.createLinearGradient(padding, y - stringWidth / 2, padding, y + stringWidth / 2);
+    const gradient = ctx.createLinearGradient(
+      padding,
+      y - stringWidth / 2,
+      padding,
+      y + stringWidth / 2
+    );
     gradient.addColorStop(0, SAPPHIRE[200]);
     gradient.addColorStop(0.5, SAPPHIRE[300]);
     gradient.addColorStop(1, SAPPHIRE[200]);

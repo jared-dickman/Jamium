@@ -13,7 +13,7 @@ export function HarmonicLoader({ size = 'md' }: LoaderProps) {
     harmonic: number,
     phase: number,
     amplitude: number,
-    yOffset: number,
+    yOffset: number
   ) => {
     let path = `M 0 ${yOffset}`;
     for (let i = 0; i <= points; i++) {

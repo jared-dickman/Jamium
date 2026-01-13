@@ -138,7 +138,7 @@ export function MandelbrotLoader({ size = 'md' }: LoaderProps) {
                 {points.map((point, index) => {
                   const colorIndex = Math.min(
                     SAPPHIRE.length - 1,
-                    Math.floor((point.iteration / maxIterations) * SAPPHIRE.length),
+                    Math.floor((point.iteration / maxIterations) * SAPPHIRE.length)
                   );
                   const baseSize = Math.max(0.8, dimension * 0.012);
                   const sizeVariation = 1 + (point.iteration / maxIterations) * 0.5;

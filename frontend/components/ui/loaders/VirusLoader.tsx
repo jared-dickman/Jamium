@@ -33,7 +33,7 @@ export function VirusLoader({ className, size = 'md' }: LoaderProps) {
           }}
         />
 
-        {spikes.map((i) => {
+        {spikes.map(i => {
           const angle = (i * 360) / spikes.length;
           const rad = (angle * Math.PI) / 180;
           const x1 = 32 + Math.cos(rad) * 14;

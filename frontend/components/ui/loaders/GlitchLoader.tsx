@@ -2,7 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, DURATION, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function GlitchLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -34,7 +39,13 @@ export function GlitchLoader({ className, size = 'md' }: LoaderProps) {
 
           <filter id="glitch-corruption">
             <feTurbulence baseFrequency="0.02 0.9" numOctaves="1" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="3"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
           </filter>
         </defs>
 
@@ -162,13 +173,28 @@ export function GlitchLoader({ className, size = 'md' }: LoaderProps) {
             fill={SAPPHIRE[i % 4]}
             opacity={0}
             animate={{
-              opacity: i === 0 ? [0, 0, 0.8, 0] : i === 1 ? [0, 0, 0, 0, 0, 0.6, 0] : [0, 0, 0, 0, 0, 0, 0, 0, 0.7, 0],
-              scaleX: i === 0 ? [1, 1, 0.7, 1] : i === 1 ? [1, 1, 1, 1, 1, 0.85, 1] : [1, 1, 1, 1, 1, 1, 1, 1, 0.6, 1],
+              opacity:
+                i === 0
+                  ? [0, 0, 0.8, 0]
+                  : i === 1
+                    ? [0, 0, 0, 0, 0, 0.6, 0]
+                    : [0, 0, 0, 0, 0, 0, 0, 0, 0.7, 0],
+              scaleX:
+                i === 0
+                  ? [1, 1, 0.7, 1]
+                  : i === 1
+                    ? [1, 1, 1, 1, 1, 0.85, 1]
+                    : [1, 1, 1, 1, 1, 1, 1, 1, 0.6, 1],
             }}
             transition={{
               duration: DURATION.medium,
               repeat: Infinity,
-              times: i === 0 ? [0, 0.29, 0.3, 0.32] : i === 1 ? [0, 0.58, 0.59, 0.6, 0.61, 0.62, 0.63] : [0, 0.88, 0.89, 0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96],
+              times:
+                i === 0
+                  ? [0, 0.29, 0.3, 0.32]
+                  : i === 1
+                    ? [0, 0.58, 0.59, 0.6, 0.61, 0.62, 0.63]
+                    : [0, 0.88, 0.89, 0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96],
             }}
             style={{ transformOrigin: 'left center' }}
           />
@@ -195,7 +221,12 @@ export function GlitchLoader({ className, size = 'md' }: LoaderProps) {
         />
 
         {/* Corner pixel blocks - digital corruption */}
-        {[[2, 2], [dim - 6, 2], [2, dim - 6], [dim - 6, dim - 6]].map(([x, y], i) => (
+        {[
+          [2, 2],
+          [dim - 6, 2],
+          [2, dim - 6],
+          [dim - 6, dim - 6],
+        ].map(([x, y], i) => (
           <motion.rect
             key={`corner-${i}`}
             x={x}

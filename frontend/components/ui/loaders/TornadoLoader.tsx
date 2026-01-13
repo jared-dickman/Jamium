@@ -48,8 +48,11 @@ export function TornadoLoader({ className, size = 'md' }: LoaderProps) {
           animate={{ rx: [15, 10, 15], opacity: [0.4, 0.8, 0.4] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
         />
-        <motion.g animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}>
-          {[0, 1, 2, 3].map((i) => (
+        <motion.g
+          animate={{ rotate: 360 }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+        >
+          {[0, 1, 2, 3].map(i => (
             <motion.circle
               key={i}
               cx={50 + Math.cos((i * Math.PI) / 2) * 20}

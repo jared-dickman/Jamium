@@ -47,7 +47,7 @@ export function GalagaLoader({ className, size = 'md' }: LoaderProps) {
         ))}
 
         {/* Enemy formation - 3 aliens in classic pattern */}
-        {[0, 1, 2].map((i) => {
+        {[0, 1, 2].map(i => {
           const baseX = 30 + i * 20;
           return (
             <motion.g key={`enemy-${i}`}>
@@ -103,7 +103,7 @@ export function GalagaLoader({ className, size = 'md' }: LoaderProps) {
         })}
 
         {/* Player projectiles - staggered firing */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.g key={`bullet-${i}`}>
             {/* Bullet trail glow */}
             <motion.line
@@ -182,7 +182,12 @@ export function GalagaLoader({ className, size = 'md' }: LoaderProps) {
             }}
           />
           {/* Main body */}
-          <path d="M50,78 L45,86 L55,86 Z" fill={SAPPHIRE[2]} stroke={SAPPHIRE[3]} strokeWidth={0.4} />
+          <path
+            d="M50,78 L45,86 L55,86 Z"
+            fill={SAPPHIRE[2]}
+            stroke={SAPPHIRE[3]}
+            strokeWidth={0.4}
+          />
           {/* Wings */}
           <path d="M45,86 L42,88 L45,88 Z" fill={SAPPHIRE[1]} />
           <path d="M55,86 L58,88 L55,88 Z" fill={SAPPHIRE[1]} />
@@ -206,7 +211,7 @@ export function GalagaLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Muzzle flash - synced with bullet firing */}
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <motion.circle
             key={`flash-${i}`}
             cx={50}

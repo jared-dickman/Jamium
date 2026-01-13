@@ -26,8 +26,16 @@ export function OrbitLoader({ size = 'md' }: LoaderProps) {
           </radialGradient>
           {particlesPerOrbit.map((_, orbitIdx) => (
             <radialGradient key={`particle-grad-${orbitIdx}`} id={`particle-${orbitIdx}-${size}`}>
-              <stop offset="0%" stopColor={SAPPHIRE[(orbitIdx + 1) % SAPPHIRE.length]} stopOpacity={1} />
-              <stop offset="100%" stopColor={SAPPHIRE[(orbitIdx + 2) % SAPPHIRE.length]} stopOpacity={0.6} />
+              <stop
+                offset="0%"
+                stopColor={SAPPHIRE[(orbitIdx + 1) % SAPPHIRE.length]}
+                stopOpacity={1}
+              />
+              <stop
+                offset="100%"
+                stopColor={SAPPHIRE[(orbitIdx + 2) % SAPPHIRE.length]}
+                stopOpacity={0.6}
+              />
             </radialGradient>
           ))}
         </defs>

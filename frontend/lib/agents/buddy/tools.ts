@@ -3,7 +3,7 @@ import { tool, createSdkMcpServer } from '@anthropic-ai/claude-agent-sdk';
 // Type assertion needed: SDK types reference 'zod' (v4 in project) but expects v3 at runtime
 import { z } from 'zod3';
 // Helper to bridge zod3 schemas to SDK's expected zod types (zod v3 → SDK)
- 
+
 const asSchema = <T extends Record<string, unknown>>(schema: T): any => schema;
 import {
   executeSearch,
@@ -37,9 +37,7 @@ const paramDocs = Object.entries(PageParams.jam)
 
 // Tool input schemas using Zod 3 (plain object format per SDK docs)
 export const SearchInputSchema = {
-  artist: z
-    .string()
-    .describe('Full artist/band name. Fix typos. Expand abbreviations.'),
+  artist: z.string().describe('Full artist/band name. Fix typos. Expand abbreviations.'),
   title: z.string().describe('Song title. Drop unnecessary words if search fails.'),
 };
 
@@ -54,15 +52,18 @@ export const DownloadInputSchema = {
 };
 
 export const GetArtistSongsInputSchema = {
-  artist: z
-    .string()
-    .describe('Artist name or slug. Case-insensitive. Partial matches work.'),
+  artist: z.string().describe('Artist name or slug. Case-insensitive. Partial matches work.'),
 };
 
 export const NavigateInputSchema = {
   path: z.string().describe('URL path. Use Title_Case_With_Underscores for slugs.'),
   reason: z.string().optional().describe('Brief reason shown to user. Keep it casual.'),
-  params: z.record(z.string()).optional().describe('URL params to control UI state (bpm, capo, tab, etc). Auto-appended as query string.'),
+  params: z
+    .record(z.string())
+    .optional()
+    .describe(
+      'URL params to control UI state (bpm, capo, tab, etc). Auto-appended as query string.'
+    ),
 };
 
 // Tool descriptions
@@ -154,64 +155,76 @@ export function createBuddyMcpServer(apiBaseUrl: string, onNavigate?: Navigation
         'search_ultimate_guitar',
         SEARCH_DESCRIPTION,
         asSchema(SearchInputSchema),
-        async (args) => {
+        async args => {
           const { artist, title } = args as { artist: string; title: string };
           const result = await executeSearch(apiBaseUrl, artist, title);
           return { content: [{ type: 'text' as const, text: result }] };
         }
       ),
-      tool(
-        'download_song',
-        DOWNLOAD_DESCRIPTION,
-        asSchema(DownloadInputSchema),
-        async (args) => {
-          const { songUrl, artist, title } = args as { songUrl: string; artist?: string; title?: string };
-          return { content: [{ type: 'text' as const, text: await executeDownload(apiBaseUrl, songUrl, artist, title) }] };
-        }
-      ),
-      tool(
-        'list_artists',
-        LIST_ARTISTS_DESCRIPTION,
-        {},
-        async () => {
-          const result = await executeListArtists(apiBaseUrl);
-          return { content: [{ type: 'text' as const, text: result }] };
-        }
-      ),
+      tool('download_song', DOWNLOAD_DESCRIPTION, asSchema(DownloadInputSchema), async args => {
+        const { songUrl, artist, title } = args as {
+          songUrl: string;
+          artist?: string;
+          title?: string;
+        };
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: await executeDownload(apiBaseUrl, songUrl, artist, title),
+            },
+          ],
+        };
+      }),
+      tool('list_artists', LIST_ARTISTS_DESCRIPTION, {}, async () => {
+        const result = await executeListArtists(apiBaseUrl);
+        return { content: [{ type: 'text' as const, text: result }] };
+      }),
       tool(
         'get_artist_songs',
         GET_ARTIST_SONGS_DESCRIPTION,
         asSchema(GetArtistSongsInputSchema),
-        async (args) => {
+        async args => {
           const { artist } = args as { artist: string };
-          return { content: [{ type: 'text' as const, text: await executeGetArtistSongs(apiBaseUrl, artist) }] };
-        }
-      ),
-      tool(
-        'navigate',
-        NAVIGATE_DESCRIPTION,
-        asSchema(NavigateInputSchema),
-        async (args) => {
-          const { path, reason, params } = args as { path: string; reason?: string; params?: Record<string, string> };
-          // Build full path with query string if params provided
-          let fullPath = path;
-          if (params && Object.keys(params).length > 0) {
-            const validKeys = Object.keys(AllParams);
-            const invalidKeys = Object.keys(params).filter((k) => !validKeys.includes(k));
-            if (invalidKeys.length > 0) {
-              return {
-                content: [{ type: 'text' as const, text: JSON.stringify({ error: `Invalid params: ${invalidKeys.join(', ')}`, validKeys }) }],
-              };
-            }
-            fullPath = `${path}?${new URLSearchParams(params).toString()}`;
-          }
-          // Fire callback to capture navigation for SSE event
-          onNavigate?.(fullPath, reason);
           return {
-            content: [{ type: 'text' as const, text: executeNavigate(fullPath, reason) }],
+            content: [
+              { type: 'text' as const, text: await executeGetArtistSongs(apiBaseUrl, artist) },
+            ],
           };
         }
       ),
+      tool('navigate', NAVIGATE_DESCRIPTION, asSchema(NavigateInputSchema), async args => {
+        const { path, reason, params } = args as {
+          path: string;
+          reason?: string;
+          params?: Record<string, string>;
+        };
+        // Build full path with query string if params provided
+        let fullPath = path;
+        if (params && Object.keys(params).length > 0) {
+          const validKeys = Object.keys(AllParams);
+          const invalidKeys = Object.keys(params).filter(k => !validKeys.includes(k));
+          if (invalidKeys.length > 0) {
+            return {
+              content: [
+                {
+                  type: 'text' as const,
+                  text: JSON.stringify({
+                    error: `Invalid params: ${invalidKeys.join(', ')}`,
+                    validKeys,
+                  }),
+                },
+              ],
+            };
+          }
+          fullPath = `${path}?${new URLSearchParams(params).toString()}`;
+        }
+        // Fire callback to capture navigation for SSE event
+        onNavigate?.(fullPath, reason);
+        return {
+          content: [{ type: 'text' as const, text: executeNavigate(fullPath, reason) }],
+        };
+      }),
     ],
   });
 }

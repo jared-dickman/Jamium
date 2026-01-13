@@ -33,10 +33,18 @@ export function EntropyLoader({ className, size = 'md' }: LoaderProps) {
     >
       <svg width={dim} height={dim} viewBox="0 0 100 100">
         {/* Container boundary */}
-        <circle cx="50" cy="50" r="45" fill="none" stroke={SAPPHIRE[0]} strokeWidth="1" opacity="0.2" />
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          stroke={SAPPHIRE[0]}
+          strokeWidth="1"
+          opacity="0.2"
+        />
 
         {/* Particles spreading (increasing entropy) */}
-        {particles.map((particle) => (
+        {particles.map(particle => (
           <motion.circle
             key={particle.id}
             cx="50"

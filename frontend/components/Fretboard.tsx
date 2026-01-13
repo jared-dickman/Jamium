@@ -98,10 +98,7 @@ export function Fretboard({
     const optimalFrets = Math.floor(fretboardWidth / OPTIMAL_FRET_WIDTH);
 
     // Use the larger of minimum required or optimal (up to max)
-    const visibleFrets = Math.min(
-      MAX_VISIBLE_FRETS,
-      Math.max(minRequiredFrets, optimalFrets)
-    );
+    const visibleFrets = Math.min(MAX_VISIBLE_FRETS, Math.max(minRequiredFrets, optimalFrets));
 
     const startFret = baseFret === BASE_FRET_THRESHOLD ? 0 : baseFret - 1;
     const endFret = startFret + visibleFrets;

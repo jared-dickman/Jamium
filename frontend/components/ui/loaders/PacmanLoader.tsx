@@ -13,7 +13,13 @@ export function PacmanLoader({ className, size = 'md' }: LoaderProps) {
       role="status"
       aria-label="Loading"
       className={className}
-      style={{ width: dim, height: dim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      style={{
+        width: dim,
+        height: dim,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`}>
         {/* Dots being eaten */}
@@ -27,7 +33,7 @@ export function PacmanLoader({ className, size = 'md' }: LoaderProps) {
             animate={{
               opacity: [1, 1, 1, 0, 0],
               x: [-dim * 0.1, -dim * 0.15, -dim * 0.2, -dim * 0.25, -dim * 0.3],
-              scale: [1, 1, 1, 0.3, 0]
+              scale: [1, 1, 1, 0.3, 0],
             }}
             transition={{
               duration: 0.8,

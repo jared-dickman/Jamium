@@ -19,7 +19,7 @@ export function BloomLoader({ className, size = 'md' }: LoaderProps) {
           animate={{ rotate: [0, 360] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         >
-          {[0, 1, 2, 3, 4, 5].map((i) => {
+          {[0, 1, 2, 3, 4, 5].map(i => {
             const angle = (i * 60 * Math.PI) / 180;
             const x = 50 + Math.cos(angle) * 25;
             const y = 50 + Math.sin(angle) * 25;

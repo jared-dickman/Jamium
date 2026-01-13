@@ -92,26 +92,11 @@ export function FlappyLoader({ className, size = 'md' }: LoaderProps) {
           }}
         >
           {/* Bird body */}
-          <motion.circle
-            cx={center - dim * 0.1}
-            cy={center}
-            r={dim * 0.1}
-            fill={SAPPHIRE[2]}
-          />
+          <motion.circle cx={center - dim * 0.1} cy={center} r={dim * 0.1} fill={SAPPHIRE[2]} />
 
           {/* Bird eye */}
-          <circle
-            cx={center - dim * 0.05}
-            cy={center - dim * 0.02}
-            r={dim * 0.02}
-            fill="#ffffff"
-          />
-          <circle
-            cx={center - dim * 0.04}
-            cy={center - dim * 0.02}
-            r={dim * 0.01}
-            fill="#000000"
-          />
+          <circle cx={center - dim * 0.05} cy={center - dim * 0.02} r={dim * 0.02} fill="#ffffff" />
+          <circle cx={center - dim * 0.04} cy={center - dim * 0.02} r={dim * 0.01} fill="#000000" />
 
           {/* Bird beak */}
           <motion.path

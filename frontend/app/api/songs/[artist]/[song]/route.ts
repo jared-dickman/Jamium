@@ -9,10 +9,12 @@ import { findSongBySlug, softDeleteSong } from '@/lib/supabase/songs.repository'
 import type { SongRow } from '@/lib/supabase/songs.schema';
 
 // Security: Validate path parameters with strict bounds
-const PathParamsSchema = z.object({
-  artist: z.string().min(1).max(200),
-  song: z.string().min(1).max(300),
-}).strict();
+const PathParamsSchema = z
+  .object({
+    artist: z.string().min(1).max(200),
+    song: z.string().min(1).max(300),
+  })
+  .strict();
 
 interface RouteParams {
   params: Promise<{ artist: string; song: string }>;
@@ -26,13 +28,19 @@ type SongSection = {
 function toSongDetailResponse(record: SongRow) {
   const rawSections = record.sections as Array<{
     name: string;
-    lines: Array<{ lyrics?: string; chords?: string; chord?: { name: string } | null; lyric?: string; lineGroup?: number }>;
+    lines: Array<{
+      lyrics?: string;
+      chords?: string;
+      chord?: { name: string } | null;
+      lyric?: string;
+      lineGroup?: number;
+    }>;
   }>;
 
   // Transform sections to expected format (preserve lineGroup for UG-style rendering)
-  const sections: SongSection[] = rawSections.map((section) => ({
+  const sections: SongSection[] = rawSections.map(section => ({
     name: section.name,
-    lines: section.lines.map((line) => ({
+    lines: section.lines.map(line => ({
       chord: line.chord ?? (line.chords ? { name: line.chords } : null),
       lyric: line.lyric ?? line.lyrics ?? '',
       lineGroup: line.lineGroup,
@@ -76,14 +84,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Security: Validate params before query (prevents injection)
     const parseResult = PathParamsSchema.safeParse(resolvedParams);
     if (!parseResult.success) {
-      serverErrorTracker.captureApiError(
-        new Error('Invalid path parameters'),
-        {
-          service: 'songs-api',
-          operation: 'get-song-detail',
-          validationErrors: parseResult.error.flatten(),
-        }
-      );
+      serverErrorTracker.captureApiError(new Error('Invalid path parameters'), {
+        service: 'songs-api',
+        operation: 'get-song-detail',
+        validationErrors: parseResult.error.flatten(),
+      });
       return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
     }
 
@@ -130,14 +135,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Security: Validate params before query (prevents injection)
     const parseResult = PathParamsSchema.safeParse(resolvedParams);
     if (!parseResult.success) {
-      serverErrorTracker.captureApiError(
-        new Error('Invalid path parameters'),
-        {
-          service: 'songs-api',
-          operation: 'delete-song',
-          validationErrors: parseResult.error.flatten(),
-        }
-      );
+      serverErrorTracker.captureApiError(new Error('Invalid path parameters'), {
+        service: 'songs-api',
+        operation: 'delete-song',
+        validationErrors: parseResult.error.flatten(),
+      });
       return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
     }
 

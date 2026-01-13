@@ -37,7 +37,7 @@ function groupLinesByLineGroup(lines: Song['sections'][0]['lines']): GroupedLine
 
   if (hasLineGroup) {
     const groups = new Map<number, GroupedLine>();
-    lines.forEach((line) => {
+    lines.forEach(line => {
       const lg = line.lineGroup ?? 0;
       if (!groups.has(lg)) {
         groups.set(lg, { lineGroup: lg, items: [] });
@@ -54,7 +54,7 @@ function groupLinesByLineGroup(lines: Song['sections'][0]['lines']): GroupedLine
   const result: GroupedLine[] = [];
   let currentGroup: GroupedLine = { lineGroup: 0, items: [] };
 
-  lines.forEach((line) => {
+  lines.forEach(line => {
     currentGroup.items.push({
       chord: line.chord?.name ?? null,
       lyric: line.lyric,
@@ -297,7 +297,11 @@ export function SongClient({ song, artistSlug, songSlug }: SongClientProps): Rea
         {transposedSections.map((section, sectionIndex) => {
           const groupedLines = groupLinesByLineGroup(section.lines);
           return (
-            <Collapsible key={`${section.name}-${sectionIndex}`} defaultOpen className={styles.section}>
+            <Collapsible
+              key={`${section.name}-${sectionIndex}`}
+              defaultOpen
+              className={styles.section}
+            >
               <CollapsibleTrigger className={styles.sectionTrigger}>
                 <ChevronRight className={styles.chevronRotate} />
                 <h3 className={styles.sectionTitle}>{section.name}</h3>

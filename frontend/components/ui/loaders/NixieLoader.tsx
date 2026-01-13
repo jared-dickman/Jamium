@@ -2,17 +2,21 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { LOADER_SIZE, LOADER_STROKE, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  LOADER_SIZE,
+  LOADER_STROKE,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 import { useState, useEffect } from 'react';
 
 // Authentic Nixie tube warm orange/amber palette
 const NIXIE_COLORS = {
-  tube: '#1a1410',           // Dark brown glass
-  tubeBorder: '#3d2a1f',     // Brown glass edge
-  glow: '#ff8c42',           // Warm orange glow
-  digit: '#ffb366',          // Bright orange digit
-  digitBright: '#ffd699',    // Brightest highlight
-  pin: '#4a4a4a',            // Metal pins
+  tube: '#1a1410', // Dark brown glass
+  tubeBorder: '#3d2a1f', // Brown glass edge
+  glow: '#ff8c42', // Warm orange glow
+  digit: '#ffb366', // Bright orange digit
+  digitBright: '#ffd699', // Brightest highlight
+  pin: '#4a4a4a', // Metal pins
 };
 
 export function NixieLoader({ className, size = 'md' }: LoaderProps) {
@@ -49,10 +53,10 @@ export function NixieLoader({ className, size = 'md' }: LoaderProps) {
 
           {/* Digit glow effect */}
           <filter id={`nixie-digit-glow-${size}`}>
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
 
@@ -64,7 +68,7 @@ export function NixieLoader({ className, size = 'md' }: LoaderProps) {
           </linearGradient>
         </defs>
 
-        {[0, 1, 2].map((tubeIndex) => {
+        {[0, 1, 2].map(tubeIndex => {
           const x = dim * 0.1 + tubeIndex * (tubeWidth + dim * 0.02);
           const y = (dim - tubeHeight) / 2;
           return (
@@ -156,7 +160,7 @@ export function NixieLoader({ className, size = 'md' }: LoaderProps) {
                     },
                     scale: {
                       duration: 0.2,
-                    }
+                    },
                   }}
                   style={{
                     filter: `drop-shadow(0 0 ${dim * 0.12}px ${NIXIE_COLORS.glow}) drop-shadow(0 0 ${dim * 0.06}px ${NIXIE_COLORS.digit})`,

@@ -69,7 +69,9 @@ export function IntermediateFlow({ onSkillChange }: IntermediateFlowProps): Reac
           className="flex flex-col items-center min-h-[50vh] justify-center"
         >
           <h2 className="text-xl font-semibold mb-2">Pick a genre</h2>
-          <p className="text-muted-foreground text-sm mb-6">More variety for intermediate players</p>
+          <p className="text-muted-foreground text-sm mb-6">
+            More variety for intermediate players
+          </p>
           <VibeSelector selectedVibe={selectedVibe ?? 'pop'} onSelectVibe={handleGenreSelect} />
           <Button
             variant="link"
@@ -91,7 +93,10 @@ export function IntermediateFlow({ onSkillChange }: IntermediateFlowProps): Reac
           className="flex flex-col items-center min-h-[50vh] justify-center"
         >
           <h2 className="text-xl font-semibold mb-2">Choose a key</h2>
-          <button onClick={handleBack} className="text-sm text-muted-foreground hover:underline mb-6">
+          <button
+            onClick={handleBack}
+            className="text-sm text-muted-foreground hover:underline mb-6"
+          >
             ← Back to genres
           </button>
           <div className="flex flex-wrap gap-3 justify-center max-w-md">

@@ -51,7 +51,7 @@ export function RainLoader({ className, size = 'md' }: LoaderProps) {
             }}
           />
         ))}
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2, 3].map(i => (
           <motion.circle
             key={`splash-${i}`}
             cx={22 + i * 21 + (i % 2 === 0 ? 5 : -3)}

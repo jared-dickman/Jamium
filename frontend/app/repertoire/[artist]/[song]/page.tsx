@@ -39,7 +39,9 @@ export default function SongPage({ params }: SongPageProps) {
       <div className="flex flex-col items-center justify-center min-h-[24rem] text-center">
         <div className="text-6xl mb-4">🎵</div>
         <h2 className="text-xl font-semibold mb-2">Song not found</h2>
-        <p className="text-muted-foreground">This song may have been removed or the link is incorrect.</p>
+        <p className="text-muted-foreground">
+          This song may have been removed or the link is incorrect.
+        </p>
       </div>
     );
   }

@@ -11,27 +11,55 @@ export function SnakeLoader({ className, size = 'md' }: LoaderProps) {
   // Define snake path coordinates (x, y on 12x12 grid)
   const snakePath = [
     // Top row right
-    [6, 2], [7, 2], [8, 2], [9, 2],
+    [6, 2],
+    [7, 2],
+    [8, 2],
+    [9, 2],
     // Down
-    [9, 3], [9, 4], [9, 5], [9, 6],
+    [9, 3],
+    [9, 4],
+    [9, 5],
+    [9, 6],
     // Left across middle
-    [8, 6], [7, 6], [6, 6], [5, 6], [4, 6], [3, 6],
+    [8, 6],
+    [7, 6],
+    [6, 6],
+    [5, 6],
+    [4, 6],
+    [3, 6],
     // Down
-    [3, 7], [3, 8], [3, 9],
+    [3, 7],
+    [3, 8],
+    [3, 9],
     // Right across bottom
-    [4, 9], [5, 9], [6, 9], [7, 9], [8, 9],
+    [4, 9],
+    [5, 9],
+    [6, 9],
+    [7, 9],
+    [8, 9],
     // Up
-    [8, 8], [8, 7],
+    [8, 8],
+    [8, 7],
     // Left
-    [7, 7], [6, 7],
+    [7, 7],
+    [6, 7],
     // Up to center
-    [6, 6], [6, 5], [6, 4], [6, 3],
+    [6, 6],
+    [6, 5],
+    [6, 4],
+    [6, 3],
     // Left across top
-    [5, 3], [4, 3], [3, 3], [2, 3],
+    [5, 3],
+    [4, 3],
+    [3, 3],
+    [2, 3],
   ];
 
   const foodPositions = [
-    [10, 5], [2, 8], [5, 2], [9, 9]
+    [10, 5],
+    [2, 8],
+    [5, 2],
+    [9, 9],
   ];
 
   const snakeLength = 8; // visible segments
@@ -43,12 +71,7 @@ export function SnakeLoader({ className, size = 'md' }: LoaderProps) {
       className={className}
       style={{ width: dim, height: dim }}
     >
-      <svg
-        width={dim}
-        height={dim}
-        viewBox={`0 0 ${dim} ${dim}`}
-        style={{ display: 'block' }}
-      >
+      <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} style={{ display: 'block' }}>
         {/* Food dots */}
         {foodPositions.map((pos, idx) => (
           <motion.circle
@@ -77,10 +100,12 @@ export function SnakeLoader({ className, size = 'md' }: LoaderProps) {
             width={cellSize * 0.9}
             height={cellSize * 0.9}
             rx={cellSize * 0.15}
-            fill={segmentIdx === 0 ? SAPPHIRE[0] : SAPPHIRE[Math.min(3, Math.floor(segmentIdx / 2) + 1)]}
+            fill={
+              segmentIdx === 0 ? SAPPHIRE[0] : SAPPHIRE[Math.min(3, Math.floor(segmentIdx / 2) + 1)]
+            }
             animate={{
-              x: snakePath.map((p) => p[0]! * cellSize + cellSize * 0.05),
-              y: snakePath.map((p) => p[1]! * cellSize + cellSize * 0.05),
+              x: snakePath.map(p => p[0]! * cellSize + cellSize * 0.05),
+              y: snakePath.map(p => p[1]! * cellSize + cellSize * 0.05),
             }}
             transition={{
               duration: snakePath.length * 0.15,
@@ -97,8 +122,8 @@ export function SnakeLoader({ className, size = 'md' }: LoaderProps) {
         {/* Snake head eyes */}
         <motion.g
           animate={{
-            x: snakePath.map((p) => p[0]! * cellSize),
-            y: snakePath.map((p) => p[1]! * cellSize),
+            x: snakePath.map(p => p[0]! * cellSize),
+            y: snakePath.map(p => p[1]! * cellSize),
           }}
           transition={{
             duration: snakePath.length * 0.15,
@@ -106,18 +131,8 @@ export function SnakeLoader({ className, size = 'md' }: LoaderProps) {
             ease: 'linear',
           }}
         >
-          <circle
-            cx={cellSize * 0.35}
-            cy={cellSize * 0.35}
-            r={cellSize * 0.08}
-            fill="white"
-          />
-          <circle
-            cx={cellSize * 0.65}
-            cy={cellSize * 0.35}
-            r={cellSize * 0.08}
-            fill="white"
-          />
+          <circle cx={cellSize * 0.35} cy={cellSize * 0.35} r={cellSize * 0.08} fill="white" />
+          <circle cx={cellSize * 0.65} cy={cellSize * 0.35} r={cellSize * 0.08} fill="white" />
         </motion.g>
 
         {/* Grid overlay for retro feel */}

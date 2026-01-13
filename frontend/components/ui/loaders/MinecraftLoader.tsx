@@ -30,12 +30,7 @@ export function MinecraftLoader({ className, size = 'md' }: LoaderProps) {
       className={className}
       style={{ width: dim, height: dim }}
     >
-      <svg
-        width={dim}
-        height={dim}
-        viewBox={`0 0 ${dim} ${dim}`}
-        style={{ display: 'block' }}
-      >
+      <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} style={{ display: 'block' }}>
         {/* Main grass block - pixelated isometric view */}
         <motion.g
           animate={{
@@ -144,7 +139,7 @@ export function MinecraftLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Breaking particles - scattered debris */}
-        {particles.map((particle) => {
+        {particles.map(particle => {
           const x = dim / 2 + Math.cos(particle.angle) * particle.distance;
           const y = dim / 2 + Math.sin(particle.angle) * particle.distance;
 

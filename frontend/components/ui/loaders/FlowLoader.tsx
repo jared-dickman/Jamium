@@ -17,7 +17,14 @@ export function FlowLoader({ size = 'md' }: LoaderProps) {
       <svg width={dimension} height={dimension} viewBox={`0 0 ${dimension} ${dimension}`}>
         <defs>
           {Array.from({ length: streamCount }).map((_, i) => (
-            <linearGradient key={`grad-${i}`} id={`flow-gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              key={`grad-${i}`}
+              id={`flow-gradient-${i}`}
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop offset="0%" stopColor={SAPPHIRE[i % SAPPHIRE.length]} stopOpacity="0" />
               <stop offset="50%" stopColor={SAPPHIRE[i % SAPPHIRE.length]} stopOpacity="0.8" />
               <stop offset="100%" stopColor={SAPPHIRE[i % SAPPHIRE.length]} stopOpacity="0" />

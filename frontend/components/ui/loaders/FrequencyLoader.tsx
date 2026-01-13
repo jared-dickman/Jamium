@@ -40,7 +40,11 @@ export function FrequencyLoader({ size = 'md' }: LoaderProps) {
               opacity={0.7}
               animate={{
                 height: [minHeight, maxHeight, minHeight],
-                y: [dimension / 2 - minHeight / 2, dimension / 2 - maxHeight / 2, dimension / 2 - minHeight / 2],
+                y: [
+                  dimension / 2 - minHeight / 2,
+                  dimension / 2 - maxHeight / 2,
+                  dimension / 2 - minHeight / 2,
+                ],
                 opacity: [0.5, 1, 0.5],
               }}
               transition={{

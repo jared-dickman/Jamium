@@ -23,7 +23,19 @@ const RepertoireTestIds = {
   albumsList: 'albums-list',
 } as const;
 
-function ViewToggle({ view, onViewChange, songsCount, artistsCount, albumsCount }: { view: ViewMode; onViewChange: (v: ViewMode) => void; songsCount: number | null; artistsCount: number | null; albumsCount: number | null }) {
+function ViewToggle({
+  view,
+  onViewChange,
+  songsCount,
+  artistsCount,
+  albumsCount,
+}: {
+  view: ViewMode;
+  onViewChange: (v: ViewMode) => void;
+  songsCount: number | null;
+  artistsCount: number | null;
+  albumsCount: number | null;
+}) {
   const getIndicatorPosition = () => {
     if (view === 'songs') return 4;
     if (view === 'artists') return 'calc(33.33%)';
@@ -31,7 +43,10 @@ function ViewToggle({ view, onViewChange, songsCount, artistsCount, albumsCount 
   };
 
   return (
-    <div className="relative grid grid-cols-3 gap-0.5 bg-sapphire-500/10 border border-sapphire-500/20 rounded-lg p-1" data-testid={RepertoireTestIds.toggle}>
+    <div
+      className="relative grid grid-cols-3 gap-0.5 bg-sapphire-500/10 border border-sapphire-500/20 rounded-lg p-1"
+      data-testid={RepertoireTestIds.toggle}
+    >
       {/* Sliding indicator */}
       <motion.div
         className="absolute inset-y-1 w-[calc(33.33%-4px)] rounded-md bg-sapphire-500/20 border border-sapphire-500/30 pointer-events-none"
@@ -77,7 +92,8 @@ function SongsView() {
   const { mutate: deleteSongMutation, isPending: isDeleting } = useDeleteSong();
 
   const sortedSongs = useMemo(
-    () => [...songs].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
+    () =>
+      [...songs].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
     [songs]
   );
 
@@ -96,7 +112,11 @@ function SongsView() {
 
   if (songs.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30"
+      >
         <Music className="h-12 w-12 mx-auto text-sapphire-400/40 mb-3" />
         <p className="text-muted-foreground">No songs yet. Use Buddy to find and save songs.</p>
       </motion.div>
@@ -108,7 +128,10 @@ function SongsView() {
       className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
       initial="hidden"
       animate="show"
-      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.03 } } }}
+      variants={{
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.03 } },
+      }}
       data-testid={RepertoireTestIds.songsList}
     >
       {sortedSongs.map(song => (
@@ -120,17 +143,29 @@ function SongsView() {
                   <Disc3 className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium truncate group-hover:text-sapphire-400 transition-colors">{song.title}</h3>
+                  <h3 className="font-medium truncate group-hover:text-sapphire-400 transition-colors">
+                    {song.title}
+                  </h3>
                   <p className="text-sm text-muted-foreground truncate">{song.artist}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    {song.key && <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">{song.key}</span>}
+                    {song.key && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">
+                        {song.key}
+                      </span>
+                    )}
                     <span className="text-xs text-muted-foreground">
-                      {new Date(song.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      {new Date(song.updatedAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                      })}
                     </span>
                   </div>
                 </div>
                 <button
-                  onClick={e => { e.preventDefault(); handleDelete(song.artistSlug, song.songSlug, song.title); }}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleDelete(song.artistSlug, song.songSlug, song.title);
+                  }}
                   disabled={isDeleting}
                   className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-destructive/10 rounded text-destructive disabled:opacity-50"
                   title="Delete song"
@@ -160,7 +195,11 @@ function ArtistsView() {
 
   if (artists.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30"
+      >
         <Music className="h-12 w-12 mx-auto text-sapphire-400/40 mb-3" />
         <p className="text-muted-foreground">No artists yet. Save some songs to see them here.</p>
       </motion.div>
@@ -172,7 +211,10 @@ function ArtistsView() {
       className="space-y-2"
       initial="hidden"
       animate="show"
-      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } }}
+      variants={{
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+      }}
       data-testid={RepertoireTestIds.artistsList}
     >
       {artists.map(artist => {
@@ -180,21 +222,37 @@ function ArtistsView() {
         return (
           <motion.div key={artist.slug} variants={SLIDE_UP_VARIANTS}>
             <SapphireCard className={cn(isExpanded && 'border-sapphire-500/40 bg-card/70')}>
-              <button onClick={() => setExpandedArtist(prev => prev === artist.slug ? null : artist.slug)} className="w-full flex items-center justify-between p-4 text-left">
+              <button
+                onClick={() =>
+                  setExpandedArtist(prev => (prev === artist.slug ? null : artist.slug))
+                }
+                className="w-full flex items-center justify-between p-4 text-left"
+              >
                 <div className="flex items-center gap-3">
                   <Music className="h-5 w-5 text-sapphire-400" />
                   <div>
                     <h3 className="font-medium">{artist.name}</h3>
-                    <p className="text-sm text-muted-foreground">{artist.songCount} {artist.songCount === 1 ? 'song' : 'songs'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {artist.songCount} {artist.songCount === 1 ? 'song' : 'songs'}
+                    </p>
                   </div>
                 </div>
-                <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: ANIMATION_DURATION.FAST }}>
+                <motion.div
+                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                  transition={{ duration: ANIMATION_DURATION.FAST }}
+                >
                   <ChevronDown className="h-5 w-5 text-muted-foreground" />
                 </motion.div>
               </button>
               <AnimatePresence>
                 {isExpanded && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: ANIMATION_DURATION.FAST }} className="overflow-hidden">
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: ANIMATION_DURATION.FAST }}
+                    className="overflow-hidden"
+                  >
                     <div className="px-4 pb-4 pt-0 space-y-3 border-t border-sapphire-500/10">
                       <div className="pt-3 flex flex-wrap gap-2">
                         <Link href={artist.songsUrl}>
@@ -204,7 +262,9 @@ function ArtistsView() {
                           </Button>
                         </Link>
                       </div>
-                      <p className="text-sm text-muted-foreground italic">Ask Buddy about {artist.name}&apos;s influences, style, or history.</p>
+                      <p className="text-sm text-muted-foreground italic">
+                        Ask Buddy about {artist.name}&apos;s influences, style, or history.
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -250,7 +310,11 @@ function AlbumsView() {
 
   if (albums.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-12 rounded-lg border border-sapphire-500/20 bg-card/30"
+      >
         <Album className="h-12 w-12 mx-auto text-sapphire-400/40 mb-3" />
         <p className="text-muted-foreground">No albums yet. Save some songs to see them here.</p>
       </motion.div>
@@ -262,7 +326,10 @@ function AlbumsView() {
       className="space-y-2"
       initial="hidden"
       animate="show"
-      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } }}
+      variants={{
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+      }}
       data-testid={RepertoireTestIds.albumsList}
     >
       {albums.map(album => {
@@ -270,31 +337,55 @@ function AlbumsView() {
         return (
           <motion.div key={album.name} variants={SLIDE_UP_VARIANTS}>
             <SapphireCard className={cn(isExpanded && 'border-sapphire-500/40 bg-card/70')}>
-              <button onClick={() => setExpandedAlbum(prev => prev === album.name ? null : album.name)} className="w-full flex items-center justify-between p-4 text-left">
+              <button
+                onClick={() => setExpandedAlbum(prev => (prev === album.name ? null : album.name))}
+                className="w-full flex items-center justify-between p-4 text-left"
+              >
                 <div className="flex items-center gap-3">
                   <Album className="h-5 w-5 text-sapphire-400" />
                   <div>
                     <h3 className="font-medium">{album.name}</h3>
-                    <p className="text-sm text-muted-foreground">{album.songCount} {album.songCount === 1 ? 'song' : 'songs'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {album.songCount} {album.songCount === 1 ? 'song' : 'songs'}
+                    </p>
                   </div>
                 </div>
-                <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: ANIMATION_DURATION.FAST }}>
+                <motion.div
+                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                  transition={{ duration: ANIMATION_DURATION.FAST }}
+                >
                   <ChevronDown className="h-5 w-5 text-muted-foreground" />
                 </motion.div>
               </button>
               <AnimatePresence>
                 {isExpanded && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: ANIMATION_DURATION.FAST }} className="overflow-hidden">
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: ANIMATION_DURATION.FAST }}
+                    className="overflow-hidden"
+                  >
                     <div className="px-4 pb-4 pt-0 space-y-2 border-t border-sapphire-500/10">
                       {album.songs.map(song => (
-                        <Link key={`${song.artistSlug}/${song.songSlug}`} href={`/repertoire/${song.artistSlug}/${song.songSlug}`} className="block p-3 rounded-md hover:bg-sapphire-500/10 transition-colors">
+                        <Link
+                          key={`${song.artistSlug}/${song.songSlug}`}
+                          href={`/repertoire/${song.artistSlug}/${song.songSlug}`}
+                          className="block p-3 rounded-md hover:bg-sapphire-500/10 transition-colors"
+                        >
                           <div className="flex items-center gap-3">
                             <Disc3 className="h-4 w-4 text-sapphire-400/60" />
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-sm truncate">{song.title}</p>
-                              <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {song.artist}
+                              </p>
                             </div>
-                            {song.key && <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">{song.key}</span>}
+                            {song.key && (
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire-500/10 text-sapphire-400">
+                                {song.key}
+                              </span>
+                            )}
                           </div>
                         </Link>
                       ))}
@@ -346,7 +437,13 @@ function RepertoireContent() {
         />
       </div>
       <AnimatePresence mode="wait">
-        <motion.div key={view} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.12 }}>
+        <motion.div
+          key={view}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.12 }}
+        >
           {view === 'songs' ? <SongsView /> : view === 'artists' ? <ArtistsView /> : <AlbumsView />}
         </motion.div>
       </AnimatePresence>
@@ -356,7 +453,13 @@ function RepertoireContent() {
 
 export default function RepertoirePage() {
   return (
-    <Suspense fallback={<div className="relative min-h-[300px]"><DramaticLoader isLoading={true} size="lg" /></div>}>
+    <Suspense
+      fallback={
+        <div className="relative min-h-[300px]">
+          <DramaticLoader isLoading={true} size="lg" />
+        </div>
+      }
+    >
       <RepertoireContent />
     </Suspense>
   );

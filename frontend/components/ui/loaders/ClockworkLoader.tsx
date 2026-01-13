@@ -21,7 +21,10 @@ export function ClockworkLoader({ className, size = 'md' }: LoaderProps) {
       const angle2 = ((i + 0.4) / teeth) * Math.PI * 2;
 
       points.push([centerX + Math.cos(angle1) * radius, centerY + Math.sin(angle1) * radius]);
-      points.push([centerX + Math.cos(angle2) * (radius + toothDepth), centerY + Math.sin(angle2) * (radius + toothDepth)]);
+      points.push([
+        centerX + Math.cos(angle2) * (radius + toothDepth),
+        centerY + Math.sin(angle2) * (radius + toothDepth),
+      ]);
     }
 
     return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ') + ' Z';
@@ -36,7 +39,15 @@ export function ClockworkLoader({ className, size = 'md' }: LoaderProps) {
     >
       <svg width={dim} height={dim} viewBox="0 0 100 100">
         {/* Outer casing */}
-        <circle cx="50" cy="50" r="38" fill="none" stroke={SAPPHIRE[0]} strokeWidth="2.5" opacity={0.5} />
+        <circle
+          cx="50"
+          cy="50"
+          r="38"
+          fill="none"
+          stroke={SAPPHIRE[0]}
+          strokeWidth="2.5"
+          opacity={0.5}
+        />
 
         {/* Rotating outer gear */}
         <motion.path
@@ -50,7 +61,10 @@ export function ClockworkLoader({ className, size = 'md' }: LoaderProps) {
               const angle1 = (i / teeth) * Math.PI * 2;
               const angle2 = ((i + 0.4) / teeth) * Math.PI * 2;
               points.push([50 + Math.cos(angle1) * radius, 50 + Math.sin(angle1) * radius]);
-              points.push([50 + Math.cos(angle2) * (radius + toothDepth), 50 + Math.sin(angle2) * (radius + toothDepth)]);
+              points.push([
+                50 + Math.cos(angle2) * (radius + toothDepth),
+                50 + Math.sin(angle2) * (radius + toothDepth),
+              ]);
             }
             return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ') + ' Z';
           })()}
@@ -69,8 +83,16 @@ export function ClockworkLoader({ className, size = 'md' }: LoaderProps) {
           transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
           style={{ transformOrigin: '50px 50px' }}
         >
-          <circle cx="50" cy="50" r="28" fill="none" stroke={SAPPHIRE[1]} strokeWidth="1.8" opacity={0.7} />
-          {[0, 60, 120, 180, 240, 300].map((angle) => {
+          <circle
+            cx="50"
+            cy="50"
+            r="28"
+            fill="none"
+            stroke={SAPPHIRE[1]}
+            strokeWidth="1.8"
+            opacity={0.7}
+          />
+          {[0, 60, 120, 180, 240, 300].map(angle => {
             const rad = (angle * Math.PI) / 180;
             return (
               <line

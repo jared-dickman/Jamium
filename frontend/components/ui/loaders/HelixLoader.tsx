@@ -50,14 +50,8 @@ export function HelixLoader({ size = 'md' }: LoaderProps) {
             strokeWidth={baseRadius * 0.5}
             strokeLinecap="round"
             animate={{
-              x1: [
-                getStrandPosition(i, 0, 1).x,
-                getStrandPosition(i, Math.PI * 2, 1).x,
-              ],
-              x2: [
-                getStrandPosition(i, 0, 2).x,
-                getStrandPosition(i, Math.PI * 2, 2).x,
-              ],
+              x1: [getStrandPosition(i, 0, 1).x, getStrandPosition(i, Math.PI * 2, 1).x],
+              x2: [getStrandPosition(i, 0, 2).x, getStrandPosition(i, Math.PI * 2, 2).x],
               opacity: [
                 getStrandPosition(i, 0, 1).z > 0 ? 0.3 : 0.15,
                 getStrandPosition(i, Math.PI * 2, 1).z > 0 ? 0.3 : 0.15,
@@ -82,10 +76,7 @@ export function HelixLoader({ size = 'md' }: LoaderProps) {
               r={baseRadius}
               fill={`url(#dna-grad-1-${size})`}
               animate={{
-                cx: [
-                  getStrandPosition(i, 0, 1).x,
-                  getStrandPosition(i, Math.PI * 2, 1).x,
-                ],
+                cx: [getStrandPosition(i, 0, 1).x, getStrandPosition(i, Math.PI * 2, 1).x],
                 opacity: [
                   getStrandPosition(i, 0, 1).z > 0 ? 1 : 0.5,
                   getStrandPosition(i, Math.PI * 2, 1).z > 0 ? 1 : 0.5,
@@ -116,10 +107,7 @@ export function HelixLoader({ size = 'md' }: LoaderProps) {
               r={baseRadius}
               fill={`url(#dna-grad-2-${size})`}
               animate={{
-                cx: [
-                  getStrandPosition(i, 0, 2).x,
-                  getStrandPosition(i, Math.PI * 2, 2).x,
-                ],
+                cx: [getStrandPosition(i, 0, 2).x, getStrandPosition(i, Math.PI * 2, 2).x],
                 opacity: [
                   getStrandPosition(i, 0, 2).z > 0 ? 1 : 0.5,
                   getStrandPosition(i, Math.PI * 2, 2).z > 0 ? 1 : 0.5,

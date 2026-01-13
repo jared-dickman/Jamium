@@ -33,8 +33,8 @@ export function EqualizerLoader({ className, size = 'md' }: LoaderProps) {
                 fill={SAPPHIRE[i % SAPPHIRE.length]}
                 initial={{ y: dim / 2, height: minHeight }}
                 animate={{
-                  y: [dim - minHeight - (i * 2), dim - maxHeight + (i * 2), dim - minHeight - (i * 2)],
-                  height: [minHeight + (i * 2), maxHeight - (i * 2), minHeight + (i * 2)],
+                  y: [dim - minHeight - i * 2, dim - maxHeight + i * 2, dim - minHeight - i * 2],
+                  height: [minHeight + i * 2, maxHeight - i * 2, minHeight + i * 2],
                 }}
                 transition={{
                   duration: 0.8,

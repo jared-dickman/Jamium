@@ -76,11 +76,20 @@ export function TurbineLoader({ className, size = 'md' }: LoaderProps) {
         <circle cx={centerX} cy={centerY} r={hubRadius * 0.4} fill={SAPPHIRE[2]} />
 
         {/* Hub bolts */}
-        {[0, 90, 180, 270].map((angle) => {
+        {[0, 90, 180, 270].map(angle => {
           const rad = (angle * Math.PI) / 180;
           const boltX = centerX + Math.cos(rad) * (hubRadius * 0.55);
           const boltY = centerY + Math.sin(rad) * (hubRadius * 0.55);
-          return <circle key={angle} cx={boltX} cy={boltY} r={hubRadius * 0.12} fill={SAPPHIRE[0]} opacity={0.6} />;
+          return (
+            <circle
+              key={angle}
+              cx={boltX}
+              cy={boltY}
+              r={hubRadius * 0.12}
+              fill={SAPPHIRE[0]}
+              opacity={0.6}
+            />
+          );
         })}
       </svg>
     </div>

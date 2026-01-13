@@ -176,13 +176,7 @@ export function KaleidoscopeLoader({ className, size = 'md' }: LoaderProps) {
             ease: 'easeInOut',
           }}
         />
-        <circle
-          cx={center}
-          cy={center}
-          r={1.5}
-          fill={SAPPHIRE[3]}
-          opacity={0.9}
-        />
+        <circle cx={center} cy={center} r={1.5} fill={SAPPHIRE[3]} opacity={0.9} />
       </svg>
     </div>
   );

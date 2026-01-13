@@ -2,7 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { SAPPHIRE, LOADER_SIZE, DURATION, OPACITY, type LoaderProps } from '@/components/ui/loaders/loader.constants';
+import {
+  SAPPHIRE,
+  LOADER_SIZE,
+  DURATION,
+  OPACITY,
+  type LoaderProps,
+} from '@/components/ui/loaders/loader.constants';
 
 export function LeafLoader({ className, size = 'md' }: LoaderProps) {
   const dim = LOADER_SIZE[size];
@@ -11,14 +17,7 @@ export function LeafLoader({ className, size = 'md' }: LoaderProps) {
   const fallVariants = (delay: number, xOffset: number) => ({
     animate: {
       y: [0, dim * 1.1], // Fall beyond viewport for smooth loop
-      x: [
-        xOffset,
-        xOffset + 15,
-        xOffset - 10,
-        xOffset + 8,
-        xOffset - 5,
-        xOffset,
-      ],
+      x: [xOffset, xOffset + 15, xOffset - 10, xOffset + 8, xOffset - 5, xOffset],
       rotate: [0, 45, -30, 20, -15, 0],
       opacity: [0, 1, 1, 1, 0.6, 0], // Smooth fade at end
     },
@@ -39,10 +38,7 @@ export function LeafLoader({ className, size = 'md' }: LoaderProps) {
     >
       <svg width={dim} height={dim} viewBox="0 0 100 100">
         {/* Layer 1: Background leaf (lightest) */}
-        <motion.g
-          {...fallVariants(0, 35)}
-          style={{ transformOrigin: 'center' }}
-        >
+        <motion.g {...fallVariants(0, 35)} style={{ transformOrigin: 'center' }}>
           {/* Leaf shape */}
           <path
             d="M50,10 Q65,20 65,35 Q65,50 50,60 Q35,50 35,35 Q35,20 50,10 Z"
@@ -70,10 +66,7 @@ export function LeafLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Layer 2: Mid leaf */}
-        <motion.g
-          {...fallVariants(0.8, 45)}
-          style={{ transformOrigin: 'center' }}
-        >
+        <motion.g {...fallVariants(0.8, 45)} style={{ transformOrigin: 'center' }}>
           <path
             d="M50,15 Q62,23 62,37 Q62,48 50,56 Q38,48 38,37 Q38,23 50,15 Z"
             fill={SAPPHIRE[2]}
@@ -97,10 +90,7 @@ export function LeafLoader({ className, size = 'md' }: LoaderProps) {
         </motion.g>
 
         {/* Layer 3: Front leaf (darkest) */}
-        <motion.g
-          {...fallVariants(1.5, 55)}
-          style={{ transformOrigin: 'center' }}
-        >
+        <motion.g {...fallVariants(1.5, 55)} style={{ transformOrigin: 'center' }}>
           <path
             d="M50,20 Q60,27 60,39 Q60,48 50,54 Q40,48 40,39 Q40,27 50,20 Z"
             fill={SAPPHIRE[0]}
@@ -122,7 +112,6 @@ export function LeafLoader({ className, size = 'md' }: LoaderProps) {
             opacity={OPACITY.medium}
           />
         </motion.g>
-
       </svg>
     </div>
   );
