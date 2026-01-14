@@ -4,9 +4,13 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   type ChordProgression,
   type JamChord,
+  type SongSection,
+  type LyricsSection,
   FUNCTION_COLORS,
+  SECTION_COLORS,
   getNextChordSuggestions,
 } from '@/lib/jamProgressions';
+import { SectionTabs } from '@/components/jam/SectionTabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,9 +32,12 @@ import {
   ChevronDown,
   Save,
   Edit3,
+  PenLine,
 } from 'lucide-react';
 import { ChordDisplay } from '@/components/ChordDisplay';
+import { PianoDisplay } from '@/components/PianoDisplay';
 import ChordPicker from '@/components/jam/ChordPicker';
+import LyricsIdeasPanel from '@/components/jam/LyricsIdeasPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface JamBuilderProps {
@@ -49,6 +56,32 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
   const [loopCount, setLoopCount] = useState(0);
   const [editingChordIndex, setEditingChordIndex] = useState<number | null>(null);
   const [audioInitialized, setAudioInitialized] = useState(false);
+  const [activeSectionLabel, setActiveSectionLabel] = useState('A');
+  const [showLyrics, setShowLyrics] = useState(false);
+  const [lyrics, setLyrics] = useState<LyricsSection[]>([]);
+  const [ideas, setIdeas] = useState('');
+  const [isAILoading, setIsAILoading] = useState(false);
+  const [sections, setSections] = useState<Record<string, SongSection>>(() => ({
+    A: {
+      id: 'section-a',
+      name: 'Verse',
+      sectionType: 'verse',
+      label: 'A',
+      chords: progression.chords,
+      vibe: progression.vibe,
+      key: progression.key,
+      difficulty: progression.difficulty,
+      description: 'Main verse',
+      bpm: progression.bpm,
+    },
+  }));
+
+  // Song arrangement - order of sections to play (e.g., ['A', 'B', 'A', 'B', 'C'])
+  const [arrangement, setArrangement] = useState<string[]>(['A']);
+
+  // Get active section's chords (computed fresh each render for proper reactivity)
+  const activeSection = sections[activeSectionLabel];
+  const activeChords = activeSection?.chords ?? progression.chords;
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const chordPlayerRef = useRef(getChordPlayer());
@@ -63,13 +96,12 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
     [bpm]
   );
 
-  // Play progression with audio
+  // Play progression with audio (uses activeChords)
   useEffect(() => {
-    if (isPlaying && progression.chords.length > 0) {
-      const currentChord = progression.chords[currentChordIndex];
+    if (isPlaying && activeChords.length > 0) {
+      const currentChord = activeChords[currentChordIndex];
       if (!currentChord) return undefined;
 
-      // Play the chord audio if not muted
       if (!isMuted && audioInitialized) {
         const duration = currentChord.duration || 4;
         chordPlayerRef.current.playChord(currentChord.name, duration);
@@ -79,7 +111,7 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
 
       intervalRef.current = setTimeout(() => {
         const nextIndex = currentChordIndex + 1;
-        if (nextIndex >= progression.chords.length) {
+        if (nextIndex >= activeChords.length) {
           setCurrentChordIndex(0);
           setLoopCount(prev => prev + 1);
         } else {
@@ -92,15 +124,7 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
       };
     }
     return undefined;
-  }, [
-    isPlaying,
-    currentChordIndex,
-    progression.chords,
-    bpm,
-    isMuted,
-    audioInitialized,
-    getChordInterval,
-  ]);
+  }, [isPlaying, currentChordIndex, activeChords, isMuted, audioInitialized, getChordInterval]);
 
   const handlePlayPause = async () => {
     // Initialize audio on first play
@@ -125,62 +149,131 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
     if (intervalRef.current) clearTimeout(intervalRef.current);
   };
 
+  // Helper to update active section's chords and sync to parent
+  const updateActiveChords = useCallback(
+    (newChords: JamChord[]) => {
+      setSections(prev => ({
+        ...prev,
+        [activeSectionLabel]: {
+          ...prev[activeSectionLabel]!,
+          chords: newChords,
+        },
+      }));
+      onUpdate({ ...progression, chords: newChords });
+    },
+    [activeSectionLabel, progression, onUpdate]
+  );
+
   const handleAddChord = () => {
-    const lastChord = progression.chords[progression.chords.length - 1];
+    const lastChord = activeChords[activeChords.length - 1];
     const suggestions = getNextChordSuggestions(lastChord?.name || 'C', progression.key, 'pop');
     const newChord: JamChord = {
-      name: suggestions[0] || 'C',
+      name: suggestions[0] || progression.key,
       function: 'tonic',
       duration: 4,
     };
-
-    onUpdate({
-      ...progression,
-      chords: [...progression.chords, newChord],
-    });
+    updateActiveChords([...activeChords, newChord]);
   };
 
   const handleRemoveChord = (index: number) => {
-    if (progression.chords.length <= 1) return; // Keep at least one chord
-
-    const newChords = progression.chords.filter((_, i) => i !== index);
-    onUpdate({
-      ...progression,
-      chords: newChords,
-    });
-
-    // Adjust current index if needed
+    if (activeChords.length <= 1) return;
+    const newChords = activeChords.filter((_, i) => i !== index);
+    updateActiveChords(newChords);
     if (currentChordIndex >= newChords.length) {
       setCurrentChordIndex(Math.max(0, newChords.length - 1));
     }
   };
 
   const handleUpdateChord = (index: number, updates: Partial<JamChord>) => {
-    const newChords = progression.chords.map((chord, i) =>
+    const newChords = activeChords.map((chord, i) =>
       i === index ? { ...chord, ...updates } : chord
     );
-    onUpdate({
-      ...progression,
-      chords: newChords,
-    });
+    updateActiveChords(newChords);
   };
 
   const handleTranspose = (steps: number) => {
-    const newChords = progression.chords.map(chord => ({
+    const newChords = activeChords.map(chord => ({
       ...chord,
       name: transposeChord(chord.name, steps),
     }));
-
     const newKey = transposeChord(progression.key, steps);
 
-    onUpdate({
-      ...progression,
-      key: newKey,
-      chords: newChords,
-    });
+    // Update active section and parent
+    setSections(prev => ({
+      ...prev,
+      [activeSectionLabel]: { ...prev[activeSectionLabel]!, chords: newChords },
+    }));
+    onUpdate({ ...progression, key: newKey, chords: newChords });
   };
 
-  const currentChord = progression.chords[currentChordIndex];
+  const handleAddSection = useCallback(() => {
+    const existingLabels = Object.keys(sections);
+    const nextLabels = ['B', 'C', 'D', 'E', 'X'];
+    const newLabel = nextLabels.find(l => !existingLabels.includes(l)) ?? `S${existingLabels.length + 1}`;
+    const sectionTypes: Array<'chorus' | 'bridge' | 'verse'> = ['chorus', 'bridge', 'verse'];
+    const sectionType = sectionTypes[existingLabels.length % 3] ?? 'verse';
+
+    // Copy current section's chords as starting point
+    const startingChords = activeChords.length > 0 ? [...activeChords] : [{ name: progression.key, function: 'tonic' as const, duration: 4 }];
+
+    setSections(prev => ({
+      ...prev,
+      [newLabel]: {
+        id: `section-${newLabel.toLowerCase()}`,
+        name: sectionType.charAt(0).toUpperCase() + sectionType.slice(1),
+        sectionType,
+        label: newLabel,
+        chords: startingChords,
+        vibe: progression.vibe,
+        key: progression.key,
+        difficulty: progression.difficulty,
+        description: `${sectionType} section`,
+        bpm: progression.bpm,
+      },
+    }));
+    setArrangement(prev => [...prev, newLabel]);
+    setActiveSectionLabel(newLabel);
+    setCurrentChordIndex(0);
+    onUpdate({ ...progression, chords: startingChords });
+  }, [sections, activeChords, progression, onUpdate]);
+
+  // Handle section switching - sync chords to parent and reset playback
+  const handleSectionChange = useCallback(
+    (label: string) => {
+      setActiveSectionLabel(label);
+      setCurrentChordIndex(0);
+      const sectionChords = sections[label]?.chords ?? [];
+      onUpdate({ ...progression, chords: sectionChords });
+    },
+    [sections, progression, onUpdate]
+  );
+
+  const currentChord = activeChords[currentChordIndex];
+
+  // Handler for AI lyric/theme requests - triggers Buddy chat
+  const handleAIRequest = useCallback(
+    (action: 'generate_lyrics' | 'suggest_themes', sectionId?: string) => {
+      setIsAILoading(true);
+      const chordNames = activeChords.map(c => c.name).join(', ');
+      const vibe = progression.vibe.join(', ');
+
+      window.dispatchEvent(
+        new CustomEvent('buddy:lyric-request', {
+          detail: {
+            action,
+            chords: chordNames,
+            key: progression.key,
+            vibe,
+            sectionId,
+            sectionType: sectionId ? sections[sectionId]?.sectionType : 'verse',
+          },
+        })
+      );
+
+      setTimeout(() => setIsAILoading(false), 3000);
+    },
+    [activeChords, progression.key, progression.vibe, sections]
+  );
 
   return (
     <motion.div
@@ -215,12 +308,12 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                 <CardTitle className="text-xl md:text-2xl mb-1">{progression.name}</CardTitle>
                 <motion.p
                   className="text-sm text-muted-foreground"
-                  key={`${progression.key}-${progression.chords.length}`}
+                  key={`${progression.key}-${activeChords.length}-${activeSectionLabel}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  Key of {progression.key} • {progression.chords.length} chords
+                  Key of {progression.key} • Section {activeSectionLabel} • {activeChords.length} chords
                 </motion.p>
               </motion.div>
               <motion.div
@@ -242,6 +335,18 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                     <Button size="sm">
                       <Save className="w-4 h-4 mr-1" />
                       Save
+                    </Button>
+                  </motion.div>
+                </SimpleTooltip>
+                <SimpleTooltip content={showLyrics ? 'Hide lyrics panel' : 'Show lyrics panel'}>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      size="sm"
+                      variant={showLyrics ? 'default' : 'outline'}
+                      onClick={() => setShowLyrics(!showLyrics)}
+                    >
+                      <PenLine className="w-4 h-4 mr-1" />
+                      Lyrics
                     </Button>
                   </motion.div>
                 </SimpleTooltip>
@@ -456,6 +561,65 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
         </Card>
       </motion.div>
 
+      {/* Section Tabs - for editing individual sections */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.75, duration: 0.3 }}
+      >
+        <SectionTabs
+          sections={sections}
+          activeSectionLabel={activeSectionLabel}
+          onSectionChange={handleSectionChange}
+          onAddSection={handleAddSection}
+        />
+      </motion.div>
+
+      {/* Song Arrangement - order sections play in */}
+      <Card className="border-dashed">
+        <CardHeader className="py-3">
+          <CardTitle className="text-sm flex items-center justify-between">
+            <span>Song Arrangement</span>
+            <span className="text-xs text-muted-foreground font-normal">
+              Click section to add • Click chip to remove
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex flex-wrap gap-2 items-center min-h-[2.5rem]">
+            {arrangement.map((label, i) => (
+              <motion.button
+                key={`${label}-${i}`}
+                onClick={() => setArrangement(prev => prev.filter((_, idx) => idx !== i))}
+                className="px-3 py-1 rounded-md text-sm font-bold border-2 hover:opacity-70 transition-opacity"
+                style={{
+                  backgroundColor: `${SECTION_COLORS[label] ?? SECTION_COLORS.C}20`,
+                  borderColor: SECTION_COLORS[label] ?? SECTION_COLORS.C,
+                  color: SECTION_COLORS[label] ?? SECTION_COLORS.C,
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {label}
+              </motion.button>
+            ))}
+            <span className="text-muted-foreground mx-2">|</span>
+            {Object.keys(sections).sort().map(label => (
+              <motion.button
+                key={`add-${label}`}
+                onClick={() => setArrangement(prev => [...prev, label])}
+                className="px-2 py-0.5 rounded text-xs border border-dashed hover:border-solid transition-all"
+                style={{ borderColor: SECTION_COLORS[label] ?? SECTION_COLORS.C }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                +{label}
+              </motion.button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Chord Progression Builder */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -470,7 +634,7 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.9, duration: 0.3 }}
               >
-                Chord Progression
+                Chord Progression — Section {activeSectionLabel}
               </motion.span>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -502,7 +666,7 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                 },
               }}
             >
-              {progression.chords.map((chord, index) => (
+              {activeChords.map((chord, index) => (
                 <motion.div
                   key={index}
                   variants={{
@@ -522,8 +686,8 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                         ? `${FUNCTION_COLORS[chord.function]}20`
                         : `${FUNCTION_COLORS[chord.function]}10`,
                   }}
-                  onClick={() => setCurrentChordIndex(index)}
-                  whileHover={{ scale: 1.05, y: -4 }}
+                  onClick={() => setEditingChordIndex(index)}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   animate={
                     currentChordIndex === index && isPlaying
@@ -545,7 +709,7 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                   }}
                 >
                   {/* Delete button */}
-                  {progression.chords.length > 1 && (
+                  {activeChords.length > 1 && (
                     <motion.button
                       onClick={e => {
                         e.stopPropagation();
@@ -655,7 +819,11 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ChordDisplay chordName={currentChord.name} />
+                  {selectedInstrument === 'guitar' ? (
+                    <ChordDisplay chordName={currentChord.name} />
+                  ) : (
+                    <PianoDisplay chordName={currentChord.name} />
+                  )}
                 </motion.div>
               </CardContent>
             </Card>
@@ -678,12 +846,36 @@ export default function JamBuilder({ progression, onUpdate, onClear }: JamBuilde
         )}
       </AnimatePresence>
 
+      {/* Lyrics & Ideas Panel */}
+      <AnimatePresence>
+        {showLyrics && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <LyricsIdeasPanel
+              lyrics={lyrics}
+              ideas={ideas}
+              sections={sections}
+              currentKey={progression.key}
+              currentVibe={progression.vibe}
+              onLyricsChange={setLyrics}
+              onIdeasChange={setIdeas}
+              onRequestAI={handleAIRequest}
+              isAILoading={isAILoading}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Chord Picker Modal */}
-      {editingChordIndex !== null && progression.chords[editingChordIndex] && (
+      {editingChordIndex !== null && activeChords[editingChordIndex] && (
         <ChordPicker
           isOpen={true}
           onClose={() => setEditingChordIndex(null)}
-          currentChord={progression.chords[editingChordIndex]!}
+          currentChord={activeChords[editingChordIndex]!}
           suggestedKey={progression.key}
           onSelectChord={chordName => {
             handleUpdateChord(editingChordIndex, { name: chordName });

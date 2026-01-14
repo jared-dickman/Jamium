@@ -36,6 +36,77 @@ export interface ChordProgression {
   bpm: number; // Suggested tempo
 }
 
+// Section types for song structure
+export type SectionType = 'verse' | 'chorus' | 'bridge' | 'intro' | 'outro' | 'solo';
+
+// Song section extends ChordProgression with section metadata
+export interface SongSection extends Omit<ChordProgression, 'examples'> {
+  sectionType: SectionType;
+  label: string; // "A", "B", "X" or custom
+  color?: string;
+}
+
+// Lyrics section linked to song sections
+export interface LyricsSection {
+  id: string;
+  type: SectionType;
+  content: string;
+  linkedSectionLabel?: string;
+}
+
+// Full song structure with multiple sections
+export interface SongStructure {
+  id: string;
+  name: string;
+  key: string;
+  bpm: number;
+  sections: Record<string, SongSection>; // keyed by label (A, B, X)
+  arrangement: string[]; // ["A", "B", "A", "B", "X", "B"]
+  activeSectionLabel: string;
+  lyrics?: LyricsSection[];
+  ideas?: string[];
+  difficulty: SkillLevel;
+  vibe: Vibe[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Helper to create empty song structure
+export function createEmptySongStructure(key = 'C', bpm = 120): SongStructure {
+  const defaultSection: SongSection = {
+    id: 'section-a',
+    name: 'Verse',
+    sectionType: 'verse',
+    label: 'A',
+    vibe: ['pop'],
+    key,
+    chords: [],
+    difficulty: 'beginner',
+    description: 'Main verse section',
+    bpm,
+  };
+
+  return {
+    id: crypto.randomUUID(),
+    name: 'Untitled Song',
+    key,
+    bpm,
+    sections: { A: defaultSection },
+    arrangement: ['A'],
+    activeSectionLabel: 'A',
+    difficulty: 'beginner',
+    vibe: ['pop'],
+  };
+}
+
+// Section label colors
+export const SECTION_COLORS: Record<string, string> = {
+  A: 'hsl(210, 90%, 60%)', // Blue - Verse
+  B: 'hsl(30, 90%, 55%)',  // Orange - Chorus
+  X: 'hsl(280, 70%, 60%)', // Purple - Bridge
+  C: 'hsl(120, 70%, 50%)', // Green - Other
+};
+
 export const PROGRESSIONS: ChordProgression[] = [
   // POP PROGRESSIONS
   {
@@ -360,3 +431,76 @@ export const VIBE_INFO: Record<Vibe, { emoji: string; description: string }> = {
   funk: { emoji: '🕺', description: 'Syncopated, rhythmic, danceable' },
   latin: { emoji: '💃', description: 'Rhythmic, passionate, syncopated' },
 };
+
+/**
+ * Suggested song extracted from progression examples
+ */
+export interface SuggestedSong {
+  title: string;
+  artist: string;
+  progressionId: string;
+  progressionName: string;
+  chords: JamChord[];
+  difficulty: SkillLevel;
+  vibe: Vibe[];
+  bpm: number;
+  key: string;
+}
+
+/**
+ * Parse "Song Title - Artist" format from examples
+ */
+function parseSongExample(example: string): { title: string; artist: string } | null {
+  const parts = example.split(' - ');
+  if (parts.length === 2 && parts[0] && parts[1]) {
+    return { title: parts[0].trim(), artist: parts[1].trim() };
+  }
+  // Handle reversed format "Artist - Song"
+  if (parts.length === 2 && parts[1] && parts[0]) {
+    // Heuristic: if first part looks like a band name (contains "The", single word, etc.)
+    const firstPart = parts[0].trim();
+    const secondPart = parts[1].trim();
+    if (firstPart.startsWith('The ') || !firstPart.includes(' ')) {
+      return { title: secondPart, artist: firstPart };
+    }
+    return { title: firstPart, artist: secondPart };
+  }
+  return null;
+}
+
+/**
+ * Extract suggested songs from all progressions with examples
+ */
+export function extractSuggestedSongs(skillLevel?: SkillLevel): SuggestedSong[] {
+  const songs: SuggestedSong[] = [];
+
+  for (const progression of PROGRESSIONS) {
+    if (!progression.examples) continue;
+
+    // Filter by skill level if provided
+    if (skillLevel) {
+      const skillOrder: SkillLevel[] = ['beginner', 'intermediate', 'expert'];
+      const maxLevel = skillOrder.indexOf(skillLevel);
+      if (skillOrder.indexOf(progression.difficulty) > maxLevel) continue;
+    }
+
+    for (const example of progression.examples) {
+      const parsed = parseSongExample(example);
+      if (!parsed) continue;
+
+      songs.push({
+        title: parsed.title,
+        artist: parsed.artist,
+        progressionId: progression.id,
+        progressionName: progression.name,
+        chords: progression.chords,
+        difficulty: progression.difficulty,
+        vibe: progression.vibe,
+        bpm: progression.bpm,
+        key: progression.key,
+      });
+    }
+  }
+
+  return songs;
+}

@@ -66,6 +66,20 @@ export const NavigateInputSchema = {
     ),
 };
 
+export const GenerateLyricsInputSchema = {
+  chords: z.string().describe('Comma-separated chord names in the progression (e.g., "C, G, Am, F")'),
+  key: z.string().describe('Musical key (e.g., "C", "Am", "G")'),
+  vibe: z.string().describe('Emotional vibe/genre (e.g., "melancholy", "upbeat pop", "bluesy")'),
+  sectionType: z.string().optional().describe('Type of section: verse, chorus, bridge (default: verse)'),
+  theme: z.string().optional().describe('Optional thematic hint from user'),
+};
+
+export const SuggestThemesInputSchema = {
+  chords: z.string().describe('Comma-separated chord names in the progression'),
+  key: z.string().describe('Musical key'),
+  vibe: z.string().describe('Genre/style'),
+};
+
 // Tool descriptions
 const SEARCH_DESCRIPTION = `Search Ultimate Guitar for tabs and chords.
 
@@ -136,6 +150,37 @@ PARAMS (optional):
 ${paramDocs}
 
 EXAMPLE: path: "/repertoire/Oasis/Wonderwall", params: { bpm: "80", capo: "2" }`;
+
+const GENERATE_LYRICS_DESCRIPTION = `Generate lyric suggestions based on chord progression context.
+
+WHEN TO USE: User wants help writing lyrics for their jam session.
+
+TAKES: Chord progression, key, vibe/mood, section type, optional theme hint.
+
+RETURNS: 2-3 lyric line suggestions that match the musical mood.
+
+EXAMPLES:
+- Progression in C major (C-G-Am-F) with "upbeat" vibe → uplifting, hopeful lyrics
+- Minor key progression with "melancholy" vibe → introspective, emotional lyrics
+
+TIPS:
+- Match syllable rhythm to chord changes
+- Minor keys = introspective, major keys = brighter
+- Dominant chords suggest tension/release in lyrics`;
+
+const SUGGEST_THEMES_DESCRIPTION = `Analyze chord progression to suggest emotional themes for songwriting.
+
+WHEN TO USE: User wants inspiration before writing lyrics.
+
+TAKES: Chord progression, key, vibe/genre.
+
+RETURNS: 3-5 thematic directions that fit the musical mood.
+
+EXAMPLES:
+- I-V-vi-IV in C → "hope," "new beginnings," "bittersweet memories"
+- Minor blues → "struggle," "longing," "perseverance"
+
+Use this to inspire the user before they start writing.`;
 
 export interface NavigationCallback {
   (path: string, reason?: string): void;
@@ -225,6 +270,66 @@ export function createBuddyMcpServer(apiBaseUrl: string, onNavigate?: Navigation
           content: [{ type: 'text' as const, text: executeNavigate(fullPath, reason) }],
         };
       }),
+      tool(
+        'generate_lyrics',
+        GENERATE_LYRICS_DESCRIPTION,
+        asSchema(GenerateLyricsInputSchema),
+        async args => {
+          const { chords, key, vibe, sectionType, theme } = args as {
+            chords: string;
+            key: string;
+            vibe: string;
+            sectionType?: string;
+            theme?: string;
+          };
+          // Return context for AI to generate lyrics naturally
+          return {
+            content: [
+              {
+                type: 'text' as const,
+                text: JSON.stringify({
+                  action: 'generate_lyrics',
+                  context: {
+                    chords: chords.split(',').map(c => c.trim()),
+                    key,
+                    vibe,
+                    sectionType: sectionType || 'verse',
+                    theme,
+                  },
+                  instruction:
+                    'Generate 2-3 evocative lyric lines that match this musical context. Be creative and match the emotional tone.',
+                }),
+              },
+            ],
+          };
+        }
+      ),
+      tool(
+        'suggest_themes',
+        SUGGEST_THEMES_DESCRIPTION,
+        asSchema(SuggestThemesInputSchema),
+        async args => {
+          const { chords, key, vibe } = args as { chords: string; key: string; vibe: string };
+          // Return context for AI to suggest themes naturally
+          return {
+            content: [
+              {
+                type: 'text' as const,
+                text: JSON.stringify({
+                  action: 'suggest_themes',
+                  context: {
+                    chords: chords.split(',').map(c => c.trim()),
+                    key,
+                    vibe,
+                  },
+                  instruction:
+                    'Suggest 3-5 emotional themes or lyrical directions that would fit this chord progression and mood.',
+                }),
+              },
+            ],
+          };
+        }
+      ),
     ],
   });
 }
@@ -236,6 +341,8 @@ export const BUDDY_TOOL_NAMES = [
   'list_artists',
   'get_artist_songs',
   'navigate',
+  'generate_lyrics',
+  'suggest_themes',
 ] as const;
 
 // Export input types

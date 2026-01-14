@@ -21,4 +21,8 @@ export const apiRoutes = {
 
   // Artists
   artists: '/api/artists',
+
+  // Jams
+  jams: '/api/jams',
+  jamDetail: (id: string) => `/api/jams/${id}`,
 } as const;

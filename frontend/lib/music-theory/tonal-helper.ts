@@ -1,4 +1,4 @@
-import { Chord, Scale, Key, Note, Interval } from 'tonal';
+import { Chord, Scale, Key, Note, Interval, Progression, RomanNumeral } from 'tonal';
 
 /**
  * TonalHelper - Music theory utilities using Tonal.js
@@ -428,4 +428,42 @@ export function getRelatedKeys(keyName: string, type: 'major' | 'minor' = 'major
     relative,
     parallel: type === 'major' ? Key.minorKey(keyName).tonic : Key.majorKey(keyName).tonic,
   };
+}
+
+/**
+ * Convert chord name to roman numeral in given key
+ * @example chordToRomanNumeral('Am', 'C') => 'vi'
+ */
+export function chordToRomanNumeral(chord: string, key: string): string {
+  try {
+    const numerals = Progression.toRomanNumerals(key, [chord]);
+    return numerals[0] || chord;
+  } catch {
+    return chord;
+  }
+}
+
+/**
+ * Convert roman numeral to chord name in given key
+ * @example romanNumeralToChord('vi', 'C') => 'Am'
+ */
+export function romanNumeralToChord(numeral: string, key: string): string {
+  try {
+    const chords = Progression.fromRomanNumerals(key, [numeral]);
+    return chords[0] || numeral;
+  } catch {
+    return numeral;
+  }
+}
+
+/**
+ * Get roman numeral info (degree, quality)
+ */
+export function getRomanNumeralInfo(numeral: string): { degree: number; quality: string } | null {
+  try {
+    const info = RomanNumeral.get(numeral);
+    return info.empty ? null : { degree: info.step + 1, quality: info.chordType || 'major' };
+  } catch {
+    return null;
+  }
 }

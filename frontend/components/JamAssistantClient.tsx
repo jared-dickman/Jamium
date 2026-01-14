@@ -6,6 +6,7 @@ import { RotateCcw } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { SkillLevelSelector } from '@/components/jam/SkillLevelSelector';
+import { JamIntroScreen } from '@/components/jam/JamIntroScreen';
 import { BeginnerFlow, IntermediateFlow, ExpertComposer } from '@/components/jam/flows';
 import { cn } from '@/lib/utils';
 import { SkillLevel } from '@/lib/enums/skillLevel.enum';
@@ -23,26 +24,36 @@ const SKILL_FROM_MODE: Record<string, SkillLevel> = {
   expert: SkillLevel.Expert,
 };
 
-type WizardStep = 'skill' | 'flow';
+type WizardStep = 'intro' | 'skill' | 'flow';
 
 export default function JamAssistantClient({
   initialMode,
 }: JamAssistantClientProps): React.JSX.Element {
-  const [step, setStep] = useState<WizardStep>('skill');
+  const [step, setStep] = useState<WizardStep>('intro');
   const [skillLevel, setSkillLevel] = useState<SkillLevel | null>(null);
 
   useEffect(() => {
+    // Direct mode access via URL param skips intro
     if (initialMode && SKILL_FROM_MODE[initialMode]) {
       setSkillLevel(SKILL_FROM_MODE[initialMode]);
       setStep('flow');
       return;
     }
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && Object.values(SkillLevel).includes(saved as SkillLevel)) {
-      setSkillLevel(saved as SkillLevel);
-      setStep('flow');
+    // Legacy skill selection mode (accessed via ?mode=skill)
+    if (initialMode === 'skill') {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && Object.values(SkillLevel).includes(saved as SkillLevel)) {
+        setSkillLevel(saved as SkillLevel);
+        setStep('flow');
+      } else {
+        setStep('skill');
+      }
+      return;
     }
+
+    // Default: show new intro screen
+    setStep('intro');
   }, [initialMode]);
 
   const handleSkillSelect = useCallback((level: SkillLevel) => {
@@ -54,6 +65,11 @@ export default function JamAssistantClient({
   const handleRestart = useCallback(() => {
     setStep('skill');
   }, []);
+
+  // New intro screen is the default
+  if (step === 'intro') {
+    return <JamIntroScreen />;
+  }
 
   return (
     <div className={cn('container mx-auto py-8 px-4', MAX_WIDTH.EXTRA_LARGE)}>
@@ -89,7 +105,7 @@ export default function JamAssistantClient({
                 onClick={handleRestart}
                 className="text-muted-foreground text-xs"
               >
-                <RotateCcw className="w-3 h-3 mr-1" />
+                <RotateCcw className="w-3 h-3" />
                 Change skill
               </Button>
             </div>
