@@ -83,7 +83,6 @@ export function PianoDisplay({ chordName, className = '' }: PianoDisplayProps) {
           voicings={voicings}
           currentVoicingIndex={currentVoicingIndex}
           onVoicingChange={setCurrentVoicingIndex}
-          showFingerNumbers={true}
         />
       </CardContent>
     </Card>

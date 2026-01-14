@@ -1,39 +1,96 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { FINGER_COLORS } from '@/lib/constants/canvas.constants';
 import { CANVAS_RATIO } from '@/lib/constants/game.constants';
 import type { PianoChordVoicing } from '@/lib/pianoChords';
+import { getInversionLabel, midiToNoteName } from '@/lib/pianoChords';
 import { createAudioContext } from '@/lib/utils/audio/audioContext';
 import { playPianoChord } from '@/lib/utils/audio/pianoPlayback';
-import { drawWhiteKey, drawBlackKey, drawFingerNumber } from '@/lib/utils/canvas/pianoKeyRendering';
+import { drawWhiteKey, drawBlackKey } from '@/lib/utils/canvas/pianoKeyRendering';
 import {
   getMidiNote,
   getBlackKeyMidiOffset,
   isBlackKeyPresent,
 } from '@/lib/utils/canvas/pianoKeyboard';
 import { ChevronLeft, ChevronRight, Hand, Volume2, VolumeX } from 'lucide-react';
+import { Chord } from 'tonal';
 
 interface PianoKeyboardProps {
   voicings: PianoChordVoicing[];
   currentVoicingIndex?: number;
   onVoicingChange?: (index: number) => void;
-  showFingerNumbers?: boolean;
   className?: string;
 }
 
-const OCTAVE_START = 3;
 const OCTAVE_COUNT = 2;
+
+// Roman numerals for scale degrees
+const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+
+/**
+ * Get the scale degree (roman numeral) for a note relative to chord root
+ */
+function getScaleDegree(noteMidi: number, chordName: string): string {
+  const chord = Chord.get(chordName);
+  if (!chord.tonic || !chord.notes.length) return '';
+
+  // Get pitch classes
+  const notePc = ((noteMidi % 12) + 12) % 12;
+  const chordNotes = chord.notes;
+
+  // Find which chord tone this is (1st, 3rd, 5th, 7th, etc.)
+  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const noteName = noteNames[notePc];
+
+  // Match against chord notes (handle enharmonics)
+  for (let i = 0; i < chordNotes.length; i++) {
+    const chordNote = chordNotes[i];
+    if (!chordNote) continue;
+
+    // Compare pitch classes
+    const chordNotePc = noteNames.indexOf(chordNote.replace(/b/g, '').replace(/#/g, ''));
+    const adjustedPc =
+      chordNote.includes('#')
+        ? (chordNotePc + 1) % 12
+        : chordNote.includes('b')
+          ? (chordNotePc - 1 + 12) % 12
+          : chordNotePc;
+
+    if (adjustedPc === notePc || noteName === chordNote) {
+      // Map chord position to scale degree
+      const degrees = ['1', '3', '5', '7', '9', '11', '13'];
+      return degrees[i] ?? '';
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Calculate optimal octave start to center chord notes on keyboard
+ */
+function calculateOctaveStart(notes: number[]): number {
+  if (notes.length === 0) return 3;
+
+  const minNote = Math.min(...notes);
+  const maxNote = Math.max(...notes);
+  const centerNote = Math.floor((minNote + maxNote) / 2);
+
+  // Calculate which octave puts the center note in the middle of 2 octaves
+  const centerOctave = Math.floor(centerNote / 12) - 1;
+
+  // Offset by half an octave to center better
+  return Math.max(1, Math.min(6, centerOctave));
+}
 
 export function PianoKeyboard({
   voicings,
   currentVoicingIndex = 0,
   onVoicingChange,
-  showFingerNumbers = true,
   className = '',
 }: PianoKeyboardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,6 +98,12 @@ export function PianoKeyboard({
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
 
   const currentVoicing = voicings[currentVoicingIndex] || null;
+
+  // Calculate dynamic octave start based on chord notes
+  const octaveStart = useMemo(() => {
+    if (!currentVoicing) return 3;
+    return calculateOctaveStart(currentVoicing.position.notes);
+  }, [currentVoicing]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !audioContext) {
@@ -78,40 +141,65 @@ export function PianoKeyboard({
       return currentVoicing.position.notes.includes(midi);
     };
 
-    const getFingerForNote = (midi: number): number | undefined => {
-      const index = currentVoicing.position.notes.indexOf(midi);
-      if (index === -1) return undefined;
-      return currentVoicing.position.fingerNumbers?.[index];
+    // Helper to draw note label (note name + scale degree)
+    const drawNoteLabel = (
+      x: number,
+      y: number,
+      midi: number,
+      isBlack: boolean,
+      keyW: number
+    ) => {
+      const noteName = midiToNoteName(midi).replace(/\d+/, ''); // Remove octave number
+      const degree = getScaleDegree(midi, currentVoicing.name);
+
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Note name
+      ctx.font = `bold ${isBlack ? 10 : 14}px system-ui`;
+      ctx.fillStyle = isBlack ? '#ffffff' : '#1e293b';
+      ctx.fillText(noteName, x + keyW / 2, y - (isBlack ? 24 : 35));
+
+      // Scale degree below note name
+      if (degree) {
+        ctx.font = `${isBlack ? 8 : 11}px system-ui`;
+        ctx.fillStyle = isBlack ? '#94a3b8' : '#64748b';
+        ctx.fillText(degree, x + keyW / 2, y - (isBlack ? 12 : 18));
+      }
+
+      ctx.restore();
     };
 
+    // Draw white keys
     let whiteKeyIndex = 0;
-    for (let octave = OCTAVE_START; octave < OCTAVE_START + OCTAVE_COUNT; octave++) {
+    for (let octave = octaveStart; octave < octaveStart + OCTAVE_COUNT; octave++) {
       for (let key = 0; key < 7; key++) {
         const x = whiteKeyIndex * keyWidth;
         const midi = getMidiNote(octave, key);
         const isPressed = isNoteInChord(midi);
-        const finger = getFingerForNote(midi);
 
         drawWhiteKey(ctx, {
           x,
           width: keyWidth,
           height: whiteKeyHeight,
           isPressed,
-          finger,
-          showFingerNumbers,
+          finger: undefined,
+          showFingerNumbers: false,
           isBlackKey: false,
         });
 
-        if (isPressed && showFingerNumbers && finger) {
-          drawFingerNumber(ctx, x + keyWidth / 2, whiteKeyHeight - 30, finger, 'large');
+        if (isPressed) {
+          drawNoteLabel(x, whiteKeyHeight, midi, false, keyWidth);
         }
 
         whiteKeyIndex++;
       }
     }
 
+    // Draw black keys
     whiteKeyIndex = 0;
-    for (let octave = OCTAVE_START; octave < OCTAVE_START + OCTAVE_COUNT; octave++) {
+    for (let octave = octaveStart; octave < octaveStart + OCTAVE_COUNT; octave++) {
       for (let key = 0; key < 7; key++) {
         if (isBlackKeyPresent(key)) {
           const x = whiteKeyIndex * keyWidth + keyWidth - blackKeyWidth / 2;
@@ -121,27 +209,26 @@ export function PianoKeyboard({
             const baseNote = octave * 12 + 12;
             const midi = baseNote + blackKeyOffset;
             const isPressed = isNoteInChord(midi);
-            const finger = getFingerForNote(midi);
 
             drawBlackKey(ctx, {
               x,
               width: blackKeyWidth,
               height: blackKeyHeight,
               isPressed,
-              finger,
-              showFingerNumbers,
+              finger: undefined,
+              showFingerNumbers: false,
               isBlackKey: true,
             });
 
-            if (isPressed && showFingerNumbers && finger) {
-              drawFingerNumber(ctx, x + blackKeyWidth / 2, blackKeyHeight - 20, finger, 'small');
+            if (isPressed) {
+              drawNoteLabel(x, blackKeyHeight, midi, true, blackKeyWidth);
             }
           }
         }
         whiteKeyIndex++;
       }
     }
-  }, [currentVoicing, showFingerNumbers]);
+  }, [currentVoicing, octaveStart]);
 
   const handlePrevVoicing = () => {
     if (voicings.length <= 1) return;
@@ -175,6 +262,13 @@ export function PianoKeyboard({
     );
   }
 
+  // Get chord notes for legend
+  const chordNotes = currentVoicing.position.notes.map(midi => {
+    const noteName = midiToNoteName(midi).replace(/\d+/, '');
+    const degree = getScaleDegree(midi, currentVoicing.name);
+    return { noteName, degree };
+  });
+
   return (
     <div className={cn('space-y-4', className)}>
       {/* Header */}
@@ -182,7 +276,7 @@ export function PianoKeyboard({
         <div className="space-y-1">
           <h3 className="text-2xl font-bold">{currentVoicing.name}</h3>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary">{currentVoicing.positionName}</Badge>
+            <Badge variant="secondary">{getInversionLabel(currentVoicing.inversion)}</Badge>
             <Badge
               variant={
                 currentVoicing.difficulty === 'beginner'
@@ -242,31 +336,19 @@ export function PianoKeyboard({
         </div>
       )}
 
-      {/* Finger Guide */}
-      {showFingerNumbers && (
-        <div className="flex items-center justify-center gap-4 text-sm flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: FINGER_COLORS[1] }} />
-            <span>Thumb</span>
+      {/* Chord Tones Legend */}
+      <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
+        {chordNotes.map((note, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            <div className="w-6 h-6 rounded bg-sapphire-500 flex items-center justify-center text-white font-bold text-xs">
+              {note.noteName}
+            </div>
+            {note.degree && (
+              <span className="text-muted-foreground text-xs">({note.degree})</span>
+            )}
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: FINGER_COLORS[2] }} />
-            <span>Index</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: FINGER_COLORS[3] }} />
-            <span>Middle</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: FINGER_COLORS[4] }} />
-            <span>Ring</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: FINGER_COLORS[5] }} />
-            <span>Pinky</span>
-          </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
