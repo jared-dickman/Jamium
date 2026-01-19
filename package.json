@@ -26,7 +26,7 @@
     "@commitlint/config-conventional": "20.2.0",
     "@typescript-eslint/eslint-plugin": "8.49.0",
     "@typescript-eslint/parser": "8.49.0",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "eslint-plugin-boundaries": "5.3.1",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-storybook": "10.1.4",
