@@ -91,7 +91,7 @@
     "pizzicato": "0.6.4",
     "postgres": "^3.4.7",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react-dom": "19.2.3",
     "react-hook-form": "7.67.0",
     "react-p5": "1.4.1",
     "react-resizable-panels": "3.0.6",
