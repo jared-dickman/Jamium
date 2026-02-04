@@ -91,3 +91,4 @@ Thumbs.db
 *.cache
 backend
 .claude/skills/docker-dude/
+.ast-grep-test-tmp/
