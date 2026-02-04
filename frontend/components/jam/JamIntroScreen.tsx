@@ -2,38 +2,36 @@
 
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Music2, Wand2, ArrowLeft, Sparkles } from 'lucide-react';
+import { Compass, Wand2, ArrowLeft, Sparkles } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { SongProgressionCard } from './SongProgressionCard';
+import { SkillLevelSelector } from './SkillLevelSelector';
+import VibeSelector from './VibeSelector';
+import ProgressionCard from './ProgressionCard';
 import { ExpertComposer } from './flows';
 import JamBuilder from './JamBuilder';
-import {
-  extractSuggestedSongs,
-  PROGRESSIONS,
-  type SuggestedSong,
-  type ChordProgression,
-} from '@/lib/jamProgressions';
+import { getProgressionsByVibe, type ChordProgression, type Vibe } from '@/lib/jamProgressions';
 import { MAX_WIDTH } from '@/lib/constants/ui.constants';
+import { SkillLevel } from '@/lib/enums/skillLevel.enum';
 
-type Screen = 'intro' | 'songs' | 'composer' | 'playing';
+type Screen = 'intro' | 'discover-skill' | 'discover-vibe' | 'discover-suggestions' | 'build' | 'playing';
 
 const PATH_CARDS = [
   {
-    id: 'songs',
-    icon: Music2,
-    title: 'Play a Song',
-    description: 'Learn classic progressions by playing famous songs',
+    id: 'discover',
+    icon: Compass,
+    title: 'Discover',
+    description: 'Find the perfect progression for your style',
     gradient: 'from-emerald-500/20 to-teal-500/20',
     borderColor: 'border-emerald-500/30',
     iconColor: 'text-emerald-500',
   },
   {
-    id: 'composer',
+    id: 'build',
     icon: Wand2,
-    title: 'Build Your Own',
+    title: 'Build',
     description: 'Create custom progressions from scratch',
     gradient: 'from-violet-500/20 to-purple-500/20',
     borderColor: 'border-violet-500/30',
@@ -41,60 +39,50 @@ const PATH_CARDS = [
   },
 ] as const;
 
-const STAGGER_CHILDREN = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const CARD_ITEM = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
-
 export function JamIntroScreen(): React.JSX.Element {
   const [screen, setScreen] = useState<Screen>('intro');
-  const [selectedSong, setSelectedSong] = useState<SuggestedSong | null>(null);
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.Beginner);
+  const [selectedVibe, setSelectedVibe] = useState<Vibe | null>(null);
+  const [selectedProgression, setSelectedProgression] = useState<ChordProgression | null>(null);
 
-  const suggestedSongs = useMemo(() => extractSuggestedSongs('intermediate'), []);
+  const progressions = useMemo(() => {
+    if (!selectedVibe) return [];
+    return getProgressionsByVibe(selectedVibe, skillLevel).slice(0, 6);
+  }, [selectedVibe, skillLevel]);
 
   const handlePathSelect = (pathId: string) => {
-    if (pathId === 'songs') setScreen('songs');
-    else if (pathId === 'composer') setScreen('composer');
+    if (pathId === 'discover') setScreen('discover-skill');
+    else if (pathId === 'build') setScreen('build');
   };
 
-  const handleStartJam = (song: SuggestedSong) => {
-    setSelectedSong(song);
+  const handleSkillSelect = (level: SkillLevel) => {
+    setSkillLevel(level);
+    setScreen('discover-vibe');
+  };
+
+  const handleVibeSelect = (vibe: Vibe) => {
+    setSelectedVibe(vibe);
+    setScreen('discover-suggestions');
+  };
+
+  const handleProgressionSelect = (progression: ChordProgression) => {
+    setSelectedProgression(progression);
     setScreen('playing');
   };
 
   const handleBack = () => {
     if (screen === 'playing') {
-      setScreen('songs');
-      setSelectedSong(null);
-    } else {
+      setScreen('discover-suggestions');
+      setSelectedProgression(null);
+    } else if (screen === 'discover-suggestions') {
+      setScreen('discover-vibe');
+      setSelectedVibe(null);
+    } else if (screen === 'discover-vibe') {
+      setScreen('discover-skill');
+    } else if (screen === 'discover-skill' || screen === 'build') {
       setScreen('intro');
     }
   };
-
-  // Convert SuggestedSong to ChordProgression for JamBuilder
-  const progressionFromSong = useMemo((): ChordProgression | null => {
-    if (!selectedSong) return null;
-    return (
-      PROGRESSIONS.find(p => p.id === selectedSong.progressionId) ?? {
-        id: selectedSong.progressionId,
-        name: `${selectedSong.title} - ${selectedSong.artist}`,
-        vibe: selectedSong.vibe,
-        key: selectedSong.key,
-        chords: selectedSong.chords,
-        difficulty: selectedSong.difficulty,
-        description: selectedSong.progressionName,
-        bpm: selectedSong.bpm,
-      }
-    );
-  }, [selectedSong]);
 
   return (
     <div className={cn('container mx-auto py-8 px-4', MAX_WIDTH.EXTRA_LARGE)}>
@@ -157,42 +145,87 @@ export function JamIntroScreen(): React.JSX.Element {
           </motion.div>
         )}
 
-        {screen === 'songs' && (
+        {screen === 'discover-skill' && (
           <motion.div
-            key="songs"
+            key="discover-skill"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
+            className="flex flex-col items-center justify-center min-h-[60vh]"
           >
-            <div className="mb-6">
+            <Button variant="ghost" size="sm" onClick={handleBack} className="self-start mb-8">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h2 className="text-2xl font-bold mb-2">What's your skill level?</h2>
+            <p className="text-muted-foreground mb-8">
+              We'll tailor the suggestions to your experience
+            </p>
+            <SkillLevelSelector selectedLevel={skillLevel} onSelectLevel={handleSkillSelect} />
+          </motion.div>
+        )}
+
+        {screen === 'discover-vibe' && (
+          <motion.div
+            key="discover-vibe"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <Button variant="ghost" size="sm" onClick={handleBack} className="self-start mb-8">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            <h2 className="text-2xl font-bold mb-2">Pick a vibe</h2>
+            <p className="text-muted-foreground mb-8">What style are you feeling today?</p>
+            <VibeSelector selectedVibe={selectedVibe ?? 'pop'} onSelectVibe={handleVibeSelect} />
+          </motion.div>
+        )}
+
+        {screen === 'discover-suggestions' && (
+          <motion.div
+            key="discover-suggestions"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="space-y-6"
+          >
+            <div>
               <Button variant="ghost" size="sm" onClick={handleBack} className="mb-4">
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
-              <h2 className="text-2xl font-bold">Pick a Song</h2>
+              <h2 className="text-2xl font-bold">Choose a progression</h2>
               <p className="text-muted-foreground">
-                Learn progressions by playing songs you know and love
+                {skillLevel === SkillLevel.Beginner && 'Simple progressions to get you started'}
+                {skillLevel === SkillLevel.Intermediate && 'Progressions with more variety'}
+                {skillLevel === SkillLevel.Expert && 'Advanced progressions for experienced players'}
               </p>
             </div>
 
-            <motion.div
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              variants={STAGGER_CHILDREN}
-              initial="hidden"
-              animate="show"
-            >
-              {suggestedSongs.map(song => (
-                <motion.div key={`${song.progressionId}-${song.title}`} variants={CARD_ITEM}>
-                  <SongProgressionCard song={song} onStartJam={handleStartJam} />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {progressions.map(prog => (
+                <motion.div
+                  key={prog.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <ProgressionCard
+                    progression={prog}
+                    isSelected={selectedProgression?.id === prog.id}
+                    onSelect={() => setSelectedProgression(prog)}
+                    onBuild={() => handleProgressionSelect(prog)}
+                  />
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         )}
 
-        {screen === 'composer' && (
+        {screen === 'build' && (
           <motion.div
-            key="composer"
+            key="build"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
@@ -207,7 +240,7 @@ export function JamIntroScreen(): React.JSX.Element {
           </motion.div>
         )}
 
-        {screen === 'playing' && progressionFromSong && (
+        {screen === 'playing' && selectedProgression && (
           <motion.div
             key="playing"
             initial={{ opacity: 0, x: 50 }}
@@ -215,8 +248,8 @@ export function JamIntroScreen(): React.JSX.Element {
             exit={{ opacity: 0, x: -50 }}
           >
             <JamBuilder
-              progression={progressionFromSong}
-              onUpdate={() => {}}
+              progression={selectedProgression}
+              onUpdate={setSelectedProgression}
               onClear={handleBack}
             />
           </motion.div>
